@@ -1,0 +1,54 @@
+﻿<form action="{url('/backstage/sys_admin/add')}" method="POST" ajax="true" data-valid="true" success="msg.tips" novalidate >
+    <input data-val="true" id="id" name="id" type="hidden" value="{$admin.id|default=0}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>账号：</span></label>
+        <div>
+            <input class="from-text" id="account" name="account" remote="{:url('backstage/SysAdmin/check_account',['id'=>isset($admin.id)?($admin.id):0])}" remote-msg="系统已有此账号" required="" required-msg="账号不能为空！" type="text" value="{$admin.account|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>密码：</span></label>
+        <div>
+            <input class="from-text" id="password" minlength="6" minlength-msg="安全起见密码长度不小于6位" name="password" required="" required-msg="密码不能为空！" type="password" value="{$admin.password|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>确认密码：</span></label>
+        <div>
+            <input class="from-text" equalTo="#password" required="" equalTo-msg="两次密码输入不一致！" required-msg="请填写确认密码！" id="pwd" name="pwd" type="password" value="{$admin.password|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>角色：</span></label>
+        <div>
+		    {php}$ids = "";
+            if (!empty($admin)){
+            foreach($admin->roles as $item){ $ids = $ids.$item->id.","; }}
+            {/php}
+            <input type="text" class="selectpicker" data-rander-model="selectize" name="rid" data-url="{:url('backstage/SysRole/getSelectableList')}" lab="role_name" value="{$ids|rtrim=','}" placeholder="为当前管理员分配角色...">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl "><span>联系手机：</span></label>
+        <div>
+            <input class="from-text" id="tel" name="tel" type="text" value="{$admin.tel|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span>联系邮箱：</span></label>
+        <div>
+            <input class="from-text" id="email" name="email" email="true" email-msg="请输入正确的邮箱，此邮箱可用于账号密码找回" type="text" value="{$admin.email|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>
+<script>
+    $(function () {
+        parseInt($("#id").val()) ? ($("#password").prop("readonly", true), $("#pwd").prop("readonly", true),window.formRequest.validate($("[data-valid='true']"))) : "";
+    });
+</script>

@@ -1,0 +1,134 @@
+<style>
+    .info-block{margin-top: 35px;}
+    .info-block li{ min-height: 80px;padding: 5px;float: left;margin-left: 5px;overflow: hidden;position: relative;border: 1px solid #00c1de;box-shadow: rgba(40, 181, 214, 0.42) 0px 0px 1px;}
+    .info-block li i{position: absolute;bottom: 1px;color: red;background: #ffdad8;border: 1px solid #f00;display: none;height: 16px;width: 16px;}
+    .info-block li  i.icon-x{right: 1px}
+    .info-block li:hover i{display: block;}
+    .info-block li  i.icon-bianji{right: 18px}
+    .info-block li b,.info-block li span,.info-block li em{display: block}
+    .info-block li span{margin: 5px 0;}
+</style>
+<form action="{:url('backstage/Guest/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>姓名：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>类别：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="sid" data-value="{$model.sid|default=0}">
+              <option value="0">演讲嘉宾</option>
+              <option value="1">共创人</option>
+            </select>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>头像【133*133】：</span></label>
+        <div>
+            <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="avatar" data-rander-model="unload" value="{$model.avatar|default=''}" >
+        </div>
+    </div>
+    <div class="from-group">
+        {php}
+            $checked = isset($model['is_new_power']) && $model['is_new_power'] == 1 ? 'checked' : '';
+        {/php}
+        <label class="from-label fl"><b>*</b><span>新势力：</span></label>
+        <div style="line-height: 32px;">
+		    <input type="checkbox" name="is_new_power" value="1" {$checked}>
+		</div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>简介：</span></label>
+        <div><input type="text" name="intro" class="from-text" value="{$model.intro|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>个人简介：</span></label>
+        <div><textarea name="text" class="from-textarea" rows="5">{$model.text|default=''}</textarea></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>演讲场次：</span></label>
+        <div>
+            <a class="file-bg add-info"><i class="iconfont icon-add"></i>添加信息</a>
+            <input type="hidden" name="info" value='{$model.info|default=''}'>
+            <ul class="info-block"></ul>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>
+<script type="text/html" id="model">
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>标题：</span></label>
+        <div><input type="text" class="from-text" id="title" value="{{model.title}}" /></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>场次：</span></label>
+        <div><input type="text" class="from-text" id="cc" value="{{model.cc}}" /></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>时间：</span></label>
+        <div><input type="text" class="from-text" id="sj" value="{{model.sj}}" /></div>
+    </div>
+</script>
+<script>
+    if ($("[name='info']").val()) {
+        var info = $.secureEvalJSON($("[name='info']").val());
+        $.each(info, function () {
+            $(".info-block").append('<li><b>' + this.title + '</b><span>'+this.cc+'</span><em>'+this.sj+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+        });
+    }
+    $(document).off("click",".add-info");
+    $(document).on("click", ".add-info", function () {
+        var data = { model: {} }, ht = template('model', data);
+        layer.open({
+            title: '添加',
+            area: ['500px', "300px"],
+            content: ht,
+            yes: function (index, layero) {
+                $(".info-block").append('<li><b>' + $("#title").val() + '</b><span>'+$("#cc").val()+'</span><em>'+$("#sj").val()+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+                loadinfo();
+                layer.close(index);
+            }
+        });
+    });
+    $(document).on("click", ".icon-x", function () {
+        $(this).parent("li").remove();
+        loadinfo();
+    });
+    $(document).off("click",".icon-bianji");
+    $(document).on("click", ".icon-bianji", function () {
+        var sp = $(this).parent('li');
+        var btVal = sp.find("b").text();
+        var ccVal = sp.find("span").text();
+        var sjVal = sp.find("em").text();
+        var data = { model: { title: btVal, cc: ccVal ,sj:sjVal} }, ht = template('model', data);
+        layer.open({
+            title: '修改',
+            area: ['500px', "300px"],
+            content: ht,
+            yes: function (index, layero) {
+                sp.replaceWith('<li><b>' + $("#title").val() + '</b><span>'+$("#cc").val()+'</span><em>'+$("#sj").val()+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+                loadinfo();
+                layer.close(index);
+            }
+        });
+    });
+    function loadinfo() {
+        var info = [];
+        $(".info-block li").each(function (i) {
+            var item = {};
+            item.title = $(this).find("b").text();
+            item.cc = $(this).find("span").text();
+            item.sj = $(this).find("em").text();
+            info.push(item);
+        })
+        $("[name='info']").val($.toJSON(info));
+    }
+
+</script>

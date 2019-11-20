@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection" />
+    <title>{$model.meta_title|default='灵眸'}</title>
+    <meta name="keywords" content="{$model.meta_keywords|default=''}" >
+    <meta name="description" content="{$model.meta_description|default=''}">
+    <link rel="stylesheet" href="__CSS__/base.css"/>
+    <link rel="stylesheet" href="__CSS__/animate.min.css"/>
+    <link rel="stylesheet" href="__CSS__/font.css"/>
+    <link rel="stylesheet" href="__CSS__/add.css"/>
+    <link rel="stylesheet" href="__CSS__/content.css"/>
+    <link rel="stylesheet" href="__CSS__/media.css"/>
+    <link rel="stylesheet" href="__CSS__/slick.css">
+    <style type="text/css">
+        input.pTip{position: inherit;background:none;text-align: left;border: 1px solid #ed1333!important;box-shadow: 0px 0px 1px #ed1333;}
+    </style>
+</head>
+<body>
+<div class="header animated fadeInDown">
+    <div class="menuBtn"></div>
+    <div class="top clearfix">
+        <div class="logo fl"><a href="javascript:;"><img alt="{$model.name}" src="{$model.logo|default=''}"/></a></div>
+        <div class="nav fr">
+            <ul class="clearfix">
+                <li><a href="/#introduction">峰会简介</a></li>
+                <li><a href="/#guest">演讲嘉宾</a></li>
+                <li><a href="/#agenda">峰会议程</a></li>
+                <li><a href="/#partner">合作伙伴</a></li>
+                <li><a href="/#review">往届回顾</a></li>
+                <li><a href="/#contact">联系我们</a></li>
+                <li><a href="{$model.ticket}" target="_blank">购票通道</a></li>
+                <li><a href="{:url('index/index/prize')}" class="active">MorketingAwards灵眸奖</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="banner wow animated fadeIn">
+    <div class="flexslider">
+        <ul class="slides">
+            <li><img src="{$SysConfig.prize_banner|default=''}"/></li>
+        </ul>
+    </div>
+</div>
+<div class="indexWrap">
+   
+    <div class="wid"> <a id="introduction" class="target-fix"></a>
+        <div class="intro">
+            <div class="subtit">
+                <div class="red_num wow animated fadeInLeft">01</div>
+                <h2 class="tit wow animated fadeInRight"> 寄语 <span>Message</span> </h2>
+            </div>
+            <div class="in-message">
+                <div class="message-text fl animated wow fadeInUp">
+                    {$jy.html_content|default=''}
+                </div>
+                <div class="message-img fr animated wow fadeInRight"><img src="{$jy.img|default='__IMG__/ceo.png'}"/></div>
+            </div>
+        </div>
+        <!--简介-end-->
+        <a id="guest" class="target-fix"></a>
+        <div class="guest">
+            <div class="subtit">
+                <div class="red_num wow animated fadeInLeft">02</div>
+                <h2 class="tit wow animated fadeInRight"> “灵眸”意义 <span>Morketing  Awards</span> </h2>
+            </div>
+            <div class="in-message">
+                <div class="message-text fl animated wow fadeInUp">
+                    {$yy.html_content|default=''}
+                </div>
+                <div class="message-img fr animated wow fadeInRight"><img src="{$yy.img|default='__IMG__/awards_img.png'}"/></div>
+            </div>
+            <a id="agenda" class="target-fix"></a> <a id="guest" class="target-fix"></a> </div>
+        <div class="agenda">
+            <div class="subtit">
+                <div class="red_num wow animated fadeInLeft">03</div>
+                <h2 class="tit wow animated fadeInRight"> 《灵眸100·年度影响力》 <span>Annual influence</span> </h2>
+            </div>
+            <div class="wid wow animated fadeIn">
+                <div class="catQuery">
+                    <div class="influ-topic wow animated fadeInUp">{$tb.remark}</div>
+                    <div class="influ-title wow animated fadeInUp">{$tb.name}</div>
+                    <div class="aList wow animated fadeInUp">
+                       {$tb.html_content}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a id="contact" class="target-fix"></a>
+        <div class="contact">
+            <div class="subtit">
+                <div class="red_num wow animated fadeInLeft">04</div>
+                <h2 class="tit wow animated fadeInRight"> 联系我们 <span>Contact  Us</span> </h2>
+            </div>
+            <div class="contop clearfix">
+                <div class="fl">
+                    <div class="title wow animated fadeInLeft"><span>关于我们</span></div>
+                    <div class="ctext wow animated fadeInLeft" data-wow-delay="0.1s">
+                        <p><span>{:str_replace(PHP_EOL,'</span></p><p><span>',$SysConfig['intro'])}</span></p>
+                    </div>
+                </div>
+                <div class="wechat fr wow animated fadeInRight"><img src="{$SysConfig.gzh|default=''}"/></div>
+            </div>
+            <div class="contaList">
+                <ul class="clearfix">
+                    {foreach name='contact' item='item'}
+                    <li class="wow animated fadeInUp" data-wow-delay="0.3s">
+                        <h2><span>{$item.title}</span></h2>
+                        <h4>{$item.name}</h4>
+                        <p><span>电话：{$item.tel}</span></p>
+                        <p><span>邮箱：{$item.email}</span></p>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="foot">
+    <div class="bottom wow animated fadeInUp">
+        <p class="wow animated fadeInUp">{$SysConfig.copyright|default=''} {$SysConfig.beian |default=''}</p>
+    </div>
+</div>
+<div class="footfix"><a href="{$model.enter|default=''}" target="_blank" class="signBtn"><i class="icon icon_b"></i>我要报名</a>
+    <a href="javascript:;" class="spBtn"><i class="icon icon_z"></i>我要赞助
+        <div class="emailDiv"> <span>成为大会赞助商请联系 ：</span>{$SysConfig.zanzhu}</div></a>
+    <a href="javascript:;" class="signBtn dec_btn"><i class="icon icon_dec"></i>奖项申报</a>
+    <a href="javascript:;" class="stateBtn"><i class="icon_z"></i>订阅会议动态</a>
+    <a href="javascript:;" class="w_about"><div class="weixin"><img src="{$SysConfig.gzh|default=''}"/><span>关注微信 了解更多</span></div></a>
+</div>
+<!--footerfix-ed-->
+<div class="mask"></div>
+<!--team-dimmer-->
+<div class="teamDetaile"> <a href="javascript:void(0);" class="CloseBtn"></a>
+    <div class="tContent clear-fix">
+        <div class="left"> <img class="timg" src="">
+            <div class="info">
+                <h1 class="tName"></h1>
+            </div>
+        </div>
+        <div class="right">
+            <div class="teamTit">
+                <p class="tInfo"></p>
+                <span class="tInfo2"></span> </div>
+            <div class="teamTxt">
+                <div class="tContentInner"> </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--订阅会议动态弹框-->
+<div class="stateBox" id="stateBox">
+    <h2>订阅会议动态</h2>
+    <div class="sWrap">
+        <form method="post" action="{:url('index/index/feedback')}" ajax="true" data-valid="true" novalidate="novalidate" success="msg.tips">
+            <ul>
+                <li>
+                    <div class="stip">姓名</div>
+                    <div class="stxt"><input type="text" name="name" required required-msg="填写您的姓名" placeholder="填写您的姓名" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip">公司</div>
+                    <div class="stxt"><input type="text" name="company" required required-msg="填写您的公司名称" placeholder="填写您的公司名称" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip">职位</div>
+                    <div class="stxt"><input type="text" name="position" required required-msg="填写您的职位" placeholder="填写您的职位" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip">邮箱</div>
+                    <div class="stxt"><input type="text" name="email" required required-msg="填写您的邮箱" email="true" email-msg="请填写正确的邮箱地址" placeholder="填写您的邮箱" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip">最想看到的嘉宾</div>
+                    <div class="stxt"><input type="text" required required-msg="填写您最想看到的嘉宾" name="guest" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip">最感兴趣的会场</div>
+                    <div class="stxt"><input type="text" required required-msg="填写您最感兴趣的会场" name="agenda" class="text"/></div>
+                </li>
+                <li>
+                    <div class="stip"></div>
+                    <div class="stxt">
+                        <div class="sbtns"><a href="javascript:;" class="cenBtn">取消</a><a href="javascript:;" class="subBtn">提交</a></div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+<!--项目申报弹窗-->
+<div class="stateBox" id="dec_box">
+        <h2>奖项申报 <span class="closed"><img src="__IMG__/closed.png" /></span></h2>
+        <div class="dec_con">
+            <p>欲申报<a href="#">{$model.jxname}</a></p>
+            <p>请将{$model.jxinfo}发送至：</p>
+            <p>{$model.jxemail}</p>
+            <p>工作人员将主动联系您洽谈奖项申报事宜</p>
+        </div>
+        <img src="{$model.jxlogo}"/>
+    </div>
+<script>
+    var localLinks = ["introduction","guest","agenda","partner","review","contact"];
+</script>
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/lib.js"></script>
+<script type="text/javascript" src="__JS__/tweenmax.min.js"></script>
+<script src="__JS__/wow.min.js"></script>
+<script type="text/javascript" src="__JS__/slider.js"></script>
+<script type="text/javascript" src="__JS__/slick.min.js"></script>
+<script src="__JS__/scrollbar.min.js"></script>
+<script src="__JS__/TweenMax.min.js"></script>
+<script src="__JS__/index.js"></script>
+<script src="__JS__/template-web.js"></script>
+<script src="__JS__/jquery.validate.min.js"></script>
+<script src="__JS__/layer/layer.js"></script>
+<script src="__JS__/listen.js"></script>
+<script>
+    $('.subBtn').click(function () {
+        $form = $(this).parents("form");
+        $form.submit();
+    });
+</script>
+<script type="text/javascript">
+
+    /**
+     * Created by GuoYue on 2016/5/21.
+     */
+    $(function(){
+        //team
+        (function(){
+            var dialog = $(".teamDetaile");
+
+            if ( !dialog.length ) return;
+            var maxheight = $(document).height();
+            var dialogTitle = dialog.find(".tName");
+            var dialogLabel = dialog.find(".tInfo");
+            var dialogLabel2 = dialog.find(".tInfo2");
+            var dialogContent = dialog.find(".tContent");
+            var dialogTxt = dialog.find(".teamTxt");
+            var dialogimg = dialog.find(".timg");
+            var inner = dialog.find(".tContentInner");
+            var dialogClose = dialog.find(".CloseBtn");
+            var mask = $(".mask");
+            var target = null;
+            var content = null;
+
+            //dialogContent.mCustomScrollbar();
+            dialogTxt.mCustomScrollbar();
+
+            $(document).on("click", ".gList ul li",function(){
+                target = $(this);
+                content=target.find(".text-content").appendTo( inner );
+                //console.log(content);
+                var $img = target.find(".img img").attr('src');
+
+                dialogLabel.text( target.find(".name").text());
+                dialogLabel2.text( target.find(".job").text());
+                dialogimg.attr('src',$img);
+                TweenMax.to( mask, 0.2, {
+                    "display" : "block",
+                    "opacity" : 0.5,
+                    "onComplete" : function(){
+                        TweenMax.to(dialog, 0.5, {
+                            "top" : '50%',
+                            "display" : "block",
+                            "ease" : Back.easeOut.config(2),
+                            "onComplete" : function(){
+                                //dialogContent.mCustomScrollbar("update");
+                            }
+                        });
+                    }
+                });
+            });
+            dialogClose.on("click", function(){
+                TweenMax.to(dialog, 0.5, {
+                    "top" : -430,
+                    "display" : "none",
+                    "ease" : Back.easeIn.config(2),
+                    "onComplete" : function(){
+                        TweenMax.to( mask, 0.2, {
+                            "display" : "none",
+                            "opacity" : 0
+                        });
+                        content.appendTo( target.find("a") );
+                        target = null;
+                        content = null;
+
+                    }
+
+                });
+
+            });
+        })();
+    });
+
+    //点击项目申报弹窗
+
+    $(".footfix .dec_btn").on("click", function(){
+
+        target = $(this);
+        TweenMax.to( $(".mask"), 0.2, {
+            "display" : "block",
+            "opacity" : 1,
+            "onComplete" : function(){
+                TweenMax.to($("#dec_box"), 0.5, {
+                    "top" : '50%',
+                    "display" : "block",
+                    "ease" : Back.easeOut.config(2),
+                    "onComplete" : function(){
+
+                    }
+                });
+            }
+        });
+    });
+
+    $(".closed").click(function(){
+
+        TweenMax.to($("#dec_box"), 0.5, {
+            "top" : -310,
+            "display" : "none",
+            "ease" : Back.easeIn.config(2),
+            "onComplete" : function(){
+                TweenMax.to($(".mask"), 0.2, {
+                    "display" : "none",
+                    "opacity" : 0
+                });
+
+            }
+
+        });
+    })
+
+</script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    function isWeiXin(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    if (isWeiXin()) {
+        $.ajax({
+            type:'GET',
+            url: '/index/digg/getWxShareSign?url=' + encodeURIComponent(location.href.split('#')[0]),
+            success: function(data) {
+                wx.config({
+                    debug: false,
+                    appId: data.appId,
+                    timestamp: data.timestamp,
+                    nonceStr: data.nonceStr,
+                    signature: data.signature,
+                    jsApiList: [
+                        'checkJsApi',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                    ]
+                });
+                wx.ready(function () {
+                    var shareData = {
+                        title: "{$SysConfig.title|default=''}",
+                        desc: "{$SysConfig.description|default=''}",
+                        link: location.href.split('#')[0],
+                        imgUrl: window.location.origin + "{$SysConfig.wx_img|default=''}"
+                    };
+                    wx.onMenuShareAppMessage(shareData);
+                    wx.onMenuShareTimeline(shareData);
+                    wx.onMenuShareQQ(shareData);
+                    wx.onMenuShareWeibo(shareData);
+                });
+            }
+        })
+    }
+
+    $(window).scroll(function(){
+        //为页面添加页面滚动监听事件
+        var wst =  $(window).scrollTop(); //滚动条距离顶端值
+        var h3_height = $(".indexWrap").offset().top;
+        //console.log(h3_height);
+        if(wst>h3_height-86 ){
+            $(".redbg").fadeIn(600);
+        }
+        else{
+            $(".redbg").fadeOut(600);
+        }
+    })
+    $('.header .nav ul li a').click(function(){
+        $('.header .nav ul li a').removeClass("active");//清除c类
+        $(this).addClass("active");//给当前导航加c类
+    });
+
+
+
+
+</script>
+</body>
+</html>

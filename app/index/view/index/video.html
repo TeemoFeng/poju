@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/content.css" />
+    <link rel="stylesheet" href="/static/css/media.css" />
+    <title>视频</title>
+</head>
+<body>
+<div id="player"></div>
+<script src="https://player.polyv.net/livescript/liveplayer.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+    var player = polyvObject('#player').livePlayer({
+        width: '100%',
+        height: 600,
+        uid: "{$model.uid|default=''}",
+        vid: "{$model.vid|default=''}",
+        vodsrc:"{$model.vodsrc|default=''}"
+    })
+</script>
+</body>
+</html>

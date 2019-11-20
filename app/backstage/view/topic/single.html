@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="shared/head"}
+    <title>网站关键词</title>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title"><h5>服务条款</h5></div>
+<form action="{:url('backstage/Topic/fixed')}" method="post" ajax="true" success="msg.tips" class="mt-40">
+    <input type="hidden" name="id" value="{$model.id|default='0'}">
+    <input type="hidden" name="tid" value="{$model.tid|default=$tid}">
+    <div class="from-group">
+        <label class="from-label fl" style="width: 90px"><b>*</b><span>内容：</span></label>
+        <div>
+            <script id="html_content" name="html_content" style="height:600px;width:100%" type="text/plain">{$model.html_content|default=''}</script>
+            <script> var html_content = UE.getEditor('html_content');</script>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl" style="width: 90px"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+</form>
+</body>
+</html>

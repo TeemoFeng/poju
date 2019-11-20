@@ -1,0 +1,55 @@
+<link href="__BACKEND__/js/ztree/metro.css" rel="stylesheet" />
+<script src="__BACKEND__/js/ztree/jquery.ztree.all.min.js"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {enable: true},
+        data: { simpleData: { enable: true, idKey: "id", pIdKey: "pid" } },
+        callback: {onCheck: onCheck}
+    };
+    $(document).ready(function () {
+        $.getJSON("{:url('backstage/SysMenu/getMenuTree')}", function (data) {
+            $.fn.zTree.init($("#treeDemo"), setting, data);
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = zTree.getNodes(),
+                per = $("[name='per']").val();
+            ids = per ? per.split(",") : [],
+                l = ids.length;
+            if (l > 0) {
+                for (var i = 0; i < l; i++) {
+                    zTree.checkNode(zTree.getNodeByParam("id", ids[i], null), true, false);
+                }
+            }
+            expandNodes(nodes);
+        });
+    });
+    function expandNodes(n) {
+        if (!n) return;
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo")
+        for (var i = 0, l = n.length; i < l; i++) {
+            zTree.expandNode(n[i], true, false, false);
+            if (n[i].isParent) {
+                expandNodes(n[i].children);
+            }
+        }
+    }
+    function onCheck(e, treeId, treeNode) {
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+        var s = [];
+        $.each(nodes, function () {
+            s.push(this.id);
+        });
+        $("[name='per']").val(s)
+    }
+</script>
+<form action="{:url('backstage/SysRole/allocationPermissions')}" method="post" ajax="true" success="msg.tips">
+    <div style="height: 400px;overflow-y: auto;">
+        <ul id="treeDemo" class="ztree"></ul>
+    </div>
+    <input type="hidden" name="id" value="{$id}" />
+    <input type="hidden" name="per" value="{$per}" />
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+</form>

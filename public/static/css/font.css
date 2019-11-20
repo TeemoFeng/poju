@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+    font-family: 'futura_bold_bt';
+    src: url('/static/fonts/futura_bold_bt.eot');
+    src: url('/static/fonts/futura_bold_bt.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/futura_bold_bt.woff2') format('woff2'),
+         url('/static/fonts/futura_bold_bt.woff') format('woff'),
+         url('/static/fonts/futura_bold_bt.ttf') format('truetype'),
+         url('/static/fonts/futura_bold_bt') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'impactmtstd';
+    src: url('/static/fonts/impactmtstd.eot');
+    src: url('/static/fonts/impactmtstd.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/impactmtstd.woff2') format('woff2'),
+         url('/static/fonts/impactmtstd.woff') format('woff'),
+         url('/static/fonts/impactmtstd.ttf') format('truetype'),
+         url('/static/fonts/impactmtstd') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}

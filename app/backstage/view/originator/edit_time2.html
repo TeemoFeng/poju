@@ -1,0 +1,17 @@
+<form action="{:url('backstage/Originator/editTime2')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>时间段选择：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="time_id" data-url="{:url('backstage/Originator/getGuestTimes',['user_id' => $model.to_user])}" data-value="{$model.time_id|default=0}">
+
+            </select>
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

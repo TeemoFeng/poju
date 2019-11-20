@@ -1,0 +1,36 @@
+<form action="{:url('backstage/Space/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+
+    <div class="from-group">
+        <label class="from-label fl"><b></b><span>会议选择：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="sid" data-url="{:url('backstage/Category/getAllList')}" data-value="{$model.sid|default=0}">
+
+            </select>
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>场地名称：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>场地地址：</span></label>
+        <div><textarea name="address" class="from-textarea" rows="5">{$model.address|default=''}</textarea></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>桌子数量：</span></label>
+        <div><input type="text" name="mark" class="from-text" value="{$model.mark|default=''}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>容纳人数：</span></label>
+        <div><input type="text" name="contain" class="from-text" value="{$model.contain|default=''}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

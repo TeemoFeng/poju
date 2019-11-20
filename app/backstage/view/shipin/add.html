@@ -1,0 +1,31 @@
+<form action="{:url('backstage/Shipin/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>名称：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>主题：</span></label>
+        <div><input type="text" name="theme" class="from-text" value="{$model.theme|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>Uid：</span></label>
+        <div><input type="text" name="uid" class="from-text" value="{$model.uid|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>Vid：</span></label>
+        <div><input type="text" name="vid" class="from-text" value="{$model.vid|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>回放链接：</span></label>
+        <div><input type="text" name="vodsrc" class="from-text" value="{$model.vodsrc|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>日期：</span></label>
+        <div><input type="text" name="start_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.start_time)}{/if}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

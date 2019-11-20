@@ -1,0 +1,24 @@
+<form action="{:url('/backstage/sys_admin/changepwd')}" method="post" ajax="true" success="msg.tips" data-valid="true" novalidate="novalidate">
+<div class="from-group">
+    <label class="from-label fl"><b>*</b><span>原始密码：</span></label>
+    <div>
+        <input type="password" class="from-text" name="oldPwd" required required-msg="此处为必填项"/>
+    </div>
+</div>
+<div class="from-group">
+    <label class="from-label fl"><b>*</b><span>新的密码：</span></label>
+    <div>
+        <input id="newPwd" type="password" class="from-text" minlength="6" minlength-msg="密码不得小于6位" name="newPwd" required required-msg="此处为必填项"/>
+    </div>
+</div>
+<div class="from-group">
+    <label class="from-label fl"><b>*</b><span>确认密码：</span></label>
+    <div>
+        <input type="password" class="from-text" name="pwd" required required-msg="此处为必填项" equalTo="#newPwd" equalTo-msg="两次输入的密码不一致！"/>
+    </div>
+</div>
+<div class="from-group">
+    <label class="from-label fl"><span></span></label>
+    <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+</div>
+</form>

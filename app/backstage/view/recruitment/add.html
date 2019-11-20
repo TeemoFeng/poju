@@ -1,0 +1,40 @@
+<script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ue.min.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
+<form action="{:url('backstage/Recruitment/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>职位名称：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>地点：</span></label>
+        <div><input type="text" name="address" class="from-text" value="{$model.address|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>人数：</span></label>
+        <div><input type="text" name="number" class="from-text" value="{$model.number|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>薪酬：</span></label>
+        <div><input type="text" name="wages" class="from-text" value="{$model.wages|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>发布日期：</span></label>
+        <div><input type="text" name="rel_date" class="from-text" data-rander-model="date" value="{$model.publishtime|default=date('Y-m-d H:i:s',time())}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>详情：</span></label>
+        <div>
+            <script id="remark" name="remark" style="height:300px;width:100%" type="text/plain">{$model.remark|default=''}</script>
+            <script> var remark = UE.getEditor('remark');</script>
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>图片管理</title>
+    {include file="/shared/head"}
+    <script src="__BACKEND__/js/clipboard.min.js"></script>
+    <style>
+        .imglistbox li{display:inline-block;float:left;margin:2px;height:150px;width:243px;position:relative;background:#cfcfcf;overflow: hidden;}
+        div.mask{display:none;position:absolute;top:0;left:0;height:150px;width:243px;background:rgba(0, 0, 0, 0.85)}
+        div.act_box i.iconfont{color:#fff;display:inline-block;height:40px;width:40px;font-size:25px;text-align:center;line-height:40px;float: left;position:relative;}
+        .imglistbox i.iconfont:nth-child(1){border-right:1px solid #fff;border-bottom:1px solid #fff;}
+        .imglistbox i.iconfont:nth-child(2){border-left:1px solid #fff;border-bottom:1px solid #fff;}
+        .imglistbox i.iconfont:nth-child(3){border-right:1px solid #fff;border-top:1px solid #fff;}
+        .imglistbox i.iconfont:nth-child(4){border-left:1px solid #fff;border-top:1px solid #fff}
+        .imglistbox li:hover div.mask,li:hover div.act_box{display:block;}
+        div.act_box {display:none; height:82px;width:82px;position:absolute;top:34px;left:81px;}
+        .imglistbox i.iconfont input { display: block;height: 40px;width: 40px;position: absolute;top: 0;left: 0;opacity: 0;filter: alpha(opacity=0);}
+        .load {position:absolute;top:0;left:0;height:100%;width:100%; }
+    </style>
+</head>
+<body>
+<div class="view-full">
+    <div class="viewframework-navbar">
+        <div class="navbar-title">图片管理/IMAGES</div>
+        <div class="navbar-list">
+            <ul>
+                <li><a href="{:url('backstage/FileList/index',['id'=>1])}"><i></i><div>系统图片</div></a></li>
+                <li><a href="{:url('backstage/FileList/index',['id'=>2])}"><i></i><div>素材图片</div></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="collapse-inner">
+        <div class="collapse-bg"></div>
+        <div class="collapse-btn"><i class="iconfont icon-collapse-left"></i><i class="iconfont icon-collapse-right"></i></div>
+    </div>
+</div>
+
+<div class="viewframework" id="vf" style="overflow-x:hidden;overflow-y:auto;height:100%;background: #f3f3f4;padding-left:5px;">
+    <div class="frame-title">
+        <h5>{$titel}</h5>
+    </div>
+    <ul class="imglistbox"></ul>
+    <script>
+        var flag = true, n = 0,
+            getImagesList = function () {
+                if (flag) {
+                    $.ajax({
+                        url: "{:url('backstage/FileList/imageList')}",
+                        data: { size: 40, start: n, path: "{$path}" },
+                        type: "POST",
+                        dataType: "json",
+                        success: function (data) {
+                            var ht = "";
+                            $.each(data.list, function () {
+                                ht += '<li>' +
+                                    '<img src="' + this.url + '?noCache=' + Math.random() + '"/>' +
+                                    '<div class="mask"></div>' +
+                                    '<div class="act_box">' +
+                                    '<i class="iconfont icon-enlarge" title="预览"></i>' +
+                                    '<i class="iconfont icon-chain" data-clipboard-text="' + this.url + '" title="复制链接"></i>' +
+                                    '<i class="iconfont icon-replace" title="替换"><input type="file" class="img-replace"/></i>' +
+                                    '<i class="iconfont icon-del" title="删除"></i>' +
+                                    '</div>' +
+                                    '</li> ';
+                            });
+                            $(".imglistbox").append(ht);
+                            $("li").each(function (i) {
+                                var img = $(this).children('img');
+                                var realWidth;
+                                var realHeight;
+                                $("<img/>").attr("src", $(img).attr("src")).load(function () {
+                                    realWidth = this.width;
+                                    realHeight = this.height;
+                                    if (realHeight < 150 && realWidth < 243) {
+                                        $(img).css({ "position": "absolute", "top": (150 - realHeight) / 2 + "px", "left": (243 - realWidth) / 2 + "px" });
+                                    } else {
+                                        if (realWidth > realHeight) {
+                                            if (realHeight < 150) {
+                                                $(img).css({ "position": "absolute", "width": "150px", "top": (150 - realHeight) / 2 + "px" });
+                                            } else {
+                                                $(img).css({ "height": "150px", "margin-left": -(realWidth / (realHeight / 150) - 243) / 2 + "px" });
+                                            }
+                                        }
+                                        else {
+                                            if (realWidth < 243) {
+                                                $(img).css({ "position": "absolute", "height": "150px", "left": (243 - realWidth) / 2 + "px" });
+                                            }
+                                            else {
+                                                $(img).css({ "width": "243px", "margin-top": -(realHeight / (realWidth / 243) - 150) / 2 + "px" });
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                            n += data.size;
+                            if (data.total <= n) {
+                                flag = false;
+                            }
+                        }
+                    });
+                }
+            };
+        getImagesList();
+        $(".viewframework").scroll(function () {
+            var scrollTop = $(this).scrollTop();
+            var scrollHeight = document.getElementById("vf").scrollHeight;//$(document).height();
+            var windowHeight = $(this).height();
+            if (scrollTop + windowHeight == scrollHeight) {
+                getImagesList();
+            }
+        });
+
+        $(document).on("click", ".icon-enlarge", function () {
+            layer.open({
+                area: 'auto auto',
+                type: 1,
+                title: false,
+                content: '<img src="' + $(this).parent().siblings("img").attr("src") + '" style="max-width:800px;border: none;display: inline-block;vertical-align: middle;"/>'
+            });
+        });
+        var clipboard = new Clipboard('.icon-chain');
+        clipboard.on('success', function (e) {
+            layer.msg("链接已复制", { icon:6, time: 1300 });
+        });
+        clipboard.on('error', function (e) {
+            layer.msg("链接复制失败", { icon: 5, time: 1300 });
+        });
+        $(document).on("click", ".icon-del", function () {
+            var img = $(this).parent().siblings("img"), p = $(this).parents("li");
+            layer.confirm("确定要删除该图片吗？", function () {
+                $.ajax({
+                    url: "{:url('backstage/FileList/fileDelete')}",
+                    data: { "path": img.attr("src").split("?")[0] },
+                    type: "POST",
+                    success: function (data) {
+                        if (data == "0") {
+                            layer.msg("在尝试删除不存在的图片", { icon: 5, time: 1300 });
+                        } else { layer.msg("图片已删除", { icon: 6, time: 1300 }); }
+                        p.remove();
+                    }
+                });
+            });
+        });
+        $(document).on("change", ".img-replace", function () {
+            var _fd = new FormData(),
+                _f = $(this)[0].files, img = $(this).parents(".act_box").siblings("img"), _src = $(this).parents(".act_box").siblings("img").attr("src").split("?")[0];
+            _fd.append("file", _f[0]);
+            _fd.append("path", _src);
+            $.ajax({
+                url: "{:url('backstage/Ajax/upload')}",
+                data: _fd,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    layer.msg("上传成功", { icon: 6, time: 1300 });
+                    img.attr("src", data.url + "?noCache=" + Math.random());
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

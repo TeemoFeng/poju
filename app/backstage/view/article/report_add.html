@@ -1,0 +1,64 @@
+<form action="{:url('backstage/Article/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>文章标题：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>官方链条号：</span></label>
+        <div><select class="from-select" data-rander-model="selectize" name="uid" lab="nickname" data-url="{:url('backstage/UserInfo/getOfficialUser')}" data-value="{$model.uid|default=0}"></select></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>列表缩略图【353*510】：</span></label>
+        <div>
+            <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="img" data-rander-model="unload" value="{$model.img|default=''}" >
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>内容预览【不要超过5张】【500*722】：</span></label>
+        <div>
+            <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="imglist" data-rander-model="unload" value="{$model.imglist|default=''}" >
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>所属栏目：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="tid" data-url="{:url('backstage/Category/GetTypeIsListChildByPid',['pid'=>$pid])}" data-value="{$model.tid|default=0}"></select>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>发布时间：</span></label>
+        <div><input type="text" name="release_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.release_time)}{/if}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>关键词：</span></label>
+        <div><input type="text" name="keywords" class="from-text" value="{$model.keywords|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>描述&摘要：</span></label>
+        <div><textarea name="description" class="from-textarea" rows="5" placeholder="不填默认内容前300字">{$model.description|default=''}</textarea></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>附件：</span></label>
+        <div>
+            <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择文件</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="appendix" data-rander-model="unload" filetype="4" value="{$model.appendix|default=''}" >
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>简介：</span></label>
+        <div><textarea name="html_content" class="from-textarea" rows="8">{$model.html_content|default=''}</textarea></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

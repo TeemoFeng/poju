@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Title</title>
+    {include file="/shared/head"}
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>网站栏目</h5>
+</div>
+<div class="action-bar">
+    <a href="{:url('backstage/category/add')}" ajax="true" model-area="1100px,700px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <div class="dropdown">
+        <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
+        <ul class="down-left">
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/category/attrSetting',['act'=>'state','prop'=>1])}" >开放</li>
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/category/attrSetting',['act'=>'state','prop'=>0])}" >关闭</li>
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/category/delete')}" data-confirm="确定要删除这些栏目吗？">删除所选</li>
+        </ul>
+    </div>
+
+</div>
+<form action="{:url('backstage/category/sort')}" ajax="true" success="msg.tips" method="post">
+<table class="ord_table" theme="no-rl-border">
+    <thead>
+    <tr>
+        <th width="20px"><input type="checkbox" class="cheack-all"></th>
+        <th width="30px">主键</th>
+        <th>栏目名称</th>
+        <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
+        <th>状态</th>
+        <th width="200px">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</form>
+<script>
+    var _surl = "__BACKEND__/images",
+        edit = "{:url('backstage/category/add',['id'=> 0])}",
+        add= "{:url('backstage/category/add',['pid'=> 0])}",
+        del = "{:url('backstage/category/delete',['id'=> 0])}";
+    window.Column = {
+        TreeColumn: function (m, a, s) {
+            var node = [];
+            $.each(m, function () {
+                if (this.pid == a) {
+                    node.push(this);
+                }
+            });
+            if (node.length > 0) {
+                for (var i = 0 ; i < node.length; i++) {
+                    $("tbody").append("<tr>" +
+                        "<td><input type=\"checkbox\" value=\"" + node[i].id + "\"></td>" +
+                        "<td>" + node[i].id + "</td>"+
+                        "<td class='info'>" + s + (node.length - 1 == i ? "<img class=\"zbf\" src=\"" + _surl + "/w.png\" />" : "<img class=\"zbf\" src=\"" + _surl + "/z.png\" />") + node[i].name +
+                        (node[i].img==''?'':'<img class="preview" data-url="'+node[i].img+'" src="__BACKEND__/images/ico-pic.png" />')+
+                        "</td>" +
+                        "<td><input type=\"text\" name=\"_" + node[i].id + "\" value=\"" + node[i].sort + "\" class=\"list-sort bg" + node[i].level + "\" /></td>" +
+                        "<td>" + (node[i].state == 1 ? "<b style='color:green'>开放</b>" : "<b style='color:red'>关闭</b>") + "</td>" +
+                        "<td>" +
+                        "<a class=\"act_btn\" href=\"" + edit.replace('0', node[i].id) + "\" ajax=\"true\" model-area=\"1100px,700px\" success=\"msg.model\">编辑</a>" +
+                        "<a class=\"act_btn\" href=\"" + del.replace('0', node[i].id) + "\" ajax=\"true\" success=\"msg.tips\" data-method=\"post\" data-confirm=\"确定要删除该栏目吗？\">删除</a>" +
+                        "</td>" +
+                        "</tr>");
+                    Column.TreeColumn(m, node[i].id, s + (node.length - 1 == i ? "<img class=\"zbf\" src=\"" + _surl + "/k.png\" />" : "<img class=\"zbf\" src=\"" + _surl + "/b.png\" />"));
+                }
+            }
+        },
+        GetColumn: function () {
+            $("tbody").empty();
+
+            $.getJSON("{:url('backstage/category/getAll')}", function (data) {
+                Column.TreeColumn(data.list, 0, "");
+            });
+        }
+    }
+    $(function () {
+        Column.GetColumn();
+    });
+
+</script>
+</body>
+</html>

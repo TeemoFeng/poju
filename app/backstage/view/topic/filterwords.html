@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="shared/head"}
+    <title>网站关键词</title>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+    <style>
+        .selectpicker{height: auto!important;}
+        .selectize-control.multi .selectize-input > div {margin-top: 3px;}
+        .from-textarea{background-color: rgba(255, 255, 255, 0)!important;}
+        .selectize-input{min-height: 580px;overflow: auto;max-height: 683px;}
+    </style>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title"><h5>网站关键词</h5></div>
+<form action="{:url('backstage/Topic/fixed')}" method="post" ajax="true" success="msg.tips" class="mt-40">
+    <input type="hidden" name="id" value="{$model.id|default='0'}">
+    <input type="hidden" name="tid" value="{$model.tid|default=$tid}">
+     <div class="from-group">
+         <label class="from-label fl" style="width: 90px"><b>*</b><span>关键词：</span></label>
+         <div><textarea rows="40"  class="selectpicker from-textarea" name="html_content">{$model.html_content|default=''}</textarea></div>
+     </div>
+    <div class="from-group">
+        <label class="from-label fl" style="width: 90px"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+</form>
+<script>
+    var $select =  $('.from-textarea').selectize({
+        plugins: ['remove_button'],
+        persist: true,
+        create: true,
+        copyClassesToDropdown:false,
+        onDelete:function (value) {
+          this.removeOption(value);
+
+        }
+    });
+
+
+
+</script>
+</body>
+</html>

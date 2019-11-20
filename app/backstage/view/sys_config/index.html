@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="shared/head"}
+    <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <title>Config</title>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+    <div class="frame-title"><h5>网站基本信息配置</h5></div>
+    <form action="{:url('/backstage/sys_config/addInfo',['id'=>1])}" method="post" ajax="true" success="msg.tips" class="mt-20">
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>微信分享标题：</span></label>
+            <div><input type="text" class="from-text" name="title" value="{$sys_config.title|default=''}"></div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>微信分享描述文字：</span></label>
+            <div><input type="text" class="from-text" name="description" value="{$sys_config.description|default=''}"></div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>关于链条：</span></label>
+            <div>
+                <textarea name="intro" rows="5" class="from-textarea">{$sys_config.intro|default=''}</textarea>
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>赞助联系：</span></label>
+            <div><input type="text" class="from-text" name="zanzhu" value="{$sys_config.zanzhu|default=''}"></div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>网站底部版权信息：</span></label>
+            <div><input type="text" class="from-text" name="copyright" value="{$sys_config.copyright|default=''}"></div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>备案号：</span></label>
+            <div><input type="text" class="from-text" name="beian" value="{$sys_config.beian|default=''}"></div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>公众号二维码【142*142】：</span></label>
+            <div>
+                <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                <a class="file-bg"><i class="iconfont icon-upload"></i>选择文件</a>
+                <div class="imglist"></div>
+                <input type="hidden" name="gzh" data-rander-model="unload" value="{$sys_config.gzh|default=''}" >
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>首页微信分享配图：</span></label>
+            <div>
+                <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                <a class="file-bg"><i class="iconfont icon-upload"></i>选择文件</a>
+                <div class="imglist"></div>
+                <input type="hidden" name="wx_img" data-rander-model="unload" value="{$sys_config.wx_img|default=''}" >
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>灵眸奖顶图：</span></label>
+            <div>
+                <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                <a class="file-bg"><i class="iconfont icon-upload"></i>选择文件</a>
+                <div class="imglist"></div>
+                <input type="hidden" name="prize_banner" data-rander-model="unload" value="{$sys_config.prize_banner|default=''}" >
+            </div>
+        </div>
+        <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+    </form>
+    <script>
+        $(".from-label").css("width", "150px");
+        msg.unload("[name='gzh']");
+        msg.unload("[name='wx_img']");
+        msg.unload("[name='prize_banner']");
+    </script>
+</body>
+</html>

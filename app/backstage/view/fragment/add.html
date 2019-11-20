@@ -1,0 +1,24 @@
+<form action="{:url('backstage/Fragment/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <input type="hidden" name="sid" value="{$model.sid|default='0'}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>标题：</span></label>
+        <div><input type="text" name="title" class="from-text" value="{$model.title|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>联系人：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>电话：</span></label>
+        <div><input type="text" name="tel" class="from-text" value="{$model.tel|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>邮箱：</span></label>
+        <div><input type="text" name="email" class="from-text" value="{$model.email|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

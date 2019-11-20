@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="shared/head"}
+    <title>网站关键词</title>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<form action="{:url('/backstage/topic/index')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=0}" />
+    <input type="hidden" name="tid" value="{$model.tid|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>标题：</span></label>
+        <div>
+            <input type="text" name="name" class="from-text" value="{$model.name|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>描述：</span></label>
+        <div>
+           <textarea rows="5" name="remark" class="from-textarea">{$model.remark|default=''}</textarea>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>详情：</span></label>
+        <div>
+            <script id="html_content" name="html_content" style="height:300px;width:100%" type="text/plain">{$model.html_content|default=''}</script>
+            <script> var html_content = UE.getEditor('html_content');</script>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>
+</body>
+</html>

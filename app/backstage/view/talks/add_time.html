@@ -1,0 +1,49 @@
+<style>
+    .info-block{margin-top: 5px;}
+    .info-block li{ min-height: 20px;padding: 5px;float: left;margin-left: 5px;overflow: hidden;position: relative;border: 1px solid #00c1de;box-shadow: rgba(40, 181, 214, 0.42) 0px 0px 1px;margin-top: 5px;}
+    .info-block li i{position: absolute;bottom: 1px;color: red;background: #ffdad8;border: 1px solid #f00;display: none;height: 16px;width: 16px;}
+    .info-block li  i.icon-x{right: 1px}
+    .info-block li:hover i{display: block;}
+    .info-block li  i.icon-bianji{right: 18px}
+    .info-block li b,.info-block li span,.info-block li em{display: block}
+    .info-block li span{margin: 5px 0;}
+    .info-block li h3{color: #F44336;font-size: 15px;}
+</style>
+<form action="{:url('backstage/Talks/delete')}" method="post" ajax="true" success="msg.tips">
+    <div class="from-group">
+        <label class="from-label fl"><span>已设置时间段：</span></label>
+        <div>
+
+                <ul class="info-block">
+                    {if empty($list)}
+                        <li>暂未设置</li>
+                    {else/}
+                        {foreach name='list' key='key' item='item'}
+                            <li>时间段{$key+1}：{$item['start_time']} ~ {$item['end_time']}</li>
+                        {/foreach}
+                    {/if}
+
+                </ul>
+
+        </div>
+    </div>
+</form>
+
+<form action="{:url('backstage/Talks/addTime')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="user_id" value="{$user_id|default=''}" />
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
+        <div><input type="text" name="start_time" class="from-text" data-rander-model="datetime" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{$model.start_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
+        <div><input type="text" name="end_time" class="from-text" data-rander-model="datetime" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{$model.end_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

@@ -1,0 +1,136 @@
+<style>
+    .info-block{margin-top: 35px;}
+    .info-block li{ min-height: 80px;padding: 5px;float: left;margin-left: 5px;overflow: hidden;position: relative;border: 1px solid #00c1de;box-shadow: rgba(40, 181, 214, 0.42) 0px 0px 1px;margin-top: 5px;}
+    .info-block li i{position: absolute;bottom: 1px;color: red;background: #ffdad8;border: 1px solid #f00;display: none;height: 16px;width: 16px;}
+    .info-block li  i.icon-x{right: 1px}
+    .info-block li:hover i{display: block;}
+    .info-block li  i.icon-bianji{right: 18px}
+    .info-block li b,.info-block li span,.info-block li em{display: block}
+    .info-block li span{margin: 5px 0;}
+    .info-block li h3{color: #F44336;font-size: 15px;}
+</style>
+<form action="{:url('backstage/Agenda/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>名称：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>标题：</span></label>
+        <div><input type="text" name="title" class="from-text" value="{$model.title|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>主题：</span></label>
+        <div><input type="text" name="tit" class="from-text" value="{$model.tit|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>届别：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="sid" data-url="{:url('backstage/Category/getAllList')}" data-value="{$model.sid|default=0}"></select>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>日期：</span></label>
+        <div><input type="text" name="startdate" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.startdate)}{/if}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>场次：</span></label>
+        <div>
+            <a class="file-bg add-info"><i class="iconfont icon-add"></i>添加信息</a>
+            <input type="hidden" name="info" value='{$model.info|default=''}'>
+            <ul class="info-block"></ul>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>
+<script type="text/html" id="model">
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>主题：</span></label>
+        <div><input type="text" class="from-text" id="title" value="{{model.title}}" /></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>姓名：</span></label>
+        <div><input type="text" class="from-text" id="name" value="{{model.name}}" /></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>简介：</span></label>
+        <div><input type="text" class="from-text" id="intro" value="{{model.intro}}" /></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>时间：</span></label>
+        <div><input type="text" class="from-text" id="sj" value="{{model.sj}}" /></div>
+    </div>
+</script>
+<script src="/static/backend/js/jquery.dragsort-0.5.2.min.js"></script>
+<script>
+    if ($("[name='info']").val()) {
+        var info = $.secureEvalJSON($("[name='info']").val());
+        $.each(info, function () {
+            $(".info-block").append('<li><h3>' + this.title + '</h3><b>'+this.name+'</b><span>'+this.intro+'</span><em>'+this.sj+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+        });
+    }
+    $(document).off("click",".add-info");
+    $(document).on("click", ".add-info", function () {
+        var data = { model: {} }, ht = template('model', data);
+        layer.open({
+            title: '添加',
+            area: ['750px', "350px"],
+            content: ht,
+            yes: function (index, layero) {
+                $(".info-block").append('<li><h3>' + $("#title").val() + '</h3><b>'+$("#name").val()+'</b><span>'+$("#intro").val()+'</span><em>'+$("#sj").val()+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+                loadinfo();
+                layer.close(index);
+
+            },
+            success: function(layero, index){
+                window.cc_time && delete window.cc_time;
+                window.cc_time = laydate.render({elem: '#sj',type: 'time',range: true});
+            }
+        });
+
+
+    });
+    $(document).on("click", ".icon-x", function () {
+        $(this).parent("li").remove();
+        loadinfo();
+    });
+    $(document).off("click",".icon-bianji");
+    $(document).on("click", ".icon-bianji", function () {
+        var sp = $(this).parent('li');
+        var titleVal = sp.find("h3").text();
+        var nameVal = sp.find("b").text();
+        var introVal = sp.find("span").text();
+        var sjVal = sp.find("em").text();
+        var data = { model: { title: titleVal, name: nameVal ,intro:introVal,sj:sjVal} }, ht = template('model', data);
+        layer.open({
+            title: '修改',
+            area: ['750px', "350px"],
+            content: ht,
+            yes: function (index, layero) {
+                sp.replaceWith('<li><h3>'+$("#title").val()+'</h3><b>' + $("#name").val() + '</b><span>'+$("#intro").val()+'</span><em>'+$("#sj").val()+'</em><i class="iconfont icon-x"></i><i class="iconfont icon-bianji"></i></li>');
+                loadinfo();
+                layer.close(index);
+            }
+        });
+        laydate.render({elem: '#sj',type: 'time',range: true});
+    });
+    function loadinfo() {
+        var info = [];
+        $(".info-block li").each(function (i) {
+            var item = {};
+            item.title = $(this).find("h3").text();
+            item.name = $(this).find("b").text();
+            item.intro = $(this).find("span").text();
+            item.sj = $(this).find("em").text();
+            info.push(item);
+        })
+        $("[name='info']").val($.toJSON(info));
+    }
+    $(".info-block").dragsort({
+        placeHolderTemplate: "<li style='border:1px dashed #00C1DE;box-sizing:border-box;'></li>",
+        dragEnd: loadinfo,
+        dragSelectorExclude: "i" });
+</script>

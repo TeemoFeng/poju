@@ -1,0 +1,20 @@
+
+
+<form action="{:url('backstage/Originator/editTime')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
+        <div><input type="text" name="start_time" class="from-text" data-rander-model="datetime" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{$model.start_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
+        <div><input type="text" name="end_time" class="from-text" data-rander-model="datetime" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{$model.end_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

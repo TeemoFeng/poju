@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title></title>
+    {include file="/shared/head"}
+    <script src="__BACKEND__/js/jquery.validate.min.js"></script>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>系统管理员</h5>
+</div>
+<div class="action-bar">
+    <a href="{:url('/backstage/sys_admin/add')}" ajax="true" model-area="630px,400px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <div class="dropdown">
+        <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
+        <ul class="down-left">
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/sys_admin/banAdminInBatch')}" data-confirm="确定要操作这些数据吗？">禁用所选管理员</li>
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/sys_admin/liftBanAdminInBatch')}" data-confirm="确定要操作这些数据吗？">解除禁用</li>
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/sys_admin/deleteAdminInBatch')}" data-confirm="确定要删除这些管理员吗？">删除所选管理员</li>
+        </ul>
+    </div>
+</div>
+<table class="ord_table" theme="no-rl-border">
+    <thead>
+    <tr>
+        <th width="20px"><input type="checkbox" class="cheack-all"></th>
+        <th>账号</th>
+        <th>手机号</th>
+        <th>邮箱</th>
+        <th>状态</th>
+        <th>创建日期</th>
+        <th width="110px">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="admin_list" id="admin"}
+    <tr>
+        <td><input type="checkbox" value="{$admin.id}"></td>
+        <td>{$admin.account}</td>
+        <td>{$admin.tel}</td>
+        <td>{$admin.email}</td>
+        <td>{$admin.state==0?"<b style='color:green'>正常</b>":"<b style='color:red'>禁用</b>"}</td>
+        <td>{$admin.create_time}</td>
+        <td><a class="act_btn" href="{:url('/backstage/sys_admin/add',['id'=>$admin.id])}" ajax="true" model-area="630px,400px" success="msg.model">编辑</a>
+            <a class="act_btn" href="{:url('/backstage/sys_admin/delete',['id'=>$admin.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该管理员吗？">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+
+</body>
+</html>

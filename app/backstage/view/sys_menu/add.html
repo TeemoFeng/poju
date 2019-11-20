@@ -1,0 +1,70 @@
+<script src="__BACKEND__/js/ztree/jquery.ztree.all.min.js"></script>
+<link href="__BACKEND__/js/ztree/metro.css" rel="stylesheet" />
+<script type="text/javascript">
+    var setting = {
+        callback: { onClick: zTreeOnClick },
+        data: {
+            simpleData: { enable: true, idKey: "id", pIdKey: "pid" }
+        }
+    };
+    function zTreeOnClick(event, treeId, treeNode) {
+        treeNode.level==3
+            ?(layer.msg("不能选此节点作为父节点", { icon: 5, time: 2000 }))
+            :($("#pid").val(treeNode.id),$("#level").val(treeNode.level + 1),$(".tree-text").val(treeNode.name),$(".ztree_box").hide());
+    };
+    $(document).ready(function () {
+        $.getJSON("{:url('/backstage/sys_menu/getMenuTree')}", function (data) {
+            data.push({ "id": 0, "name": "顶级菜单", open: true, });
+            $.fn.zTree.init($("#treeDemo"), setting, data);
+            var _id = $("#pid").val(), _tree = $.fn.zTree.getZTreeObj("treeDemo"), node = _tree.getNodeByParam('id', _id);
+            _tree.selectNode(node);
+            _tree.setting.callback.onClick(null, _tree.setting.treeId, node);
+        });
+    });
+</script>
+<form action="{:url('/backstage/sys_menu/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$menu.id|default=0}">
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>上级菜单：</span></label>
+        <div>
+            <input type="hidden" name="pid" id="pid" value="{$menu.pid|default=0}">
+            <input type="hidden" name="level" id="level" value="{$menu.level|default=0}">
+            <input type="text" class="from-text tree-text"/>
+        </div>
+    </div>
+    <div class="ztree_box"><ul id="treeDemo" class="ztree"></ul></div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>菜单名称：</span></label>
+        <div>
+            <input type="text" name="name" class="from-text" value="{$menu.name|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>菜单链接：</span></label>
+        <div>
+            <input type="text" name="path" class="from-text" value="{$menu.path|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>菜单图标：</span></label>
+        <div>
+            <input type="text" name="iconfont" class="from-text" value="{$menu.iconfont|default=''}" style="width:300px;float: left;">
+            <i id="show-icon" class="iconfont {$menu.iconfont|default=''}" style="font-size: 23px;line-height: 32px;text-align: center;display: block;height: 32px;float: left;width: 32px;border: 1px solid #ccc;margin-left: 5px;margin-right: 5px;"></i>
+            <a class="act-btn" href="__BACKEND__/fonts/icon/demo_fontclass.html" ajax="true" model-area="760px,500px" success="msg.model">选择图标</a>
+            <div class="help-info">此处为必填项</div>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+</form>
+<script>
+    $(function () {
+        $(".tree-text").click(function () {
+            var _e = $(this), _epp = _e.parent().position();
+            $(".ztree_box").css({ "top": _epp.top + _e.height()+1, "left": _epp.left ,"width":_e.width()+12});
+            $(".ztree_box").toggle();
+        });
+    });
+</script>

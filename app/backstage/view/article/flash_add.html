@@ -1,0 +1,42 @@
+<script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
+<form action="{:url('/backstage/article/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>文章标题：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>官方链条号：</span></label>
+        <div><select class="from-select" data-rander-model="selectize" name="uid" lab="nickname" data-url="{:url('backstage/UserInfo/getOfficialUser')}" data-value="{$model.uid|default=0}"></select></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>所属栏目：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="tid" data-url="{:url('backstage/Category/GetTypeIsListChildByPid',['pid'=>$pid])}" data-value="{$model.tid|default=0}"></select>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>发布时间：</span></label>
+        <div><input type="text" name="release_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.release_time)}{/if}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>关键词：</span></label>
+        <div><input type="text" name="keywords" class="from-text" value="{$model.keywords|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>描述&摘要：</span></label>
+        <div><textarea name="description" class="from-textarea" rows="5" placeholder="不填默认内容前300字">{$model.description|default=''}</textarea></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>详情：</span></label>
+        <div>
+            <script id="html_content" name="html_content" style="height:300px;width:100%" type="text/plain">{$model.html_content|default=''}</script>
+            <script> var html_content = UE.getEditor('html_content');</script>
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

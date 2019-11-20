@@ -1,0 +1,27 @@
+
+{foreach name='list' item='item'}
+
+    <form  action="{:url('backstage/Talks/edit')}" method="post" ajax="true" success="msg.tips">
+        <input type="hidden" name="id" value="{$item.id}">
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
+            <div><input type="text" name="start_time" class="from-text" data-rander-model="datetime" value="{$item.start_time}"></div>
+        </div>
+
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
+            <div><input type="text" name="end_time" class="from-text" data-rander-model="datetime" value="{$item.end_time}"></div>
+        </div>
+
+        <div class="from-group">
+            <label class="from-label fl"><span></span></label>
+            <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+        </div>
+
+    </form>
+{/foreach}
+
+
+
+
+

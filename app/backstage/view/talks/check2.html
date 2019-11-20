@@ -1,0 +1,22 @@
+<style>
+    .check{display: inline-block; padding: 30px 0 15px 50px;}
+    .check .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+    .check .search-btn{background: #f75959;color: #fff;border: none}
+
+
+</style>
+{foreach name='list' key='key' item='item'}
+<div class="check">
+    时间段{$key+1} :
+    <form name="form{$item.id}" action="{:url('backstage/Talks/edit')}" method="post" ajax="true" success="msg.tips">
+        开始时间：<input type="text" name="start_time{$item.id}" class="from-text date" data-rander-model="datetime" value="{$item.start_time}">
+        结束时间：<input type="text" name="end_time{$item.id}" class="from-text date" data-rander-model="datetime" value="{$item.end_time}">
+        <input type="hidden" name="id" value="{$item.id}">
+
+        <input type="submit" class="btn search-btn" value="保存" />
+        <a class="btn"  href="{:url('backstage/Talks/deleteTime',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a>
+
+    </form>
+
+</div>
+{/foreach}

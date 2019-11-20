@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="/shared/head"}
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>角色信息</h5>
+</div>
+<div class="action-bar">
+    <a href="{:url('backstage/SysRole/add')}" ajax="true" model-area="600px,260px" success="msg.model" left-mini="ture"><i class="iconfont icon-add"></i>添加</a>
+    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <div class="dropdown">
+        <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
+        <ul class="down-left">
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/SysRole/banInBatch')}" data-confirm="确定要操作这些数据吗？">禁用所选角色</li>
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/SysRole/liftBanInBatch')}" data-confirm="确定要操作这些数据吗？">解除禁用</li>
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/SysRole/deleteInBatch')}" data-confirm="确定要删除这些角色吗？">删除所选角色</li>
+        </ul>
+    </div>
+
+</div>
+<form action="{:url('backstage/SysRole/sort')}" ajax="true" success="msg.tips" method="post">
+<table class="ord_table" theme="no-rl-border">
+    <thead>
+        <tr>
+            <th width="20px"><input type="checkbox" class="cheack-all"></th>
+            <th>角色名</th>
+            <th>状态</th>
+            <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
+            <th>说明</th>
+            <th width="200px">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    {php}$total = count($RoleList);{/php}
+    {volist name="RoleList" id="vo"}
+    <tr>
+        <td><input type="checkbox" value="{$vo.id}"></td>
+        <td>{$i==$total?'<img class="zbf" src="__BACKEND__/images/w.png" />':'<img class="zbf" src="__BACKEND__/images/z.png" />'}{$vo.role_name}</td>
+        <td>{$vo.state ==0?'<b style="color:green">正常</b>':'<b style="color:red">禁用</b>'}</td>
+        <td><input type="text" name="_{$vo.id}" value="{$vo.sort}" class="list-sort" /></td>
+        <td>{$vo.remark}</td>
+        <td>
+            <a class="act_btn" href="{:url('backstage/SysRole/allocationPermissions',['id'=> $vo.id])}" ajax="true" model-area="600px,500px" success="msg.model">权限分配</a>
+            <a class="act_btn" href="{:url('backstage/SysRole/add',['id'=> $vo.id])}" ajax="true" model-area="600px,260px" success="msg.model">编辑</a>
+            <a class="act_btn" href="{:url('backstage/SysRole/delete',['id'=> $vo.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该角色吗？">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+</form>
+</body>
+</html>

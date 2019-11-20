@@ -1,0 +1,26 @@
+<form action="{:url('backstage/talks/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=''}" />
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>姓名：</span></label>
+        <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>企业名称：</span></label>
+        <div><input type="text" name="company" class="from-text" value="{$model.company|default=''}"></div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>职位名称：</span></label>
+        <div><input type="text" name="position" class="from-text" value="{$model.position|default=''}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>手机号：</span></label>
+        <div><input type="text" name="mobile" class="from-text" value="{$model.mobile|default=''}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　"></div>
+    </div>
+</form>

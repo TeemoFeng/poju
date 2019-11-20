@@ -1,0 +1,19 @@
+<form action="{:url('backstage/SysRole/add')}" method="post" ajax="true" success="msg.tips">
+<input type="hidden" name="id" value="{$model.id|default=0}" />
+<div class="from-group">
+    <label class="from-label fl"><b>*</b><span>角色名称：</span></label>
+    <div>
+        <input type="text" name="role_name" class="from-text" value="{$model.role_name|default=''}">
+    </div>
+</div>
+<div class="from-group">
+    <label class="from-label fl"><b>*</b><span>角色描述：</span></label>
+    <div>
+        <textarea name="remark" class="from-textarea" rows="5">{$model.remark|default=''}</textarea>
+    </div>
+</div>
+<div class="from-group">
+    <label class="from-label fl"><span></span></label>
+    <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+</div>
+</form>

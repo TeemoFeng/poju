@@ -1,0 +1,37 @@
+<form action="{:url('backstage/Ads/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=0}" />
+    <input type="hidden" name="tid" value="{$model.tid|default=0}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>标题：</span></label>
+        <div>
+            <input type="text" name="name" class="from-text" value="{$model.name|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>图片：</span></label>
+        <div>
+            <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="img" data-rander-model="unload" value="{$model.img|default=''}" >
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>链接：</span></label>
+        <div>
+            <input type="text" name="url" class="from-text" value="{$model.url|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>备注：</span></label>
+        <div>
+            <input type="text" name="remark" class="from-text" value="{$model.remark|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>

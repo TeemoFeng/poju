@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title></title>
+    {include file="/shared/head"}
+    <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>场地列表</h5>
+</div>
+<div class="action-bar">
+    <a href="{:url('backstage/Space/add')}" ajax="true" model-area="850px,500px"  success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <div class="dropdown">
+        <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
+        <ul class="down-left">
+            <li batch='true' success="msg.tips" data-url="{:url('backstage/Space/deleteInBatch')}" data-confirm="确定要删除这些记录吗？">批量删除</li>
+        </ul>
+    </div>
+</div>
+<table class="ord_table" theme="no-rl-border">
+    <thead>
+    <tr>
+        <th width="20px"><input type="checkbox" class="cheack-all"></th>
+        <th>名称</th>
+        <th>地址</th>
+        <th>桌子数量</th>
+        <th>容纳人数</th>
+        <th>所属会议</th>
+        <th width="110px">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach name='items' item='item'}
+    <tr>
+        <td><input type="checkbox" value="{$item.id}"></td>
+        <td>{$item.name}</td>
+        <td>{$item.address}</td>
+        <td>{$item.mark}</td>
+        <td>{$item.contain}</td>
+        <td>{$item.category}</td>
+        <td><a class="act_btn" href="{:url('backstage/Space/add',['id'=>$item.id])}"  ajax="true" model-area="850px,550px" success="msg.model">编辑</a>
+            <a class="act_btn" href="{:url('backstage/Space/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a></td>
+    </tr>
+    {/foreach}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td><input type="checkbox" class="cheack-all"></td>
+        <td colspan="6">
+            <div class="fr page-box">{$items->render()}</div>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</body>
+</html>
