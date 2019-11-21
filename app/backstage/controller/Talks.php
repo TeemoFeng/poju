@@ -169,7 +169,7 @@ class Talks extends Base
                 $data = $postData;
                 unset($data['id']);
                 Db::startTrans();
-
+                $data['is_guest'] = 2;
                 $res = $this->db_app->table('user')->where(['id' => $user_id])->update($data);
                 $res2 = OriginatorUser::update($postData,['id'=>$postData['id']],true);
                 //清除用户token
