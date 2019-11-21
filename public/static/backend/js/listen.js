@@ -161,6 +161,10 @@
                     var datepicker = elem.attr("name");
                     laydate.render({ elem:"[name="+datepicker+"]" , type: 'datetime'});
                 break;
+                case "datetime":
+                    var datepicker = elem.attr("name");
+                    laydate.render({ elem:"[name="+datepicker+"]" , type: 'datetime'});
+                    break;
                 case "tags":
                     elem.selectize({
                         plugins: ['restore_on_backspace'],

@@ -100,6 +100,16 @@
                     <label class="from-label fl"><b></b><span>报名地址：</span></label>
                     <div><input type="text" name="enter" value="{$model.enter|default=''}" class="from-text"></div>
                 </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
+                    <div><input type="text" name="start_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.start_time}{/if}"></div>
+                </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
+                    <div><input type="text" name="end_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.end_time}{/if}"></div>
+                </div>
             </div>
           <div class="tab-item">
             
