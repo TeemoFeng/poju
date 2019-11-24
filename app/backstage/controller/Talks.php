@@ -237,11 +237,14 @@ class Talks extends Base
         $id = $this->request->param("id");
         $model = new OriginatorUser();
         $user_id = $model->where(['id' => $id])->value('user_id');
-        $this->db_app->table('user')->where(['id' => $user_id])->update(['is_guest' => 1]);
+
         $res = $model->where("id", "=" , $id)->delete();
         if ($res === false) {
             return json(["code" => 0,"msg" => "删除失败"]);
         }
+        $this->db_app->table('user')->where(['id' => $user_id])->update(['is_guest' => 1]);
+        $this->db_app->table('user_token')->where(['user_id' => $user_id])->update(['expiretime' => time()]);
+        Db::name('booking_room')->where(['guest_id' => $user_id])->delete();
         return json(["code" => 1,"msg" => "该条记录已删除"]);
     }
 
@@ -359,11 +362,15 @@ class Talks extends Base
         $model = new OriginatorUser();
         $user_ids = $model->where('id', 'in', $idlist)->column('user_id');
         $where['id'] = ['in', $user_ids];
-        $this->db_app->table('user')->where($where)->update(['is_guest' => 1]);
+        $where2['user_id'] = ['in', $user_ids];
+        $where3['guest_id'] = ['in', $user_ids];
         $res = $model->where("id", "in" , $idlist)->delete();
         if ($res === false) {
             return json(["code" => 0,"msg" => "删除失败"]);
         }
+        Db::name('booking_room')->where($where3)->delete();
+        $this->db_app->table('user')->where($where)->update(['is_guest' => 1]);
+        $this->db_app->table('user_token')->where($where2)->update(['expiretime' => time()]);
         return json(["code" => 1,"msg" => "已删除"]);
     }
 
