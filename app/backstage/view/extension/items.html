@@ -23,6 +23,7 @@
         <th width="20px"><input type="checkbox" class="cheack-all"></th>
         <th>会议名称</th>
         <th>二维码</th>
+        <th>二维码链接</th>
         <th width="110px">操作</th>
     </tr>
     </thead>
@@ -32,6 +33,10 @@
         <td><input type="checkbox" value="{$item.id}"></td>
         <td>{$item.name}</td>
         <td>{$item.qrcode_path ?= '<img class="preview" data-url="' . $item.qrcode_path . '" src="__BACKEND__/images/ico-pic.png" />'} </td>
+        <td>
+            {if !empty($item.qrcode_path)}
+            <a target="_blank" href="{$item.qrcode_path}">{$item.qrcode_path}</a></td>
+            {/if}
         <td>
             {if empty($item.qrcode_path)}
             <a class="act_btn" href="{:url('backstage/Extension/createQrcode',['id'=>$item.id])}"  ajax="true" success="msg.tips" data-method="post">生成二维码</a>
