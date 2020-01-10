@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title></title>
+    {include file="/shared/head"}
+    <script src="__BACKEND__/js/jquery.validate.min.js"></script>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+    <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <script type="text/javascript" src="__BACKEND__/js/jquery.dragsort-0.5.2.min.js"></script>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>近期推荐</h5>
+</div>
+<div class="action-bar">
+    <a href="{:url('/backstage/Recommend/add')}" ajax="true" model-area="800px,550px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <div class="dropdown">
+        <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
+        <ul class="down-left">
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/Recommend/deleteInBatch')}" data-confirm="确定要删除这些记录吗？">删除所选记录</li>
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/Recommend/onlineInBatch')}" data-confirm="确定要上线这些记录吗？">上线所选记录</li>
+            <li batch='true' success="msg.tips" data-url="{:url('/backstage/Recommend/offlineInBatch')}" data-confirm="确定要下线这些记录吗？">下线所选记录</li>
+        </ul>
+    </div>
+</div>
+<form action="{:url('backstage/Recommend/sort')}" ajax="true" success="msg.tips" method="post">
+    <table class="ord_table" theme="no-rl-border">
+        <thead>
+        <tr>
+            <th width="20px"><input type="checkbox" class="cheack-all"></th>
+            <th>标题</th>
+            <th>时间</th>
+            <th>地点</th>
+            <th>类别</th>
+            <th>标签</th>
+            <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
+            <th>链接地址</th>
+            <th>状态</th>
+            <th width="200px">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach name="items" item="item"}
+        <tr>
+            <td><input type="checkbox" value="{$item.id}"></td>
+            <td>{$item.title}
+                {$item.img ?= '<img class="preview" data-url="' . $item.img . '" src="__BACKEND__/images/ico-pic.png" />'}
+            </td>
+            <td>{$item.start_time} - {$item.end_time}</td>
+            <td>{$item.address}</td>
+            <td>{$type[$item.type]}</td>
+            <td>{$item.tag}</td>
+            <td><input type="text" name="_{$item.id}" value="{$item.sort}" class="list-sort bg" /></td>
+            <td>{$item.jump_url}</td>
+            <td>{if $item.status==1}<span style="color: red">下线</span>{else/}<span style="color:  #00B83F">上线</span>{/if}</td></td>
+            <td>
+                {if $item.status == 1}
+                <a class="act_btn" href="{:url('backstage/Recommend/status',['id'=>$item.id, 'status' => 2])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要上线吗？">上线</a>
+                {else /}
+                <a class="act_btn" href="{:url('backstage/Recommend/status',['id'=>$item.id, 'status' => 1])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要下线吗？">下线</a>
+                {/if}
+                <a class="act_btn" href="{:url('backstage/Recommend/add',['id'=>$item.id])}" ajax="true" model-area="800px,550px" success="msg.model">编辑</a>
+                <a class="act_btn" href="{:url('backstage/Recommend/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该记录吗？">删除</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="10">
+                <div class="fr page-box">{$items->render()}</div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</form>
+</body>
+</html>

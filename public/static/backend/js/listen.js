@@ -159,7 +159,7 @@
                 break;
                 case "date":
                     var datepicker = elem.attr("name");
-                    laydate.render({ elem:"[name="+datepicker+"]" , type: 'datetime'});
+                    laydate.render({ elem:"[name="+datepicker+"]" , type: 'date'});
                 break;
                 case "datetime":
                     var datepicker = elem.attr("name");

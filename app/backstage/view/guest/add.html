@@ -50,10 +50,14 @@
         <div><textarea name="text" class="from-textarea" rows="5">{$model.text|default=''}</textarea></div>
     </div>
     <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>排序：</span></label>
+        <div><input type="text" name="sort" class="from-text" value="{$model.sort|default=1}"></div>
+    </div>
+    <div class="from-group">
         <label class="from-label fl"><b>*</b><span>演讲场次：</span></label>
         <div>
             <a class="file-bg add-info"><i class="iconfont icon-add"></i>添加信息</a>
-            <input type="hidden" name="info" value='{$model.info|default=''}'>
+            <input type="hidden" name="info" value="{$model.info|default=''}">
             <ul class="info-block"></ul>
         </div>
     </div>

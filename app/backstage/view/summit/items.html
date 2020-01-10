@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title></title>
+    {include file="/shared/head"}
+    <script src="__BACKEND__/js/jquery.validate.min.js"></script>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+    <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <style>
+        .search{display: inline-block;}
+        .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+        .k{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+        input.search-btn{height: 30px;width: 50px;background: #f75959;color: #fff;border: none}
+        .imgFlex{ display: flex; display: -webkit-flex;align-items: center;}
+        .of{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;max-width: 500px;display: inline-block}
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .button1 {background-color: #4CAF50;} /* Green */
+        .button2 {background-color: #008CBA;} /* Blue */
+        .button3 {background-color: #555555;} /* Black */
+        .button4 {background-color: #f44336;} /* Red */
+        .button5 {background-color: #e7e7e7; color: black;} /* Gray */
+
+    </style>
+</head>
+<body style="background: #f3f3f4;padding-left:5px;">
+<div class="frame-title">
+    <h5>会议列表</h5>
+</div>
+<div class="action-bar">
+    <div class="search">
+        <form method="get" action="{:url('backstage/Summit/items')}">
+           会议标题/ID <input type="text" name="summit_id" placeholder="会议标题/ID" class="from-text k" value="{$summit_id|default=''}">
+            <input type="text" name="sd" class="from-text date" id="start_time" data-rander-model="date" value="{$sd|default=''}" placeholder="开始时间"> 至
+            <input type="text" name="ed" class="from-text date" id="end_time" data-rander-model="date" value="{$ed|default=''}" placeholder="结束时间">
+
+            <input type="submit" class="search-btn" value="搜索" onclick="return checkForm()" />
+        </form>
+    </div>
+    <a href="{:url('/backstage/Summit/items')}"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+
+    <span style="padding-left: 100px;"><a href="{:url('/backstage/Summit/add')}" ajax="true" model-area="630px,500px" success="msg.model"><i class="iconfont icon-add"></i>创建会议</a></span>
+
+</div>
+<table class="ord_table" theme="no-rl-border">
+    <tbody>
+    {volist name="items" id="summit"}
+    <tr>
+        <td width="25%" align="center" valign="middle">
+            <a href="{$summit.img}" target="_blank"><img src="{$summit.img}" style="height: 140px;width: 180px;padding-top: 10px;" /> </a>
+
+        </td>
+        <td width="45%">
+            <ul>
+                <li style="font-size: 20px;"><b>{$summit.name}</b></li>
+                <li>会议时间：{$summit.start_time} - {$summit.end_time}</li>
+                <li>会议状态：{$summit.summit_status_str}</li>
+                <li>会议地址：{$summit.address}</li>
+                <li>会议规模：{$summit.number}</li>
+            </ul>
+        </td>
+        <td width="30%">
+            <ul>
+                <li>
+                    会议ID：{$summit.summit_id}
+                </li>
+                <li>
+                    {if !empty($summit.qrcode_path)}
+                        <a href="#" class="button button5">运营推广</a>
+                    {else /}
+                        <a class="button button1" href="{:url('backstage/Extension/createQrcode',['id'=>$summit.id])}"  ajax="true" success="msg.tips" data-method="post">运营推广</a>
+                    {/if}
+                    <a class="button button2" href="{:url('/backstage/Summit/add',['id'=>$summit.id])}" >运营预览</a>
+                    <a class="button button3" href="{:url('/backstage/Summit/add',['id'=>$summit.id])}" ajax="true" model-area="630px,400px" success="msg.model">编辑</a>
+                    <a class="button button4" href="{:url('/backstage/Summit/delete',['id'=>$summit.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该会议吗？">删除</a>
+                </li>
+            </ul>
+
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="6">
+            <div class="fr page-box">{$items->render()}</div>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+</body>
+</html>
+
+<script>
+
+    laydate.render({
+        elem: '#start_time'
+    });
+
+    laydate.render({
+        elem: '#end_time'
+    });
+
+    function  checkForm() {
+        var start_time = $('#start_time').val();
+        var end_time = $('#end_time').val();
+        if (start_time != '' && end_time != '') {
+            if (start_time > end_time) {
+                layer.msg('开始时间不能大于结束时间', { icon: 2, time: 2000 });
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>

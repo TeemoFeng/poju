@@ -1,0 +1,52 @@
+<form action="{url('/backstage/Review/add')}" method="POST" ajax="true" success="msg.tips" novalidate >
+    <input data-val="true" id="id" name="id" type="hidden" value="{$model.id|default=0}" />
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>标题：</span></label>
+        <div>
+            <input class="from-text" id="title" name="title" type="text" value="{$model.title|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>标签：</span></label>
+        <div>
+            <input class="from-text" id="tag" name="tag" type="text" value="{$model.tag|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>简介：</span></label>
+        <div>
+            <input class="from-text" id="profile" name="profile" type="text" value="{$model.profile|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>图片：</span></label>
+        <div>
+            <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="img" data-rander-model="unload" value="{$model.img|default=''}">
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>跳转链接：</span></label>
+        <div>
+            <input class="from-text" id="jump_url" name="jump_url" type="text" value="{$model.jump_url|default=''}" />
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>展示顺序：</span></label>
+        <div>
+            <input class="from-text" id="sort" name="sort" type="text" value="{$model.sort|default='100'}" />
+        </div>
+    </div>
+
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>
+

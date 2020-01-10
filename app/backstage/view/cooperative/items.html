@@ -38,7 +38,7 @@
             <td><input type="checkbox" value="{$item.id}"></td>
             <td>{$item.name}</td>
             <td>{$item.category.name}</td>
-            <td><input type="text" name="_{$item.id}"value="{$item.sort}" class="list-sort bg" /></td>
+            <td><input type="text" name="_{$item.id}" value="{$item.sort}" class="list-sort bg" /></td>
             <td>
                 <a class="act_btn" href="{:url('backstage/Cooperative/add',['id'=>$item.id])}" ajax="true" model-area="800px,400px" success="msg.model">编辑</a>
                 <a class="act_btn" href="{:url('backstage/Cooperative/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该记录吗？">删除</a>

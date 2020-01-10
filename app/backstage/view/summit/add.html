@@ -1,0 +1,53 @@
+<form action="{url('/backstage/summit/add')}" method="POST" ajax="true" data-valid="true" success="msg.tips" novalidate >
+    <input data-val="true" id="id" name="id" type="hidden" value="{$model.id|default=0}" />
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>会议标题：</span></label>
+        <div>
+            <input class="from-text" id="name" name="name" type="text" value="{$model.name|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
+        <div><input type="text" name="start_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.start_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
+        <div><input type="text" name="end_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.end_time}{/if}"></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>会议地址：</span></label>
+        <div>
+            <input class="from-text" id="address" name="address" type="text" value="{$model.address|default=''}" />
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>会议规模：</span></label>
+        <div>
+            <input class="from-text" id="number" name="number" type="text" value="{$model.number|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
+        <label class="from-label fl "><span>主办方：</span></label>
+        <div>
+            <input class="from-text" id="sponsor" name="sponsor" type="text" value="{$model.sponsor|default=''}" />
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl "><span>所属行业：</span></label>
+        <div>
+            <input class="from-text" id="industry" name="industry" type="text" value="{$model.industry|default=''}" />
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div>
+            <input class="sub-btn" type="submit" value="　保　存　">
+        </div>
+    </div>
+</form>
+
