@@ -15,6 +15,7 @@ use think\Log;
 use think\Request;
 use think\Session;
 use Tools\Alisms;
+use app\api\model\User as UserModel;
 
 /**
  * 用户
@@ -28,15 +29,9 @@ class User extends ApiBase
      */
     protected $noNeedLogin = ['login', 'sendCode', 'register', 'getVerify', 'verify', 'pwdLogin', 'messageLogin', 'mobilePrefixList'];
 
-    public function __construct(Request $request = null)
-    {
-        parent::__construct($request);
-        $this->db_app = Db::connect('database_morketing');
-
-    }
 
     /***
-     * Action 微信解密用户信息接口
+     * Action 登录接口
      * @author ywf
      * @license /api/user/login POST
      * @para string account   用户名/手机号/邮箱|Y
@@ -91,7 +86,6 @@ class User extends ApiBase
         $mobile_prefix = $this->request->post('mobile_prefix') ?: '86';
         $mobile = $this->request->post('mobile');
         $password = $this->request->post('password');
-//        $sid = $this->request->post('sid');
         if (empty($mobile)) {
             $this->error('请输入手机号');
             return false;
@@ -102,233 +96,132 @@ class User extends ApiBase
         }
 
         //查询用户是否存在
-        $user = UserModel::get(['mobile_prefix' => $mobile_prefix, 'mobile' => $mobile]);
+        $user = $this->db_app->table('user')->where(['mobile_prefix' => $mobile_prefix, 'mobile' => $mobile])->find();
         if (!$user) {
             $this->error('账号未找到,请先注册');
             return false;
         }
-        if (empty($user->password)) {
+        if (empty($user['password'])) {
             $this->error('请先设置密码');
             return false;
         }
         //检验密码是否正确
-        if (verifyMD5Code($password, $user->password) != $user->password) {
+        if (verifyMD5Code($password, $user['password']) != $user['password']) {
             $this->error('密码不正确');
             return false;
         }
         //登录操作
-        $this->direct($user->id);
+        $this->direct($user['password']);
         if ($this->isLogin()) {
-            $this->success("登录成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
+            $this->success("登录成功", ['userInfo' => $user, 'token' => $this->getToken()]);
         } else {
             $this->error('登录失败');
         }
     }
 
     /***
-     * Action 微信解密用户信息接口
+     * Action 发送短信验证码[同一号码1分钟1条]
      * @author ywf
-     * @license /api/user/decryptDataNew POST
-     * @para string code   微信获取的code|Y
-     * @para string encryptedData   加密数据|Y
-     * @para string iv 偏移|Y
+     * @license /api/user/sendCode POST
+     * @para string mobile_prefix 手机国际区号，默认86|Y
+     * @para string mobile 手机号|Y
      * @field string code   1:成功;0:失败
-     * @field string msg    code=0:1.授权失败，请重试。2.抱歉未获取到您的微信授权信息，烦请再次点击登录尝试！,3.登录失败,code=1:登录成功
-     * @field string data.userInfo    用户信息
-     * @field string data.token    token值
-     * @jsondata {"code":"dsfsfdsdf","encryptedData":"CiyLU1Aw2KjvrjMdj8YKliAjtP4gsM","iv":"r7BXXKkLb8qrSNn05n0qiA=="}
-     * @jsondatainfo {"code":1,"msg":"登录成功","time":"1572510481","data":{"userInfo":{},"token":"sdfsdfsdfsdf"}}
+     * @field string msg    错误提示
+     * @jsondata {"mobile":"18339817892"}
+     * @jsondatainfo {"code":1,"msg":"发送成功","time":"1572510481","data":null}
      */
-    public function decryptDataNew()
+    public function sendCode()
     {
-        $appid = 'wx9d1698714bf7bcb6';
-        $encryptedData = $this->request->post('encryptedData');
-        $iv = $this->request->post('iv');
-        $code = $this->request->post('code');
-
-        $config = config('wechat');
-        $params = [
-            'appid' => $config['wxappid'],
-            'secret' => $config['wxappsecret'],
-            'js_code' => $code,
-            'grant_type' => 'authorization_code'
-        ];
-
-        if (empty($code)) {
-            $this->error("请重新授权");
-            return false;
+        $mobile = $this->request->post('mobile');
+        $mobile_prefix = $this->request->post('mobile_prefix') ?: '86'; //2020-01-04添加国外手机区号
+        if (empty($mobile)) {
+            $this->error('请填写手机号');
         }
-        Log::write('微信登录参数：' . json_encode($params), 'notice');
-        $result = sendRequest('https://api.weixin.qq.com/sns/jscode2session', $params, 'GET');
-        Log::write('微信通过code获取结果：' . $result['msg'], 'notice');
-        if ($result['ret']) {
-            $json = json_decode($result['msg'], true);
-            if (isset($json['openid'])) {
-                $unionid = isset($json['unionid']) ? $json['unionid'] : '';
-                $openid = $json['openid'];
-                $sessionKey = $json['session_key'];
-            } else {
-                $this->error("授权失败，请重试");
+        //判定该1分钟内是否已发送
+        $session = Session::get('mobile' . $mobile);
+        if ($session) {
+            if (time() - $session['time'] < 60) {
+                $time = 60 - (time()->$session['time']);
+                $this->error('请在' . $time . '秒后再次发送');
                 return false;
             }
+        }
+        $code = mt_rand(100000, 999999);
+        Session::set('mobile' . $mobile, ['time' => time(), 'code' => $code]);
+        $alisms = new Alisms();
+        if (empty($mobile_prefix) || $mobile_prefix == '86') {
+            $alisms = $alisms->template('SMS_151771231');
         } else {
-            $this->error('授权失败，请重试');
+            $alisms = $alisms->template('SMS_181860050'); //国际短信模板
+            $mobile = $mobile_prefix . $mobile;
+
+        }
+
+        $alisms->param(['code' => $code]);
+        $alisms->mobile($mobile);
+        $res = $alisms->send();
+
+        if ($res === FALSE) {
+            $this->error('发送验证码失败');
             return false;
         }
 
-        if (empty($encryptedData) || empty($iv) || empty($sessionKey) || empty($openid)) {
-            $this->error('授权失败，请重试');
-            return false;
-        }
-        //如果前段对$encryptedDataurl加密 需要对加密数据做url解码
-//        $encryptedData = urldecode($encryptedData);
-        $pc = new WXBizDataCrypt($appid, $sessionKey);
-        $errCode = $pc->decryptData($encryptedData, $iv, $data);
+        $this->success('发送成功');
 
-        if ($errCode == 0) {
-            $data = \GuzzleHttp\json_decode($data, true);
-            $mobile = $data['phoneNumber'] ?: '';
-            $countryCode = $data['countryCode'] ?: '86'; //获取手机号国家区号
-            $user = UserModel::get(['mobile_prefix' => $countryCode, 'mobile' => $mobile]); //通过手机号查询用户是否存在
-            $third = OauthThird::where(['openid' => $openid, 'platform' => 'wxapp'])->find();
-            if (empty($user)) {
-                //如果手机号暂时没有，通过openid查找用户
-                if (!empty($third) && $third->uid != 0) {
-                    $user = UserModel::where(['id' => $third['uid']])->find();
-                    //更新用户手机号信息
-                    if (!empty($user)) {
-                        UserModel::update(['mobile_prefix' => $countryCode, 'mobile' => $mobile], ['id' => $user->id], true);
-                    }
-
-                }
-            } else {
-                //查询用户是否绑定了openid[解决后台录入嘉宾问题]
-                if (empty($third)) {
-                    $third_data = [
-                        'uid' => $user->id,
-                        'openid' => $openid,
-                        'unionid' => $unionid,
-                        'platform' => 'wxapp',
-                        'nickname' => '',
-                        'avatar' => '/static/api/img/avatar.png',
-                    ];
-
-                    OauthThird::create($third_data);
-                } else {
-                    if ($third->uid != $user->id) {
-                        OauthThird::update(['uid' => $user->id], ['id' => $third->id], true);
-                    }
-                }
-            }
-            if ($user) {
-                $this->direct($user->id);
-                if ($this->isLogin()) {
-                    $this->success('登录成功', ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
-                } else {
-                    $this->error('登录失败');
-                    return false;
-                }
-            } else {
-
-                Db::startTrans();
-                $nickname = $this->createNickname();
-                try {
-                    // 默认注册一个会员
-                    $data = [
-                        'mobile_prefix' => $countryCode,
-                        'mobile' => $mobile,
-                        'status' => 0,
-                        'nickname' => $nickname,
-                        'avatar' => '/static/api/img/avatar.png',
-                        'intro' => '这个人很懒 什么都没有留下',
-                    ];
-                    $new_user = UserModel::create($data);
-
-                    $third_data = [
-                        'uid' => $new_user->id,
-                        'openid' => $openid,
-                        'unionid' => $unionid,
-                        'platform' => 'wxapp',
-                        'nickname' => '',
-                        'avatar' => '/static/api/img/avatar.png',
-                    ];
-
-                    OauthThird::create($third_data);
-
-                    $this->direct($new_user->id);
-                    Db::commit();
-                } catch (\Exception $e) {
-                    Db::rollback();
-                    $this->error('登录失败');
-                }
-                if ($this->isLogin()) {
-                    $this->success("登录成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
-                } else {
-                    $this->error('登录失败');
-                }
-
-            }
-
-        } else {
-            //查询openid是否能找到用户
-            $third = OauthThird::where(['openid' => $openid, 'platform' => 'wxapp'])->find();
-            if (!empty($third) && $third->uid != 0) {
-                $user = UserModel::where(['id' => $third['uid']])->find();
-                $this->direct($user->id);
-                if ($this->isLogin()) {
-                    $this->success('登录成功', ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
-                } else {
-                    $this->error('登录失败');
-                }
-            }
-//            $this->error('解析失败,错误码：'.$errCode);
-            $this->error('抱歉未获取到您的微信授权信息，烦请再次点击登录尝试！');
-        }
 
     }
 
     /***
-     * Action 微信登录获取openid和sessionKey
+     * Action 通过手机号注册
      * @author ywf
-     * @license /api/user/loginNew POST
-     * @para string code   微信获取的用户code|Y
+     * @license /api/user/register POST
+     * @para string mk_id   用户名|Y
+     * @para string password1   密码|Y
+     * @para string password2   确认密码|Y
+     * @para string email   邮箱|Y
+     * @para string name    姓名|Y
+     * @para string mobile_prefix 手机国际区号，默认86|Y
+     * @para string mobile 手机号|Y
+     * @para string code   短信验证码|Y
+     * @para string company    企业名称|Y
+     * @para string position   职位|Y
+     * @para string intro      简介|N
+     * @para string direction  账号类型，0：用户注册，1：机构注册|Y
      * @field string code   1:成功;0:失败
-     * @field string msg    code=0:(1.参数不正确)，2.网络繁忙(获取openid失败) code=1: 无提示
-     * @field string data.openid    微信用户openid
-     * @field string data.unionid    微信用户unionid
-     * @field string data.sessionKey    sessionKey
-     * @jsondata {"code":"dsfsfsfdsfds"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1572510481","data":{"openid":"sfsdfdsfdsf","sessionKey":"sdfsdfsdfsdf"}}
+     * @field string msg    错误提示
+     * @jsondata {"name":"ywf","mobile":"18339817892","code":"123456","password":"12345678","company":"阿里巴巴", "position":"经理"}
+     * @jsondatainfo {"code":1,"msg":"注册成功","time":"1572510481","data":null}
      */
-    public function loginNew()
+    public function register()
     {
-        $code = $this->request->post('code');
-        if (!$code) {
-            $this->error("参数不正确");
+        $user = new UserModel();
+        $postData = $this->request->post();
+        if(!$user->isNotReg($postData['mk_id'],'mk_id')) {
+            $this->error('该账号已被注册');
         }
-        $config = config('wechat');
-        $params = [
-            'appid' => $config['wxappid'],
-            'secret' => $config['wxappsecret'],
-            'js_code' => $code,
-            'grant_type' => 'authorization_code'
-        ];
-
-        $result = sendRequest('https://api.weixin.qq.com/sns/jscode2session', $params, 'GET');
-
-        if ($result['ret']) {
-            $json = json_decode($result['msg'], true);
-            if (isset($json['openid'])) {
-                $unionid = isset($json['unionid']) ? $json['unionid'] : '';
-                $this->success("", ['openid' => $json['openid'], 'sessionKey' => $json['session_key'], 'unionid' => $unionid]);
-
-            } else {
-                $this->error("网络繁忙");
-            }
-        } else {
-            $this->error('网络繁忙');
+        if(!$user->isNotReg($postData['email'],'email')) {
+            $this->error('该邮箱已被注册');
         }
+        if(!$user->isNotReg($postData['mobile'],'mobile', $postData['mobile_prefix'])) {
+            $this->error('该手机号已被注册');
+        }
+        if ($postData['password1'] != $postData['password2']) {
+            $this->error('两次输入的密码不一致');
+        }
+        $session = Session::get('mobile' . $postData['mobile']);
+        if ($postData['code'] != $session['code']) {
+            $this->error('验证码错误');
+        }
+
+        $postData['password'] = generateMD5WithSalt($postData['password']);
+        $postData['status'] = 0;
+        $postData['tid'] = $postData['direction'];
+        $postData['nickname'] = hideAccount($postData['mobile']);
+        UserModel::create($postData,true);
+        $this->success('账号注册成功！');
+
     }
+
 
     /**
      * 我的评论
@@ -493,140 +386,7 @@ class User extends ApiBase
 
     }
 
-    /***
-     * Action 发送短信验证码[同一号码1分钟1条]
-     * @author ywf
-     * @license /api/user/sendCode POST
-     * @para string mobile_prefix 手机国际区号，默认86|Y
-     * @para string mobile 手机号|Y
-     * @field string code   1:成功;0:失败
-     * @field string msg    错误提示
-     * @jsondata {"mobile":"18339817892"}
-     * @jsondatainfo {"code":1,"msg":"发送成功","time":"1572510481","data":null}
-     */
-    public function sendCode()
-    {
-        $mobile = $this->request->post('mobile');
-        $mobile_prefix = $this->request->post('mobile_prefix') ?: '86'; //2020-01-04添加国外手机区号
-        if (empty($mobile)) {
-            $this->error('请填写手机号');
-        }
-        //判定该1分钟内是否已发送
-        $session = Session::get('mobile' . $mobile);
-        if ($session) {
-            if (time() - $session['time'] < 60) {
-                $time = 60 - (time()->$session['time']);
-                $this->error('请在' . $time . '秒后再次发送');
-                return false;
-            }
-        }
-        $code = mt_rand(100000, 999999);
-        Session::set('mobile' . $mobile, ['time' => time(), 'code' => $code]);
-        $alisms = new Alisms();
-        if (empty($mobile_prefix) || $mobile_prefix == '86') {
-            $alisms = $alisms->template('SMS_151771231');
-        } else {
-            $alisms = $alisms->template('SMS_181860050'); //国际短信模板
-            $mobile = $mobile_prefix . $mobile;
 
-        }
-
-        $alisms->param(['code' => $code]);
-        $alisms->mobile($mobile);
-        $res = $alisms->send();
-
-        if ($res === FALSE) {
-            $this->error('发送验证码失败');
-            return false;
-        }
-
-        $this->success('发送成功');
-
-
-    }
-
-    /***
-     * Action 通过手机号注册
-     * @author ywf
-     * @license /api/user/register POST
-     * @para string name   姓名|Y
-     * @para string mobile_prefix 手机国际区号，默认86|Y
-     * @para string mobile 手机号|Y
-     * @para string code   验证码|Y
-     * @para string password   密码|Y
-     * @para string company    企业名称|N
-     * @para string position   职位|N
-     * @field string code   1:成功;0:失败
-     * @field string msg    错误提示
-     * @jsondata {"name":"ywf","mobile":"18339817892","code":"123456","password":"12345678","company":"阿里巴巴", "position":"经理"}
-     * @jsondatainfo {"code":1,"msg":"注册成功","time":"1572510481","data":null}
-     */
-    public function register()
-    {
-        $name = $this->request->post('name');
-        $mobile_prefix = $this->request->post('mobile_prefix') ?: '86';
-        $mobile = $this->request->post('mobile');
-        $code = $this->request->post('code');
-        $password = $this->request->post('password');
-        $company = $this->request->post('company');
-        $position = $this->request->post('position');
-        //验证code
-        if (empty($code)) {
-            $this->error('请输入验证码');
-            return false;
-        }
-        $session = Session::get('mobile' . $mobile);
-        if ($code != $session['code']) {
-            $this->error('验证码错误');
-        }
-        $rule = [
-            'name' => 'require',
-            'password' => 'require|length:6,24',
-            'mobile' => 'require|mobile',
-        ];
-        $msg = [
-            'name.require' => '请输入用户名',
-            'mobile.require' => '请输入手机号',
-            'password.require' => '请输入密码',
-            'password.length' => '输入密码长度有误',
-        ];
-        $data = [
-            'name' => $name,
-            'mobile' => $mobile,
-            'password' => $password,
-        ];
-        $validate = new \think\Validate($rule, $msg);
-        $result = $validate->check($data);
-        if (!$result) {
-            $this->error($validate->getError());
-            return false;
-        }
-
-        $user = UserModel::get(['mobile_prefix' => $mobile_prefix, 'mobile' => $mobile]);
-        if ($user) {
-            $this->error('该手机号已绑定小程序');
-            return false;
-        }
-        $data['mobile_prefix'] = $mobile_prefix;
-        $data['password'] = generateMD5WithSalt($password);
-        $data['status'] = 0;
-        $data['nickname'] = $name;
-        $data['intro'] = '这个人很懒 什么都没有留下';
-        $data['company'] = $company ?: '';
-        $data['position'] = $position ?: '';
-        $data['avatar'] = '/static/api/img/avatar.png';
-
-        $user = UserModel::create($data);
-        if ($user !== false) {
-            $this->direct($user->id);
-            //清除验证码
-            Session::delete("mobile" . $mobile);
-            $this->success('注册成功');
-        } else {
-            $this->error('注册失败');
-        }
-
-    }
 
     /***
      * Action 获取图片验证码

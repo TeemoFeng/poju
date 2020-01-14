@@ -170,3 +170,50 @@ function hideAccount($str) {
     }
     return $rs;
 }
+
+/**
+ * 获取全球唯一标识
+ *
+ * @return string
+ */
+function sys_uuid()
+{
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+}
+
+/**
+ * 获取带域名的资源地址
+ *
+ * @param $url  资源地址
+ * @param bool $reverse 去除域名部分
+ * @return mixed|string
+ */
+function sys_repaire_url($url, $user_type = 1, $reverse = false)
+{
+    if (empty($url)) {
+        return '';
+    }
+
+    $host = request()->root(true);
+
+    if ($reverse) {
+        return str_replace($host, '', $url);
+    } else {
+        if (empty($url)) {
+            return $host . '/static/api/img/avatar.png';
+        }
+        if($user_type == 1) {
+            //如果原先是嘉宾权限被修改之后，头像地址
+            if (strpos($url, 'upload') !== false) {
+                $host = \think\Config::get('poju_avatar_url');
+                return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+            }
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            $host = \think\Config::get('poju_avatar_url');
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+        }
+    }
+}

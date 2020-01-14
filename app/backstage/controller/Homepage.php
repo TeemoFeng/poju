@@ -11,7 +11,7 @@ use app\common\controller\Base;
 use app\backstage\model\SummitBanner;
 class Homepage extends Base
 {
-    //会议列表
+    //banner列表
     public function items()
     {
 
@@ -22,7 +22,7 @@ class Homepage extends Base
         return $this->fetch();
     }
 
-    //添加会议
+    //添加首页banner图
     public function add()
     {
         if ($this->request->isPost()){
@@ -68,7 +68,7 @@ class Homepage extends Base
         }
     }
 
-    //删除一个会议
+    //删除
     public function delete()
     {
         $id = $this->request->param('id');

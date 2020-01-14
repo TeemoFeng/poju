@@ -10,13 +10,34 @@ namespace app\backstage\model;
 
 class Recommend extends BaseModel
 {
+    const TYPE1 = 1;
+    const TYPE2 = 2;
+    const STATUS1 = 1;
+    const STATUS2 = 2;
+
+    public $show_fields = 'id recommend_id,title,tag,start_time,end_time,address,type,img,jump_url,views';
+
     public static $types = [
-        '1' => '固定强推广告位',
-        '2' => '普通轮播广告位',
+        self::TYPE1 => '固定强推广告位',
+        self::TYPE2 => '普通轮播广告位',
     ];
 
     public static $status = [
-        '1' => '下线',
-        '2' => '上线',
+        self::STATUS1 => '下线',
+        self::STATUS2 => '上线',
     ];
+
+    //活动推荐固定广告位
+    public function recommendFixed()
+    {
+        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();
+
+    }
+
+    //活动推荐普通广告位
+    public function recommendOrdinary ()
+    {
+        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->limit(10)->select()->toArray();
+    }
+
 }

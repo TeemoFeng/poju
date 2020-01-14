@@ -11,7 +11,7 @@ use app\common\controller\Base;
 use app\backstage\model\Recommend as RecommendModel;
 class Recommend extends Base
 {
-    //会议列表
+    //近期推荐列表
     public function items()
     {
 

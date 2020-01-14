@@ -16,9 +16,6 @@ use think\Response;
 use think\Cache;
 use think\Config;
 use app\api\model\User;
-use AlibabaCloud\Client\AlibabaCloud;
-use AlibabaCloud\Client\Exception\ClientException;
-use AlibabaCloud\Client\Exception\ServerException;
 
 class ApiBase
 {
