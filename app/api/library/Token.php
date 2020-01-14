@@ -48,7 +48,6 @@ class Token
             if (true === $name) {
                 return new $class($options);
             }
-
             self::$instance[$name] = new $class($options);
         }
 
@@ -69,7 +68,8 @@ class Token
                 // 获取默认Token配置，并连接
                 $options = Config::get('token.' . $default['type']) ?: $default;
             } elseif (empty($options)) {
-                $options = Config::get('token');
+
+                $options = Config::get('token') ?: [];
             }
 
             self::$handler = self::connect($options);

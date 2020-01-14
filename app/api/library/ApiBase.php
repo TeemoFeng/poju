@@ -8,6 +8,7 @@
 
 namespace app\api\library;
 
+use think\Db;
 use think\exception\HttpResponseException;
 use think\exception\ValidateException;
 use think\Loader;
@@ -75,7 +76,7 @@ class ApiBase
     public function __construct(Request $request = null)
     {
         $this->request = is_null($request) ? Request::instance() : $request;
-
+        $this->db_app = Db::connect('database_morketing');
         // 控制器初始化
         $this->_initialize();
     }
@@ -88,7 +89,6 @@ class ApiBase
     {
         // 获取令牌
         $token = $this->request->header('HTTP_TOKEN');
-
         // 检测是否需要验证登录
         if (!$this->match($this->noNeedLogin)) {
             //初始化
@@ -261,9 +261,7 @@ class ApiBase
         if ($this->user) {
             return true;
         }
-
         $data = Token::get($token);
-
         if (!$data) {
             $this->error('会话超时，请重新登录', null, 401);
         }
