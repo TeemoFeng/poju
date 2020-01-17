@@ -20,7 +20,7 @@ class Document extends Controller
             $path        = substr(__FILE__, 0, strrpos(__FILE__, '/'));
         }
 
-        $arrayControllers = ['Homepage.php'];
+        $arrayControllers = [];
         $top              = [
             'title'   => '接口文档',
             'auther'  => 'xxx',

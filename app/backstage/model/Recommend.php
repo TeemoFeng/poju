@@ -16,7 +16,7 @@ class Recommend extends BaseModel
     const STATUS2 = 2;
 
     public $show_fields = 'id recommend_id,title,tag,start_time,end_time,address,type,img,jump_url,views';
-
+    protected $resultSetType = 'collection';
     public static $types = [
         self::TYPE1 => '固定强推广告位',
         self::TYPE2 => '普通轮播广告位',

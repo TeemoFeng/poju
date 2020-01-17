@@ -9,6 +9,8 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Report as ReportModel;
+use think\Session;
+
 class Report extends Base
 {
     //会议列表
@@ -50,6 +52,9 @@ class Report extends Base
             }
             if (empty($postData['id'])) {
                 //新增
+                $admin_info = Session::get("UserInfo");
+                $postData['release_user'] = $admin_info['id'];
+                $postData['create_time'] = date("Y-m-d H:i:s");
                 $res = ReportModel::create($postData,true);
             } else {
                 //编辑
@@ -81,7 +86,7 @@ class Report extends Base
             ],
             [
                 'id' => '2',
-                'name' => '文字报道',
+                'name' => '视频报道',
             ],
         ];
         return $list;

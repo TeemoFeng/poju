@@ -14,7 +14,7 @@ class Report extends BaseModel
         self::TYPE2 => '视频报道',
 
     ];
-
+    protected $resultSetType = 'collection';
     const STATUS1 = 1;
     const STATUS2 = 2;
     const TYPE1 = 1;
@@ -35,5 +35,7 @@ class Report extends BaseModel
     {
         return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();
     }
+
+
 
 }

@@ -12,6 +12,7 @@ class SummitBanner extends BaseModel
 
     const STATUS1 = 1;
     const STATUS2 = 2;
+    protected $resultSetType = 'collection';
 
     public $show_fields = 'id banner_id,title,tag,img,jump_url';
     public static $status = [

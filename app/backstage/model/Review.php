@@ -11,7 +11,7 @@ class Review extends BaseModel
 {
     const STATUS1 = 1;
     const STATUS2 = 2;
-
+    protected $resultSetType = 'collection';
     public $show_fields = 'id review_id,title,tag,profile,img,jump_url';
     public static $status = [
         self::STATUS1 => '下线',
