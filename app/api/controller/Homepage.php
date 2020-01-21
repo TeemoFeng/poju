@@ -14,6 +14,7 @@ use app\backstage\model\Review;
 use app\backstage\model\SummitBanner;
 use app\backstage\model\Recommend as RecommendModel;
 use app\backstage\model\SysAdmin;
+use think\Config;
 use think\Db;
 
 /**
@@ -26,7 +27,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment','collection','giveLike'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend'];
 
     /***
      * Action 前台首页
@@ -68,6 +69,45 @@ class Homepage extends ApiBase {
     }
 
     /***
+     * Action 近期推荐列表页
+     * @author ywf
+     * @license /api/homepage/recommend POST
+     * @para string page  页面数,默认1|Y
+     * @para string page_size  一页显示条数,默认28|N
+     * @field string code   1:成功;0:失败
+     * @field string msg    无提示
+     * @field string data.count   会议总数
+     * @field string data.list    会议列表，为空表示无暂无会议
+     * @field string list.recommend_id 推荐id
+     * @field string list.title    推荐标题
+     * @field string list.tag    标签
+     * @field string list.img     会议封面图
+     * @field string list.start_time  会议开始时间
+     * @field string list.end_time  会议结束时间
+     * @field string list.address 地址
+     * @field string list.jump_url  跳转会议[查看详情使用]
+     * @field string list.views  浏览数
+     * @jsondata {"page":"1"}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579588908","data":{"count":2,"list":[{"recommend_id":1,"title":"近期推荐1","tag":"峰会","start_time":"2020-01-10","end_time":"2020-01-10","address":"故宫","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","jump_url":"www.baidu.com","views":0},{"recommend_id":2,"title":"近期推荐2","tag":"峰会2","start_time":"2020-01-10","end_time":"2020-01-10","address":"故宫222","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","jump_url":"www.baidu.com","views":0}]}}
+     */
+    public function recommend()
+    {
+        $page = $this->request->post('page', 1, 'intval');
+        $page_size = $this->request->post('page_size', 28, 'intval');
+        $recommendModel = new RecommendModel();
+        $count = $recommendModel->count();
+
+        $num = ceil($count/$page_size);
+        if ($page > $num) {
+            $list = [];
+        } else {
+            $list = $recommendModel->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
+
+        }
+        $this->success('', ['count' => $count, 'list' => $list]);
+    }
+
+    /***
      * Action 峰会列表页[首页峰会回顾点击更多请求此接口]
      * @author ywf
      * @license /api/homepage/summit POST
@@ -88,7 +128,7 @@ class Homepage extends ApiBase {
      * @field string list.status_str  已结束，进行中，未开始
      * @field string list.jump_url  跳转会议[查看详情使用]
      * @jsondata {"page":"1"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1579077513","data":{"count":2,"list":[{"summit_id":1,"name":"破·局 MS2019","img":"\/upload\/image\/2019-10\/e432af9e40ed08de4a20fdd2ea7a7ab1.png","start_time":"2019.11.21","end_time":"2019.11.30","address":"","number":0,"status":"0","status_str":"已结束"},{"summit_id":2,"name":"测试","img":"\/upload\/image\/2019-11\/9d0a16a0896c91c1142c3b45d2438858.jpg","start_time":"0000.00.00","end_time":"0000.00.00","address":"","number":0,"status":"0","status_str":"已结束"}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579589161","data":{"count":2,"list":[{"summit_id":1,"name":"破·局 MS2019","img":"http:\/\/poju.com\/upload\/image\/2019-10\/e432af9e40ed08de4a20fdd2ea7a7ab1.png","start_time":"2019.11.21","end_time":"2019.11.30","address":"","number":0,"status":"0","status_str":"已结束"},{"summit_id":2,"name":"测试","img":"http:\/\/poju.com\/upload\/image\/2019-11\/9d0a16a0896c91c1142c3b45d2438858.jpg","start_time":"0000.00.00","end_time":"0000.00.00","address":"","number":0,"status":"0","status_str":"已结束"}]}}
      */
     public function summit()
     {
@@ -102,8 +142,14 @@ class Homepage extends ApiBase {
         } else {
             $list = Db::name('category')->where($where)->field('id summit_id,name,img,start_time,end_time,address,number')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
         }
+        $host = request()->root(true);
+        array_walk($list, function (&$v) use($host) {
 
-        array_walk($list, function (&$v) {
+            if ($v['img'] && strpos($v['img'], 'http') === false)
+            {
+                $v['img'] =  $host . $v['img'];
+            }
+
             if (strtotime($v['end_time']) < time()) {
                 $v['status'] = '0'; //已结束
                 $v['status_str'] = '已结束'; //已结束
@@ -147,7 +193,7 @@ class Homepage extends ApiBase {
      * @field string list.avatar   发布人头像
      * @field string list.create_time   创建时间
      * @jsondata {"page":"1"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1579078658","data":{"count":2,"list":[{"video_id":4,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":0,"likes":0,"release_user":"admin","create_time":"2020-01-15 16:31:54","avatar":"\/static\/api\/img\/avatar.png"},{"video_id":5,"title":"视频报道2","tag":"视频报道","profile":"是发大水发大水","img":"\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":0,"likes":0,"release_user":"admin","create_time":"2020-01-15 16:31:57","avatar":"\/static\/api\/img\/avatar.png"}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579589246","data":{"count":2,"list":[{"video_id":4,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":3,"likes":1,"release_user":"admin","create_time":"2020-01-15 16:31:54","avatar":"\/static\/api\/img\/avatar.png"},{"video_id":5,"title":"视频报道2","tag":"视频报道","profile":"是发大水发大水","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":0,"likes":0,"release_user":"admin","create_time":"2020-01-15 16:31:57","avatar":"\/static\/api\/img\/avatar.png"}]}}
      */
     public function video()
     {
@@ -161,7 +207,12 @@ class Homepage extends ApiBase {
         } else {
             $list = Db::name('report')->where($where)->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
             $admin = new SysAdmin();
-            array_walk($list, function(&$v) use ($admin){
+            $host = request()->root(true);
+            array_walk($list, function(&$v) use ($admin, $host) {
+                if ($v['img'] && strpos($v['img'], 'http') === false)
+                {
+                    $v['img'] =  $host . $v['img'];
+                }
                 $admin_info = $admin->where(['id' => $v['release_user']])->find();
                 $v['release_user'] = $admin_info['account'];
                 $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
@@ -196,19 +247,23 @@ class Homepage extends ApiBase {
      * @field string data.collections [用户已登录]，是否收藏过该视频，0，未收藏，1：已收藏。[未登录]：返回0
      * @field string data.likes [用户已登录]，是否点赞过该视频，0，未点赞，1：已点赞。[未登录]：返回0
      * @jsondata {"video_id":"4"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1579079167","data":{"video_info":{"video_id":4,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","type":2,"img":"\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","play_url":"www.baidu.com","views":0,"likes":0,"collections":0,"release_user":"admin","create_time":"2020-01-15 16:31:54","avatar":"\/static\/api\/img\/avatar.png"}}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579589762","data":{"video_info":{"video_id":4,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","type":2,"img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","play_url":"www.baidu.com","views":11,"likes":1,"collections":1,"release_user":"admin","create_time":"2020-01-15 16:31:54","avatar":"\/static\/api\/img\/avatar.png"},"collections":0,"likes":0}}
      */
     public function videoDetail()
     {
         //浏览量加1
         $video_id = $this->request->post('video_id');
-        Db::name('report')->where(['id' => $video_id])->setInc('views',1);
+        $reportModel = new Report();
+        $reportModel->where(['id' => $video_id])->setInc('views',1);
 
         if (empty($video_id)) {
             $this->error('页面迷路了~~');
         }
 
         $video_info = Db::name('report')->where(['id' => $video_id])->field('id video_id,title,tag,profile,type,img,jump_url play_url,views,likes,collections,release_user,create_time')->find();
+        $host = request()->root(true);
+        $video_info['img'] = $host . $video_info['img'];
+
         if (empty($video_info) || $video_info['type'] == 1) {
             $this->error('页面迷路了~~');
         }
@@ -253,7 +308,7 @@ class Homepage extends ApiBase {
      * @field string list.img     视频封面图
      * @field string list.create_time   发布时间
      * @jsondata {"page":"1"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1579242476","data":{"count":1,"list":[{"video_id":5,"title":"视频报道2","tag":"视频报道","profile":"是发大水发大水","img":"\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","create_time":"2020-01-15 16:31:57"}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579589943","data":{"count":1,"list":[{"video_id":5,"title":"视频报道2","tag":"视频报道","profile":"是发大水发大水","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","create_time":"2020-01-15 16:31:57"}]}}
      */
     public function  latelyVideoList()
     {
@@ -268,6 +323,14 @@ class Homepage extends ApiBase {
             $list = [];
         } else {
             $list = Db::name('report')->where($where)->field('id video_id,title,tag,profile,img,create_time')->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $host = request()->root(true);
+            array_walk($list, function(&$v) use ($host) {
+                if ($v['img'] && strpos($v['img'], 'http') === false)
+                {
+                    $v['img'] =  $host . $v['img'];
+                }
+
+            });
 
         }
 
@@ -297,7 +360,7 @@ class Homepage extends ApiBase {
      * @field string list.son_comment.to_user 不空代表回复的评论
      * @field string list.son_comment.cid 楼主评论id
      * @jsondata {"video":"4"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1579243755","data":{"count":2,"list":[{"comment_id":1,"user_id":2385,"video_id":4,"info":"用户4的评论","subtime":"2020-01-17 14:31","avatar":"\/static\/backend\/images\/avatar.png","nickname":"闫伟峰","son_comment":[{"comment_id":3,"user_id":2387,"video_id":4,"info":"评论2385","to_user":"","subtime":"2020-01-17 14:31","cid":1,"avatar":"\/static\/backend\/images\/avatar.png","nickname":"yan"},{"comment_id":4,"user_id":2385,"video_id":4,"info":"回复2387","to_user":"yan","subtime":"2020-01-17 14:31","cid":1,"avatar":"\/static\/backend\/images\/avatar.png","nickname":"闫伟峰"}]},{"comment_id":2,"user_id":2387,"video_id":4,"info":"dddd","subtime":"2020-01-17 14:31","avatar":"\/static\/backend\/images\/avatar.png","nickname":"yan","son_comment":[]}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1579590469","data":{"count":2,"list":[{"comment_id":1,"user_id":2385,"video_id":4,"info":"用户4的评论","subtime":"2020-01-17 14:31","avatar":"http:\/\/118.zwtppt.com\/static\/backend\/images\/avatar.png","nickname":"闫伟峰","son_comment":[{"comment_id":3,"user_id":2387,"video_id":4,"info":"评论2385","to_user":"","subtime":"2020-01-17 14:31","cid":1,"avatar":"http:\/\/118.zwtppt.com\/static\/backend\/images\/avatar.png","nickname":"yan"},{"comment_id":4,"user_id":2385,"video_id":4,"info":"回复2387","to_user":"yan","subtime":"2020-01-17 14:31","cid":1,"avatar":"http:\/\/118.zwtppt.com\/static\/backend\/images\/avatar.png","nickname":"闫伟峰"},{"comment_id":5,"user_id":2387,"video_id":4,"info":"回复2385","to_user":"闫伟峰","subtime":"2020-01-17 14:53","cid":1,"avatar":"http:\/\/118.zwtppt.com\/static\/backend\/images\/avatar.png","nickname":"yan"}]},{"comment_id":2,"user_id":2387,"video_id":4,"info":"dddd","subtime":"2020-01-17 14:31","avatar":"http:\/\/118.zwtppt.com\/static\/backend\/images\/avatar.png","nickname":"yan","son_comment":[]}]}}
      */
     public function comment()
     {
@@ -312,10 +375,17 @@ class Homepage extends ApiBase {
             $list = [];
         } else {
             $list = $this->db_app->table('video_comment')->where($where)->field('id comment_id,uid user_id,video_id,info,subtime')->order('subtime', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $host =  Config::get('morketing_avatar_url');
             foreach ($list as $k => $v) {
                 //获取用户的昵称和头像
                 $user_info = $this->db_app->table('user')->where(['id' => $v['user_id']])->field('avatar,nickname')->find();
-                $list[$k]['avatar'] = $user_info['avatar'];
+                if ($user_info['avatar'] && strpos($user_info['avatar'], 'http') === false)
+                {
+                    $list[$k]['avatar'] = $host.$user_info['avatar'];
+                } else {
+                    $list[$k]['avatar'] = $user_info['avatar'];
+                }
+
                 $list[$k]['nickname'] = $user_info['nickname'];
                 $list[$k]['subtime'] = date('Y-m-d H:i', $v['subtime']);
                 //获取子评论
@@ -323,7 +393,12 @@ class Homepage extends ApiBase {
                 foreach ($son_comment as $kk => $vv) {
                     //获取用户的昵称和头像
                     $user_info2 = $this->db_app->table('user')->where(['id' => $vv['user_id']])->field('avatar,nickname')->find();
-                    $son_comment[$kk]['avatar'] = $user_info2['avatar'];
+                    if ($user_info2['avatar'] && strpos($user_info2['avatar'], 'http') === false)
+                    {
+                        $son_comment[$kk]['avatar'] = $host . $user_info2['avatar'];
+                    } else {
+                        $son_comment[$kk]['avatar'] = $user_info2['avatar'];
+                    }
                     $son_comment[$kk]['nickname'] = $user_info2['nickname'];
                     $son_comment[$kk]['subtime'] = date('Y-m-d H:i', $vv['subtime']);
                     $son_comment[$kk]['cid'] = $vv['cid']; //挂载评论id

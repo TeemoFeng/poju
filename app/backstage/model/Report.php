@@ -26,6 +26,14 @@ class Report extends BaseModel
         self::STATUS2 => '上线',
     ];
 
+    //图片地址
+    public function getImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
     public function homepageReportList()
     {
         return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();

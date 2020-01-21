@@ -27,12 +27,21 @@ class Recommend extends BaseModel
         self::STATUS2 => '上线',
     ];
 
+    //图片地址
+    public function getImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
     //活动推荐固定广告位
     public function recommendFixed()
     {
         return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();
 
     }
+
 
     //活动推荐普通广告位
     public function recommendOrdinary ()

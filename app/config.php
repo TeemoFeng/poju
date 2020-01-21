@@ -258,4 +258,6 @@ return [
         'zip' => ['rar','zip','tar','gz','7z','bz2','cab','iso'],
         'doc' => ['doc','docx','xls','xlsx','ppt','pptx','pdf','txt','md','xml'],
     ],
+
+    'morketing_avatar_url' => 'http://118.zwtppt.com',
 ];

@@ -10,6 +10,8 @@ namespace app\api\controller;
 
 use app\api\library\ApiBase;
 use app\api\library\Token;
+use think\Cache;
+use think\Config;
 use think\Db;
 use think\Log;
 use think\Request;
@@ -236,6 +238,92 @@ class User extends ApiBase
 
     }
 
+    /**
+     * Action 微信登录请求
+     * @author ywf
+     * @license /api/user/wxlogin POST
+     * @para string 无   无
+     * @field string code   1:成功;0:失败
+     * @field string data.url   打开微信页面url
+     * @jsondata 无
+     * @jsondatainfo {"code":1,"msg":"","time":"1572510481","data":{"url":"xxx"}}
+     */
+    public function wxlogin()
+    {
+        $state = time().mt_rand(10000, 99999);
+        $appid =  Config::get('wechat_login')['appid'];
+        $redirect_uri = urlencode(url('api/OAuth/wechat','',true,true));
+        $url='https://open.weixin.qq.com/connect/qrconnect?appid='.$appid.'&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_login&state='.$state.'#wechat_redirect';
+        $this->success('', ['url' => $url]);
+    }
+
+    //微信登录提交
+    public function wechat()
+    {
+        $code = $this->request->get('code');
+        $state = $this->request->get('state');
+        if(empty($code)){
+            return null;
+        }
+        $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
+        $res = curl_get($url);
+        if ($res !== false) {
+            $access_token = (array) json_decode($res, true);
+            Cache::set('wxlogin_access_token',$access_token['access_token'],7000);
+            if (!empty($this->user)) {
+                //用户已登录
+                $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
+                if (!empty($oauth)) {
+                    $this->db_app->table('oauth_third')->where('unionid','=',$oauth['unionid'])->setField('uid',$this->user->id);
+                    $this->direct($this->user->id);
+                    $this->success('账号绑定成功！');
+                }else{
+                    $data = $this->getUserInfoByUnionid($access_token);
+                    $info['openid'] = $data['openid'];
+                    $info['unionid'] = $data['unionid'];
+                    $info['nickname'] = $data['nickname'];
+                    $info['avatar'] = $data['headimgurl'];
+                    $info['platform'] = 'wechat';
+                    $info['uid'] = $this->user->id;
+                    $this->db_app->table('oauth_third')->insert($info);
+                    $this->direct($this->user->id);
+                    $this->success('账号绑定成功！');
+                }
+            } else {
+                $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
+                if(empty($oauth))
+                {
+                    $data = $this->getUserInfoByUnionid($access_token);
+                    $info['openid'] = $data['openid'];
+                    $info['unionid'] = $data['unionid'];
+                    $info['nickname'] = $data['nickname'];
+                    $info['avatar'] = $data['headimgurl'];
+                    $info['platform'] = 'wechat';
+                    $info['uid'] = 0;
+                    $this->db_app->table('oauth_third')->insert($info);
+                    $this->success('授权成功',['oauth' => $info]);
+                }else if($oauth['uid'] == 0){
+                    $this->success('授权成功',['oauth' => $oauth]);
+                }else{
+                    $userModel = UserModel::get(['id' => $oauth['uid']]);
+                    $this->direct($userModel['id']);
+                    $this->success('登录成功！');
+                }
+            }
+            return json($access_token);
+        }else{
+            return false;
+        }
+    }
+
+    public function getUserInfoByUnionid($res)
+    {
+        $access_token = $res['access_token'];
+        $openid = $res['openid'];
+        $url='https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid;
+        $info = curl_get($url);
+        return json_decode($info, true);
+    }
 
     /**
      * 我的评论
