@@ -10,6 +10,7 @@ namespace app\api\controller;
 
 use app\api\library\ApiBase;
 use app\api\library\Token;
+use app\backstage\model\SysAdmin;
 use think\Cache;
 use think\Config;
 use think\Db;
@@ -18,6 +19,7 @@ use think\Request;
 use think\Session;
 use Tools\Alisms;
 use app\api\model\User as UserModel;
+use Tools\Email;
 
 /**
  * 用户
@@ -29,7 +31,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList'];
+    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'likesList', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList'];
 
 
 
@@ -108,7 +110,8 @@ class User extends ApiBase
         $session = Session::get('mobile' . $mobile);
         if ($session) {
             if (time() - $session['time'] < 60) {
-                $time = 60 - (time()->$session['time']);
+
+                $time = 60 - (time()-$session['time']);
                 $this->error('请在' . $time . '秒后再次发送');
                 return false;
             }
@@ -371,41 +374,177 @@ class User extends ApiBase
         }
     }
 
-    /**
-     * 我的收藏
+    /***
+     * Action 我的收藏列表
+     * @author ywf
+     * @license /api/user/collectList POST
+     * @para string page  页面数,默认1|Y
+     * @para string page_size  一页显示条数,默认10|N
+     * @field string code   1:成功;0:失败
+     * @field string msg    无提示
+     * @field string data.count   收藏总数
+     * @field string data.list    收藏列表
+     * @field string list.video_id 视频id
+     * @field string list.collection_id 收藏id
+     * @field string list.title    视频标题
+     * @field string list.tag     视频标签
+     * @field string list.profile 视频简介
+     * @field string list.img     视频封面图
+     * @field string list.views   浏览数
+     * @field string list.likes   点赞数
+     * @field string list.release_user   发布人名字
+     * @field string list.avatar   发布人头像
+     * @field string list.create_time   创建时间
+     * @jsondata {"page":"1"}
+     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"uid":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","collection_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
      */
-    public function collect()
+    public function collectList()
     {
-        $page = $this->request->get('page', 1, 'intval');
-        if ($page > 0) {
-            $condition = [
-                'uid' => $this->user->id,
-            ];
-            // 获取前8条评论文章ID
-            $praiseModel = new Praise();
-            $archivesIds = $praiseModel->getCollectArchiveIds($condition, 8, $page);
-            if (empty($archivesIds)) {
-                $this->success('', []);
-            }
-            // 获取文章列表
-            $articleModel = new Article();
-            $archiveList = $articleModel->getArchivesList(['id' => ['in', $archivesIds]], true, null);
-
-            $list = [];
-            foreach ($archiveList as $item) {
-                $list[$item['id']] = $item;
-            }
-
-            $data = [];
-            foreach ($archivesIds as $id) {
-                if (isset($list[$id])) {
-                    array_push($data, $list[$id]);
-                }
-            }
-
-            $this->success('', $data);
+        $page = $this->request->post('page', 1, 'intval');
+        $page_size = $this->request->post('page_size', 10, 'intval');
+        if (empty($this->user)) {
+            $this->error('请先登录');
         }
+        $count = $this->db_app->table('video_collection')->where(['uid' => $this->user->id])->count();
+        $num = ceil($count/$page_size);
+        if ($page > $num) {
+            $list = [];
+        } else {
+            $list = $this->db_app->table('video_collection')->where(['uid' => $this->user->id])->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $host = request()->root(true);
+            $videoModel = Db::name('report');
+            $admin = new SysAdmin();
+            array_walk($list, function(&$v) use ( $videoModel, $host, $admin) {
+                $video_info = $videoModel->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->where(['id' => $v['video_id']])->find();
+                $v['collection_id'] = $v['id'];
+                unset($v['id']);
+                $v['video_id'] = $video_info['video_id'];
+                $v['title'] = $video_info['title'];
+                $v['tag'] = $video_info['tag'];
+                $v['profile'] = $video_info['profile'];
+                if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
+                {
+                    $v['img'] =  $host . $video_info['img'];
+                }
+                $v['views'] = $video_info['views'];
+                $v['likes'] = $video_info['likes'];
+                $admin_info = $admin->where(['id' => $video_info['release_user']])->find();
+                $v['release_user'] = $admin_info['account'];
+                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+            });
+
+        }
+
+        $this->success('', ['count' => $count, 'list' => $list]);
     }
+
+    /***
+     * Action 取消收藏
+     * @author ywf
+     * @license /api/user/cancelCollect POST
+     * @para string collection_id  收藏id|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    1.取消失败,2.取消成功
+     * @jsondata {"collection_id":"1"}
+     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":null}
+     */
+    public function cancelCollect()
+    {
+        $collection_id = $this->request->post('collection_id');
+        $res = $this->db_app->table('video_collection')->where(['id' => $collection_id])->delete();
+        if ($res === false) {
+            $this->error('取消失败');
+        }
+        $this->success('取消成功');
+
+    }
+
+    /***
+     * Action 我的点赞列表
+     * @author ywf
+     * @license /api/user/likesList POST
+     * @para string page  页面数,默认1|Y
+     * @para string page_size  一页显示条数,默认10|N
+     * @field string code   1:成功;0:失败
+     * @field string msg    无提示
+     * @field string data.count   点赞总数
+     * @field string data.list    点赞列表
+     * @field string list.video_id 视频id
+     * @field string list.likes_id 点赞id
+     * @field string list.title    视频标题
+     * @field string list.tag     视频标签
+     * @field string list.profile 视频简介
+     * @field string list.img     视频封面图
+     * @field string list.views   浏览数
+     * @field string list.likes   点赞数
+     * @field string list.release_user   发布人名字
+     * @field string list.avatar   发布人头像
+     * @field string list.create_time   创建时间
+     * @jsondata {"page":"1"}
+     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"uid":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","likes_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
+     */
+    public function likesList()
+    {
+        $page = $this->request->post('page', 1, 'intval');
+        $page_size = $this->request->post('page_size', 10, 'intval');
+//        if (empty($this->user)) {
+//            $this->error('请先登录');
+//        }
+        $count = $this->db_app->table('video_likes')->where(['uid' => 2385])->count();
+        $num = ceil($count/$page_size);
+        if ($page > $num) {
+            $list = [];
+        } else {
+            $list = $this->db_app->table('video_likes')->where(['uid' => 2385])->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $host = request()->root(true);
+            $videoModel = Db::name('report');
+            $admin = new SysAdmin();
+            array_walk($list, function(&$v) use ( $videoModel, $host, $admin) {
+                $video_info = $videoModel->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->where(['id' => $v['video_id']])->find();
+                $v['likes_id'] = $v['id'];
+                unset($v['id']);
+                $v['video_id'] = $video_info['video_id'];
+                $v['title'] = $video_info['title'];
+                $v['tag'] = $video_info['tag'];
+                $v['profile'] = $video_info['profile'];
+                if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
+                {
+                    $v['img'] =  $host . $video_info['img'];
+                }
+                $v['views'] = $video_info['views'];
+                $v['likes'] = $video_info['likes'];
+                $admin_info = $admin->where(['id' => $video_info['release_user']])->find();
+                $v['release_user'] = $admin_info['account'];
+                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+            });
+
+        }
+
+        $this->success('', ['count' => $count, 'list' => $list]);
+    }
+
+    /***
+     * Action 取消点赞
+     * @author ywf
+     * @license /api/user/cancelLikes POST
+     * @para string likes_id  点赞id|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    1.取消失败,2.取消成功
+     * @jsondata {"collection_id":"1"}
+     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":null}
+     */
+    public function cancelLikes()
+    {
+        $collection_id = $this->request->post('likes_id');
+        $res = $this->db_app->table('video_likes')->where(['id' => $collection_id])->delete();
+        if ($res === false) {
+            $this->error('取消失败');
+        }
+        $this->success('取消成功');
+
+    }
+
+
 
 
 }

@@ -464,7 +464,7 @@ class Homepage extends ApiBase {
     /***
      * Action 收藏[需要用户登录]
      * @author ywf
-     * @license /api/originator/collection POST
+     * @license   POST
      * @para string video_id  视频id|Y
      * @para string user_id  会员id|Y
      * @field string code   1:成功;0:失败
@@ -501,7 +501,7 @@ class Homepage extends ApiBase {
     /***
      * Action 点赞[需要用户登录]
      * @author ywf
-     * @license /api/originator/giveLike POST
+     * @license /api/homepage/giveLike POST
      * @para string video_id  视频id|Y
      * @para string user_id  会员id|Y
      * @field string code   1:成功;0:失败
