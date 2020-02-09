@@ -47,6 +47,7 @@ class Homepage extends Base
             }
             if (empty($postData['id'])) {
                 //新增
+                $postData['create_time'] = date('Y-m-d H:i:s');
                 $res = SummitBanner::create($postData,true);
             } else {
                 //编辑
