@@ -544,6 +544,91 @@ class User extends ApiBase
 
     }
 
+    /***
+     * Action 峰会官网用户设置，更新用户信息
+     * @author ywf
+     * @license /api/user/updateInfo POST
+     * @para string user_id  用户id|Y
+     * @para string avatar   用户头像|Y
+     * @para string mk_id    用户名|Y
+     * @para string mobile  手机号|Y
+     * @para string code    手机号验证码|Y
+     * @para string email   邮箱号|Y
+     * @para string email_code   邮箱验证码|Y
+     * @para string oldpwd   原始密码|Y
+     * @para string password   新密码|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    1.保存成功
+     * @jsondata {"nickname":"1234"}
+     * @jsondatainfo {"code":1,"msg":"保存成功","time":"1578992818","data":{"userInfo":{"id":2521,"mk_id":"1234","mobile_prefix":"86","mobile":"15011555866","email":"123456@qq.com","nickname":"150****5866","password":"6x12Vc8V79786P65e03]b0ia8s3f_d1u15Na123e*89lde88","avatar":"","tid":0,"intro":"","status":0,"display_order":10000,"create_time":1578916569,"update_time":1578916569,"tags":"","company":"111","position":"dfsd","token":"","name":"1234","is_guest":1}}}
+     */
+    public function updateInfo()
+    {
+        $postData = $this->request->post();
+        if (empty($postData['user_id'])) {
+            $this->error('请先登录');
+        }
+        if (isset($postData['avatar'])) {
+            $update['avatar'] = $postData['avatar'];
+        }
+        if (isset($postData['mk_id'])) {
+            $update['mk_id'] = $postData['mk_id'];
+        }
+        $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
+        if (isset($postData['mobile'])) {
+            $session = Session::get('mobile' . $postData['mobile']);
+            if ($postData['code'] != $session['code']) {
+                $this->error('短信验证码错误');
+            }
+            $update['mobile'] = $postData['mobile'];
+
+        }
+        if(isset($postData['email'])){
+            if($postData['email_code'] != session('emailCode' . $postData['email'])){
+                $this->error('邮件验证码输入错误');
+            }
+            $update['email'] = $postData['email'];
+
+        }
+        if(isset($postData['password'])){
+            if(!verifyMD5Code($postData['oldpwd'],$user_info['password'])){
+                $this->error('原始密码输入错误');
+            }
+            $postData['password'] = generateMD5WithSalt($postData['password']);
+            $update['password'] = $postData['password'];
+        }
+        $this->db_app->table('user')->where(['id' => $user_info['id']])->update($update);
+        $new_user_info = $this->db_app->table('user')->where(['id' => $user_info['id']])->find();
+        $this->success('保存成功', ['userInfo' => $new_user_info]);
+    }
+
+    /***
+     * Action 发送邮箱验证码
+     * @author ywf
+     * @license /api/user/sendMailCode POST
+     * @para string email  邮箱号|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    1.邮件已发送,0.邮件发送失败
+     * @jsondata {"email":"1111@qq.com"}
+     * @jsondatainfo {"code":1,"msg":"邮件已发送","time":"1581157326","data":null}
+     */
+    public function sendMailCode()
+    {
+        $email = $this->request->post('email');
+        $code = mt_rand(100000,999999);
+        session('emailCode' . $email, $code);
+        $mail = new Email();
+        $mail->subject('morketing 邮箱验证码');
+        $mail->message('尊敬的morketing用户您好：<br/>您于 '.date('Y-m-d H:i:s',time()).' 发起更换邮箱的请求，本次验证码为:'.$code.' 若非本人操作请忽略。', true);
+        $mail->to($email, 'morketing用户');
+        $result = $mail->send();
+        if($result)
+        {
+            $this->success('邮件已发送');
+        }else{
+            $this->error('邮件发送失败');
+        }
+    }
 
 
 

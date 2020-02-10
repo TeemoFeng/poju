@@ -249,7 +249,7 @@ return [
         'mail_verify_type'=>2,
         'mail_smtp_port'=>465,
         'mail_from'  => '1119137705@qq.com',
-        'mail_from_name' => '链条财经',
+        'mail_from_name' => 'morketing',
         'mail_type'  => 1,
     ],
     'file_upload' =>[
