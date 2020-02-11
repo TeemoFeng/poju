@@ -77,7 +77,7 @@ class ApiBase
     {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
-        header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,token,X-Requested-With,device,HTTP_TOKEN');
+        header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,Token,X-Requested-With,device');
         $this->request = is_null($request) ? Request::instance() : $request;
         $this->db_app = Db::connect('database_morketing');
         // 控制器初始化
@@ -91,7 +91,7 @@ class ApiBase
     protected function _initialize()
     {
         // 获取令牌
-        $token = $this->request->header('HTTP_TOKEN');
+        $token = $this->request->header('Token');
         // 检测是否需要验证登录
         if (!$this->match($this->noNeedLogin)) {
             //初始化

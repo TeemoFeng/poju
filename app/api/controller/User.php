@@ -31,7 +31,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'likesList', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList'];
+    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'likesList', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'updateInfo', 'sendMailCode'];
 
 
 
