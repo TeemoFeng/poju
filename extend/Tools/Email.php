@@ -6,6 +6,7 @@
  * Time: 14:20
  */
 namespace Tools;
+use PHPMailer\PHPMailer;
 use think\Config;
 class Email
 {
@@ -64,8 +65,7 @@ class Email
         $this->options = array_merge($this->options, $options);
         vendor('phpmailer.phpmailer.PHPMailerAutoload');
         $securArr = [1 => 'tls', 2 => 'ssl'];
-
-        $this->mail            = new \PHPMailer(true);
+        $this->mail            = new PHPMailer(true);
         $this->mail->CharSet   = $this->options['charset'];
         $this->mail->SMTPDebug = $this->options['debug'];
         $this->mail->isSMTP();
