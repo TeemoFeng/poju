@@ -14,6 +14,7 @@ use app\backstage\model\SysAdmin;
 use think\Cache;
 use think\Config;
 use think\Db;
+use think\Exception;
 use think\Log;
 use think\Request;
 use think\Session;
@@ -617,17 +618,24 @@ class User extends ApiBase
         $email = $this->request->post('email');
         $code = mt_rand(100000,999999);
         session('emailCode' . $email, $code);
-        $mail = new Email();
-        $mail->subject('morketing 邮箱验证码');
-        $mail->message('尊敬的morketing用户您好：<br/>您于 '.date('Y-m-d H:i:s',time()).' 发起更换邮箱的请求，本次验证码为:'.$code.' 若非本人操作请忽略。', true);
-        $mail->to($email, 'morketing用户');
-        $result = $mail->send();
-        if($result)
-        {
-            $this->success('邮件已发送');
-        }else{
-            $this->error('邮件发送失败');
+        try {
+            $mail = new Email();
+            $mail->subject('morketing 邮箱验证码');
+            $mail->message('尊敬的morketing用户您好：<br/>您于 '.date('Y-m-d H:i:s',time()).' 发起更换邮箱的请求，本次验证码为:'.$code.' 若非本人操作请忽略。', true);
+            $mail->to($email, 'morketing用户');
+            $result = $mail->send();
+
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
         }
+
+        if ($result) {
+            $this->success('邮件已发送');
+        } else  {
+            $this->success('邮件发送失败');
+        }
+
+
     }
 
 
