@@ -75,6 +75,8 @@ class ApiBase
      */
     public function __construct(Request $request = null)
     {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
         $this->request = is_null($request) ? Request::instance() : $request;
         $this->db_app = Db::connect('database_morketing');
         // 控制器初始化
