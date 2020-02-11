@@ -77,6 +77,7 @@ class ApiBase
     {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+        header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,token,X-Requested-With,device,HTTP_TOKEN');
         $this->request = is_null($request) ? Request::instance() : $request;
         $this->db_app = Db::connect('database_morketing');
         // 控制器初始化
