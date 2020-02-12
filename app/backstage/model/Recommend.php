@@ -18,8 +18,8 @@ class Recommend extends BaseModel
     public $show_fields = 'id recommend_id,title,tag,start_time,end_time,address,type,img,jump_url,views';
     protected $resultSetType = 'collection';
     public static $types = [
-        self::TYPE1 => '固定强推广告位',
-        self::TYPE2 => '普通轮播广告位',
+        self::TYPE1 => '普通轮播广告位',
+        self::TYPE2 => '固定强推广告位',
     ];
 
     public static $status = [
@@ -38,7 +38,7 @@ class Recommend extends BaseModel
     //活动推荐固定广告位
     public function recommendFixed()
     {
-        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();
+        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(3)->select()->toArray();
 
     }
 

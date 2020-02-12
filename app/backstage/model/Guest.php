@@ -10,6 +10,6 @@ class Guest extends BaseModel
 {
     public function category()
     {
-        return $this->belongsTo("Category",'sid');
+        return $this->belongsTo("Category",'cid');
     }
 }

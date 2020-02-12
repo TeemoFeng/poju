@@ -11,6 +11,24 @@
     <script src="__BACKEND__/js/jquery.json.min.js"></script>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
+
+<div class="view-full">
+    <div class="viewframework-navbar">
+        <a href="{:url('backstage/Guest/items')}"><div class="navbar-title">峰会列表</div></a>
+        <div class="navbar-list">
+            <ul>
+                {foreach $list as $item}
+                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Guest/items',['sid'=> $item.id])}"><i></i><div>{$item.name}</div></a></li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    <div class="collapse-inner">
+        <div class="collapse-bg"></div>
+        <div class="collapse-btn"><i class="iconfont icon-collapse-left"></i><i class="iconfont icon-collapse-right"></i></div>
+    </div>
+</div>
+<div class="viewframework" style="overflow-x:hidden;overflow-y:auto;height:100%;background: #f3f3f4;padding-left:5px;">
     <div class="frame-title">
         <h5>共创人&演讲嘉宾</h5>
     </div>
@@ -33,6 +51,7 @@
             <th>简介</th>
             <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
             <th>类别</th>
+            <th>所属会议</th>
             <th width="110px">操作</th>
         </tr>
         </thead>
@@ -46,6 +65,7 @@
             <td>{$item.intro}</td>
             <td><input type="text" name="_{$item.id}"value="{$item.sort}" class="list-sort bg" /></td>
             <td>{if $item.sid==0}演讲嘉宾{else/}共创人{/if}</td>
+            <td>{$item.Category.name}</td>
             <td><a class="act_btn" href="{:url('backstage/Guest/add',['id'=>$item.id])}" left-mini="true" ajax="true" model-area="1000px,650px" success="msg.model">编辑</a>
                 <a class="act_btn" href="{:url('backstage/Guest/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a></td>
         </tr>
@@ -54,7 +74,7 @@
         <tfoot>
         <tr>
             <td><input type="checkbox" class="cheack-all"></td>
-            <td colspan="5">
+            <td colspan="6">
 
                 <div class="fl" style="display:none">
                     <button class="btn fl mr-10">批量删除</button>
@@ -74,5 +94,6 @@
         </tfoot>
     </table>
     </form>
+</div>
 </body>
 </html>

@@ -35,10 +35,14 @@ class Summit extends Base
             $where['start_time'] = ['<', $end_date];
         }
         $list = SummitModel::where($where)->paginate(20)->each(function ($item){
+            if (empty($item->img)) {
+                $item->img = '/static/backend/images/ico-pic.png';
+            }
+
             if ($item->start_time > date('Y-m-d')) {
                 $item->summit_status_str = '未开始';
                 $item->summit_status = '1';
-            } else if ($item->start_time < date('Y-m-d') && $item->end_time > date('Y-m-d')) {
+            } else if ($item->start_time <= date('Y-m-d') && $item->end_time > date('Y-m-d')) {
                 $item->summit_status_str = '进行中';
                 $item->summit_status = '2';
             } else {

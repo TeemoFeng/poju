@@ -19,7 +19,7 @@ class Guest extends Base
         $sid = $this->request->param('sid');
         if (!empty($sid))
         {
-            $list = $guest->with('category')->where('sid','=',$sid)->order('sort','asc')->paginate(20);
+            $list = $guest->with('category')->where('cid','=',$sid)->order('sort','asc')->paginate(20);
         }else{
             $list = $guest->with('category')->order('sort','asc')->paginate(20);
         }
