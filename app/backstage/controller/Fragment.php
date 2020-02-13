@@ -8,14 +8,27 @@
 namespace app\backstage\controller;
 use app\backstage\model\Fragment as F;
 use app\common\controller\Base;
-
+use app\backstage\model\Category;
 class Fragment extends Base
 {
     public function items()
     {
         $f = new F();
-        $list = $f->select();
-        $this->assign("Items",$list);
+
+        $category = new Category();
+        $sid = $this->request->param('sid');
+
+        if (!empty($sid))
+        {
+            $list = $f->with('category')->where('sid','=',$sid)->paginate(20);
+        }else{
+            $list = $f->with('category')->paginate(20);
+
+        }
+        $nav = $category->select();
+        $this->assign("list",$nav);
+        $this->assign("key",$sid);
+        $this->assign("page",$list);
         return $this->fetch();
     }
     public function add()

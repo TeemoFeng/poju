@@ -10,5 +10,8 @@ namespace app\backstage\model;
 
 class Fragment extends BaseModel
 {
-
+    public function category()
+    {
+        return $this->belongsTo("Category",'sid');
+    }
 }

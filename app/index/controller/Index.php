@@ -19,16 +19,20 @@ class Index extends WebBase
             $infoModel = $this->category->find($sid);
         }
 
+        //共创人/演讲嘉宾
         $guest = new Guest();
-        $guestList = $guest->where(['sid'=>0])->order('sort','asc')->paginate(12); //演讲嘉宾
-        $builder = $guest->where(['sid'=>1])->order('sort','asc')->paginate(12); //共建人
-      
+        $guestList = $guest->where(['sid'=>0, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //演讲嘉宾
+        $builder = $guest->where(['sid'=>1, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //共建人
+        //峰会议程
         $agenda = new Agenda();
         $agendaItems = $agenda->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
+        //联系方式
         $fragment =  new Fragment();
-        $lx = $fragment->select();
+        $lx = $fragment->where(['sid' => $infoModel['id']])->select();
+        //往期回顾
         $ads = new Ads();
         $adsList = $ads->where('tid','=',0)->order('displayorder','asc')->select();
+        //合作伙伴
         $cooperative = new Cooperative();
         $cooperList = $cooperative->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
 
@@ -50,7 +54,8 @@ class Index extends WebBase
             'contact'=>$lx,
             'ads'=>$adsList,
             'cooper'=>$cooperList,
-            'videos'=>$list
+            'videos'=>$list,
+            'sid' => $infoModel['id'],//会议id
         ]);
         return $this->fetch();
     }
@@ -58,8 +63,11 @@ class Index extends WebBase
     {
         $page = $this->request->param('page');
         $sid = $this->request->param('sid');
+        $cid = $this->request->param('cid');
         $guest = new Guest();
-        $guestList = $guest->where('sid','=',$sid)->order('sort','asc')->paginate(12,false,['page'=>$page]);
+        $where['sid'] = $sid;
+        $where['cid'] = $cid;
+        $guestList = $guest->where($where)->order('sort','asc')->paginate(12,false,['page'=>$page]);
         return json($guestList);
     }
   

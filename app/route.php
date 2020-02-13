@@ -17,7 +17,8 @@ return [
         ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
         ':name' => ['index/hello', ['method' => 'post']],
     ],*/
-
+    //其他会议请求
+    '/summit/:sid' => 'index/Index/index',
      //联系
     '/about' => 'index/Index/about',
     '/contact' => 'index/Index/contact',

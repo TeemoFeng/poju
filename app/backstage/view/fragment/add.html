@@ -10,6 +10,12 @@
         <div><input type="text" name="name" class="from-text" value="{$model.name|default=''}"></div>
     </div>
     <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>届别：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="sid" data-url="{:url('backstage/Category/getAllList')}" data-value="{$model.sid|default=0}"></select>
+        </div>
+    </div>
+    <div class="from-group">
         <label class="from-label fl"><b>*</b><span>电话：</span></label>
         <div><input type="text" name="tel" class="from-text" value="{$model.tel|default=''}"></div>
     </div>

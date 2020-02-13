@@ -8,13 +8,27 @@
 namespace app\backstage\controller;
 use app\backstage\model\Cooperative as Cooper;
 use app\common\controller\Base;
+use app\backstage\model\Category;
 class Cooperative extends Base
 {
     public function Items()
     {
         $cooper = new Cooper();
-        $list = $cooper->with('category')->order('sort','asc')->select();
-        $this->assign('Items',$list);
+        $category = new Category();
+        $sid = $this->request->param('sid');
+
+        if (!empty($sid))
+        {
+            $list = $cooper->with('category')->where('sid','=',$sid)->order('sort','asc')->paginate(20);
+        }else{
+            $list = $cooper->with('category')->order('sort','asc')->paginate(20);
+
+
+        }
+        $nav = $category->select();
+        $this->assign("list",$nav);
+        $this->assign("key",$sid);
+        $this->assign('page',$list);
         return $this->fetch();
     }
     public function add()

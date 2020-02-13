@@ -132,7 +132,7 @@
                     </li>
                     {/foreach}
                 </ul>
-                <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="1" page="1" total="{$builder->lastPage()}">更多共创人</a> 
+                <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="1" cid="{$sid}" page="1" total="{$builder->lastPage()}">更多共创人</a>
           </div>
       
       
@@ -173,7 +173,7 @@
                     </li>
                     {/foreach}
                 </ul>
-                <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="0" page="1" total="{$guest->lastPage()}">更多嘉宾</a> 
+                <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="0" cid="{$sid}" page="1" total="{$guest->lastPage()}">更多嘉宾</a>
           </div>
           
           
@@ -439,9 +439,9 @@
       
     };
     $('.getMoreGuest').click(function () {
-        var elem = $(this),sid = elem.attr('sid'),page = elem.attr('page'),total = elem.attr('total'),box = elem.siblings("ul.guestBox");
+        var elem = $(this),sid = elem.attr('sid'),cid = elem.attr('cid'),page = elem.attr('page'),total = elem.attr('total'),box = elem.siblings("ul.guestBox");
         if(page<total){
-            $.post("{:url('index/index/getMoreGuest')}",{sid:sid,page:Number(page)+1},function (res) {
+            $.post("{:url('index/index/getMoreGuest')}",{sid:sid,cid:cid,page:Number(page)+1},function (res) {
                 var list ={list:res.data},html = template('tf',list);
                 box.append(html);
 
