@@ -94,6 +94,9 @@ class Homepage extends ApiBase {
     {
         $page = $this->request->post('page', 1, 'intval');
         $page_size = $this->request->post('page_size', 28, 'intval');
+        if (!is_numeric($page_size) || $page_size == 0) {
+            $page_size = 28;
+        }
         $recommendModel = new RecommendModel();
         $count = $recommendModel->count();
 
