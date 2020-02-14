@@ -83,9 +83,10 @@ class Index extends WebBase
             return json(['code'=>2, 'msg'=>'服务器繁忙，请稍后重试！']);
         }
     }
+
     public function prize()
     {
-        $sid = $this->request->param('sid');
+        $sid = $this->request->param('sid', 1);
         if(empty($sid)){
             $infoModel = $this->category->getLastOne();
         }else{
@@ -94,18 +95,21 @@ class Index extends WebBase
 
         $topic = new Topic();
 
-        $jy = $topic->where('tid = 1')->find();
-        $yy = $topic->where('tid = 2')->find();
-        $tb = $topic->where('tid = 3')->find();
+        $jy = $topic->where('tid = 1')->where('sid = ' . $sid )->find();
+        $yy = $topic->where('tid = 2')->where('sid = ' . $sid )->find();
+        $tb = $topic->where('tid = 3')->where('sid = ' . $sid )->find();
 
+        //联系方式
         $fragment =  new Fragment();
-        $lx = $fragment->select();
+        $lx = $fragment->where(['sid' => $infoModel['id']])->select();
+        $host = request()->root(true);
         $this->assign([
             'model'=>$infoModel,
             'contact'=>$lx,
             'jy'=>$jy,
             'yy'=>$yy,
-            'tb'=>$tb
+            'tb'=>$tb,
+            'sid' => $sid,
         ]);
         return $this->fetch();
     }

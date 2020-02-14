@@ -27,14 +27,15 @@
         <div class="logo fl"><a href="javascript:;"><img alt="{$model.name}" src="{$model.logo|default=''}"/></a></div>
         <div class="nav fr">
             <ul class="clearfix">
-                <li><a href="/#introduction">峰会简介</a></li>
-                <li><a href="/#guest">演讲嘉宾</a></li>
-                <li><a href="/#agenda">峰会议程</a></li>
-                <li><a href="/#partner">合作伙伴</a></li>
-                <li><a href="/#review">往届回顾</a></li>
-                <li><a href="/#contact">联系我们</a></li>
+                <li><a href="{:url('index/index/index#introduction', ['sid'=> $sid])}" >峰会简介</a></li>
+                <li><a href="{:url('index/index/index#builder', ['sid'=> $sid])}">共创人</a></li>
+                <li><a href="{:url('index/index/index#guest', ['sid'=> $sid])}">演讲嘉宾</a></li>
+                <li><a href="{:url('index/index/index#agenda', ['sid'=> $sid])}">峰会议程</a></li>
+                <li><a href="{:url('index/index/index#partner', ['sid'=> $sid])}">合作伙伴</a></li>
+                <li><a href="{:url('index/index/index#review', ['sid'=> $sid])}">往届回顾</a></li>
+                <li><a href="{:url('index/index/index#contact', ['sid'=> $sid])}">联系我们</a></li>
                 <li><a href="{$model.ticket}" target="_blank">购票通道</a></li>
-                <li><a href="{:url('index/index/prize')}" class="active">MorketingAwards灵眸奖</a></li>
+                <li><a href="{:url('index/index/prize', ['sid'=> $sid])}" class="active">MorketingAwards灵眸奖</a></li>
             </ul>
         </div>
     </div>
@@ -182,6 +183,7 @@
                     <div class="stip">最感兴趣的会场</div>
                     <div class="stxt"><input type="text" required required-msg="填写您最感兴趣的会场" name="agenda" class="text"/></div>
                 </li>
+                <input type="hidden" name="sid" value="{$sid}"/>
                 <li>
                     <div class="stip"></div>
                     <div class="stxt">

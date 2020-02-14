@@ -10,11 +10,11 @@
 <body style="background: #f3f3f4;padding-left:5px;">
 <div class="view-full">
     <div class="viewframework-navbar">
-        <a href="{:url('backstage/Topic/items')}"><div class="navbar-title">峰会列表</div></a>
+        <div class="navbar-title">峰会列表</div>
         <div class="navbar-list">
             <ul>
                 {foreach $list as $item}
-                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Topic/items',['sid'=> $item.id])}"><i></i><div>{$item.name}</div></a></li>
+                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Topic/index',['sid'=> $item.id, 'id' => $model.tid])}"><i></i><div>{$item.name}</div></a></li>
                 {/foreach}
             </ul>
         </div>
@@ -29,6 +29,7 @@
     <form action="{:url('/backstage/topic/index')}" method="post" ajax="true" success="msg.tips">
         <input type="hidden" name="id" value="{$model.id|default=0}" />
         <input type="hidden" name="tid" value="{$model.tid|default=''}" />
+        <input type="hidden" name="sid" value="{$key|default=''}" />
         <div class="from-group">
             <label class="from-label fl"><b>*</b><span>标题：</span></label>
             <div>

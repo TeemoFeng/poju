@@ -8,34 +8,54 @@
     <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
-<form action="{:url('/backstage/topic/index')}" method="post" ajax="true" success="msg.tips">
-    <input type="hidden" name="id" value="{$model.id|default=0}" />
-    <input type="hidden" name="tid" value="{$model.tid|default=''}" />
-    <div class="from-group">
-        <label class="from-label fl"><b>*</b><span>标题：</span></label>
-        <div>
-            <input type="text" name="name" class="from-text" value="{$model.name|default=''}">
+<div class="view-full">
+    <div class="viewframework-navbar">
+        <div class="navbar-title">峰会列表</div>
+        <div class="navbar-list">
+            <ul>
+                {foreach $list as $item}
+                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Topic/text',['sid'=> $item.id, 'id' => $model.tid])}"><i></i><div>{$item.name}</div></a></li>
+                {/foreach}
+            </ul>
         </div>
     </div>
-    <div class="from-group">
-        <label class="from-label fl"><b>*</b><span>描述：</span></label>
-        <div>
-           <textarea rows="5" name="remark" class="from-textarea">{$model.remark|default=''}</textarea>
-        </div>
+    <div class="collapse-inner">
+        <div class="collapse-bg"></div>
+        <div class="collapse-btn"><i class="iconfont icon-collapse-left"></i><i class="iconfont icon-collapse-right"></i></div>
     </div>
-    <div class="from-group">
-        <label class="from-label fl"><b>*</b><span>详情：</span></label>
-        <div>
-            <script id="html_content" name="html_content" style="height:300px;width:100%" type="text/plain">{$model.html_content|default=''}</script>
-            <script> var html_content = UE.getEditor('html_content');</script>
+</div>
+<div class="viewframework" style="overflow-x:hidden;overflow-y:auto;height:100%;background: #f3f3f4;padding-left:5px;">
+
+    <form action="{:url('/backstage/topic/index')}" method="post" ajax="true" success="msg.tips">
+        <input type="hidden" name="id" value="{$model.id|default=0}" />
+        <input type="hidden" name="tid" value="{$model.tid|default=''}" />
+        <input type="hidden" name="sid" value="{$key|default=''}" />
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>标题：</span></label>
+            <div>
+                <input type="text" name="name" class="from-text" value="{$model.name|default=''}">
+            </div>
         </div>
-    </div>
-    <div class="from-group">
-        <label class="from-label fl"><span></span></label>
-        <div>
-            <input class="sub-btn" type="submit" value="　保　存　">
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>描述：</span></label>
+            <div>
+               <textarea rows="5" name="remark" class="from-textarea">{$model.remark|default=''}</textarea>
+            </div>
         </div>
-    </div>
-</form>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>详情：</span></label>
+            <div>
+                <script id="html_content" name="html_content" style="height:300px;width:100%" type="text/plain">{$model.html_content|default=''}</script>
+                <script> var html_content = UE.getEditor('html_content');</script>
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="from-label fl"><span></span></label>
+            <div>
+                <input class="sub-btn" type="submit" value="　保　存　">
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 </html>
