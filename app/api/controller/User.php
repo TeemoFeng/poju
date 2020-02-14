@@ -32,7 +32,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'likesList', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'updateInfo', 'sendMailCode'];
+    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'updateInfo', 'sendMailCode'];
 
 
 
@@ -397,7 +397,7 @@ class User extends ApiBase
      * @field string list.avatar   发布人头像
      * @field string list.create_time   创建时间
      * @jsondata {"page":"1"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"uid":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","collection_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"user_id":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","collection_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
      */
     public function collectList()
     {
@@ -417,8 +417,9 @@ class User extends ApiBase
             $admin = new SysAdmin();
             array_walk($list, function(&$v) use ( $videoModel, $host, $admin) {
                 $video_info = $videoModel->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->where(['id' => $v['video_id']])->find();
+                $v['user_id'] = $v['uid'];
                 $v['collection_id'] = $v['id'];
-                unset($v['id']);
+                unset($v['id'],$v['uid']);
                 $v['video_id'] = $video_info['video_id'];
                 $v['title'] = $video_info['title'];
                 $v['tag'] = $video_info['tag'];
@@ -443,20 +444,33 @@ class User extends ApiBase
      * Action 取消收藏
      * @author ywf
      * @license /api/user/cancelCollect POST
-     * @para string collection_id  收藏id|Y
+     * @para string user_id   用户id|Y
+     * @para string video_id  视频id|Y
      * @field string code   1:成功;0:失败
      * @field string msg    1.取消失败,2.取消成功
      * @jsondata {"collection_id":"1"}
-     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":null}
+     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":{"collection_count":1}}
      */
     public function cancelCollect()
     {
-        $collection_id = $this->request->post('collection_id');
-        $res = $this->db_app->table('video_collection')->where(['id' => $collection_id])->delete();
+        $user_id = $this->request->post('user_id');
+        $video_id = $this->request->post('video_id');
+        if (empty($user_id) || empty($video_id)) {
+            $this->error('未找到该收藏');
+        }
+        $where['uid'] = $user_id;
+        $where['video_id'] = $video_id;
+
+        $collection_info = $this->db_app->table('video_collection')->where($where)->find();
+        if (empty($collection_info)) {
+            $this->error('未找到该收藏');
+        }
+        $res = $this->db_app->table('video_collection')->where(['id' => $collection_info['id']])->delete();
         if ($res === false) {
             $this->error('取消失败');
         }
-        $this->success('取消成功');
+        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('collections', 1);
+        $this->success('取消成功', ['collection_count' => $count]);
 
     }
 
@@ -491,12 +505,12 @@ class User extends ApiBase
 //        if (empty($this->user)) {
 //            $this->error('请先登录');
 //        }
-        $count = $this->db_app->table('video_likes')->where(['uid' => 2385])->count();
+        $count = $this->db_app->table('video_likes')->where(['uid' => $this->user->id])->count();
         $num = ceil($count/$page_size);
         if ($page > $num) {
             $list = [];
         } else {
-            $list = $this->db_app->table('video_likes')->where(['uid' => 2385])->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $list = $this->db_app->table('video_likes')->where(['uid' => $this->user->id])->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
             $host = request()->root(true);
             $videoModel = Db::name('report');
             $admin = new SysAdmin();
@@ -528,20 +542,33 @@ class User extends ApiBase
      * Action 取消点赞
      * @author ywf
      * @license /api/user/cancelLikes POST
-     * @para string likes_id  点赞id|Y
+     * @para string user_id   用户id|Y
+     * @para string video_id  视频id|Y
      * @field string code   1:成功;0:失败
      * @field string msg    1.取消失败,2.取消成功
      * @jsondata {"collection_id":"1"}
-     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":null}
+     * @jsondatainfo {"code":1,"msg":"取消成功","time":"1581157326","data":{"likes_count":1}}
      */
     public function cancelLikes()
     {
-        $collection_id = $this->request->post('likes_id');
-        $res = $this->db_app->table('video_likes')->where(['id' => $collection_id])->delete();
+        $user_id = $this->request->post('user_id');
+        $video_id = $this->request->post('video_id');
+        if (empty($user_id) || empty($video_id)) {
+            $this->error('未找到该点赞');
+        }
+        $where['uid'] = $user_id;
+        $where['video_id'] = $video_id;
+
+        $collection_info = $this->db_app->table('video_likes')->where($where)->find();
+        if (empty($collection_info)) {
+            $this->error('未找到该点赞');
+        }
+        $res = $this->db_app->table('video_likes')->where(['id' => $collection_info['id']])->delete();
         if ($res === false) {
             $this->error('取消失败');
         }
-        $this->success('取消成功');
+        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('likes', 1);
+        $this->success('取消成功', ['likes_count ' => $count]);
 
     }
 

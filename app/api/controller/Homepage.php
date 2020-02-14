@@ -464,11 +464,12 @@ class Homepage extends ApiBase {
     /***
      * Action 收藏[需要用户登录]
      * @author ywf
-     * @license   POST
+     * @license  /api/homepage/collection POST
      * @para string video_id  视频id|Y
      * @para string user_id  会员id|Y
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:收藏失败，请重试！。code=1:收藏成功,
+     * @field string data.collection_id    收藏id
      * @field string data.collection_count    收藏总数
      * @jsondata {"video_id":"4","user_id":"2385"}
      * @jsondatainfo {"code":1,"msg":"收藏成功","time":"1579244580","data":{"collection_count":1}}
@@ -489,7 +490,7 @@ class Homepage extends ApiBase {
             'video_id' => $video_id,
             'create_time' => date('Y-m-d H:i:s'),
         ];
-        $res2 = $is_collection = $this->db_app->table('video_collection')->insert($data);
+        $res2 =  $this->db_app->table('video_collection')->insertGetId($data);
         if ($res2 === false) {
             $this->error('收藏失败，请重试！');
         }
