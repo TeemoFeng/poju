@@ -385,6 +385,7 @@ class User extends ApiBase
      * @field string msg    无提示
      * @field string data.count   收藏总数
      * @field string data.list    收藏列表
+     * @field string list.user_id 用户id
      * @field string list.video_id 视频id
      * @field string list.collection_id 收藏id
      * @field string list.title    视频标题
@@ -484,6 +485,7 @@ class User extends ApiBase
      * @field string msg    无提示
      * @field string data.count   点赞总数
      * @field string data.list    点赞列表
+     * @field string list.user_id 用户id
      * @field string list.video_id 视频id
      * @field string list.likes_id 点赞id
      * @field string list.title    视频标题
@@ -496,7 +498,7 @@ class User extends ApiBase
      * @field string list.avatar   发布人头像
      * @field string list.create_time   创建时间
      * @jsondata {"page":"1"}
-     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"uid":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","likes_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
+     * @jsondatainfo {"code":1,"msg":"","time":"1581156449","data":{"count":1,"list":[{"user_id":2385,"video_id":4,"create_time":"2020-01-17 15:06:23","likes_id":1,"title":"视频报道1","tag":"视频报道","profile":"放松放松的","img":"http:\/\/poju.com\/upload\/image\/2020-01\/d46a8c29b2b33b2ae78c4acb89215834.png","views":11,"likes":1,"release_user":"admin","avatar":"\/static\/api\/img\/avatar.png"}]}}
      */
     public function likesList()
     {
@@ -516,8 +518,9 @@ class User extends ApiBase
             $admin = new SysAdmin();
             array_walk($list, function(&$v) use ( $videoModel, $host, $admin) {
                 $video_info = $videoModel->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->where(['id' => $v['video_id']])->find();
+                $v['user_id'] = $v['uid'];
                 $v['likes_id'] = $v['id'];
-                unset($v['id']);
+                unset($v['id'], $v['uid']);
                 $v['video_id'] = $video_info['video_id'];
                 $v['title'] = $video_info['title'];
                 $v['tag'] = $video_info['tag'];
