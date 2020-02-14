@@ -35,9 +35,8 @@ class Index extends WebBase
         //合作伙伴
         $cooperative = new Cooperative();
         $cooperList = $cooperative->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
-
-
-        $videos = Video::where('id','>',0)->order('sort','asc')->select();
+        //视频
+        $videos = Video::where('sid','=',$infoModel['id'])->order('sort','asc')->select();
         // 调整结构
         $list = [];
         foreach ($videos as $item) {
@@ -70,9 +69,7 @@ class Index extends WebBase
         $guestList = $guest->where($where)->order('sort','asc')->paginate(12,false,['page'=>$page]);
         return json($guestList);
     }
-  
-  
-  
+
     public function feedback()
     {
         $data = $this->request->post();

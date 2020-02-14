@@ -12,4 +12,8 @@ class Feedback extends BaseModel
     protected $autoWriteTimestamp=true;
     protected $createTime = 'subdate';
     protected $updateTime =false;
+    public function category()
+    {
+        return $this->belongsTo("Category",'sid');
+    }
 }

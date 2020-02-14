@@ -9,13 +9,24 @@
 namespace app\backstage\controller;
 use app\backstage\model\Feedback as FB;
 use app\common\controller\Base;
+use app\backstage\model\Category;
 class Feedback extends Base
 {
     public function items()
     {
         $fl = new FB();
-        $data = $fl->select();
-        $this->assign('list',$data);
+        $category = new Category();
+        $sid = $this->request->param('sid');
+        if (!empty($sid))
+        {
+            $list = $fl->with('category')->where('sid','=',$sid)->order('id','asc')->paginate(20);
+        }else{
+            $list = $fl->with('category')->order('id','asc')->paginate(20);
+        }
+        $nav = $category->select();
+        $this->assign("list",$nav);
+        $this->assign("page",$list);
+        $this->assign("key",$sid);
         return $this->fetch();
     }
     public function delete()

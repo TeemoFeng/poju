@@ -9,11 +9,23 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Video;
+use app\backstage\model\Category;
 class Shipin extends Base
 {
     public function items()
     {
-        $list = Video::where('id','<>',0)->order('sort','asc')->paginate(20);
+        $category = new Category();
+        $video = new Video();
+        $sid = $this->request->param('sid');
+        if (!empty($sid))
+        {
+            $list = $video->with('category')->where('sid','=',$sid)->order('sort','asc')->paginate(20);
+        }else{
+            $list = $video->with('category')->order('sort','asc')->paginate(20);
+        }
+        $nav = $category->select();
+        $this->assign("key",$sid);
+        $this->assign("list",$nav);
         $this->assign("page",$list);
         return $this->fetch();
     }

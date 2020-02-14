@@ -10,6 +10,11 @@ namespace app\backstage\model;
 
 class Video extends BaseModel
 {
+    public function category()
+    {
+        return $this->belongsTo("Category",'sid');
+    }
+
     public function setStartTimeAttr($value)
     {
         return strtotime($value);

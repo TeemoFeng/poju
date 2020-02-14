@@ -11,11 +11,29 @@
     <script src="__BACKEND__/js/jquery.json.min.js"></script>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
+<div class="view-full">
+    <div class="viewframework-navbar">
+        <a href="{:url('backstage/Shipin/items')}"><div class="navbar-title">峰会列表</div></a>
+        <div class="navbar-list">
+            <ul>
+                {foreach $list as $item}
+                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Shipin/items',['sid'=> $item.id])}"><i></i><div>{$item.name}</div></a></li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    <div class="collapse-inner">
+        <div class="collapse-bg"></div>
+        <div class="collapse-btn"><i class="iconfont icon-collapse-left"></i><i class="iconfont icon-collapse-right"></i></div>
+    </div>
+</div>
+<div class="viewframework" style="overflow-x:hidden;overflow-y:auto;height:100%;background: #f3f3f4;padding-left:5px;">
+
     <div class="frame-title">
         <h5>视频</h5>
     </div>
     <div class="action-bar">
-        <a href="{:url('backstage/Shipin/add')}" ajax="true" model-area="700px,360px" left-mini="true" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+        <a href="{:url('backstage/Shipin/add')}" ajax="true" model-area="700px,360px"  success="msg.model"><i class="iconfont icon-add"></i>添加</a>
         <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
         <div class="dropdown">
             <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
@@ -32,6 +50,7 @@
                 <th>名称</th>
                 <th>主题</th>
                 <th>时间</th>
+                <th>届别</th>
                 <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
                 <th width="110px">操作</th>
             </tr>
@@ -43,6 +62,7 @@
                 <td>{$item.name}</td>
                 <td>{$item.theme}</td>
                 <td>{:date('Y-m-d H:i',$item.start_time)}</td>
+                <td>{$item.category.name}</td>
                 <td><input type="text" name="_{$item.id}"value="{$item.sort}" class="list-sort bg" /></td>
                 <td><a class="act_btn" href="{:url('backstage/Shipin/add',['id'=>$item.id])}" left-mini="true" ajax="true" model-area="700px,360px" success="msg.model">编辑</a>
                     <a class="act_btn" href="{:url('backstage/Shipin/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a></td>
@@ -52,7 +72,7 @@
             <tfoot>
             <tr>
                 <td><input type="checkbox" class="cheack-all"></td>
-                <td colspan="5">
+                <td colspan="6">
 
                     <div class="fl" style="display:none">
                         <button class="btn fl mr-10">批量删除</button>
@@ -72,5 +92,6 @@
             </tfoot>
         </table>
     </form>
+</div>
 </body>
 </html>
