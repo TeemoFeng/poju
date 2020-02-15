@@ -70,7 +70,7 @@ class User extends ApiBase
             $this->error('密码错误');
         }
         $this->direct($userModel['id']);
-        $this->success("登录成功", ['userInfo' => $userModel, 'token' => $this->getToken()]);
+        $this->success("登录成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
     }
 
     /***
@@ -182,7 +182,7 @@ class User extends ApiBase
         //登录操作
         $this->direct($user['id']);
         if ($this->isLogin()) {
-            $this->success("登录成功", ['userInfo' => $user, 'token' => $this->getToken()]);
+            $this->success("登录成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
         } else {
             $this->error('登录失败');
         }
@@ -631,10 +631,8 @@ class User extends ApiBase
             $update['password'] = $postData['password'];
         }
         $this->db_app->table('user')->where(['id' => $user_info['id']])->update($update);
-        $new_user_info = $this->db_app->table('user')->where(['id' => $user_info['id']])->find();
-        $host = Config::get('morketing_avatar_url');
-        $new_user_info['avatar'] = $host.$new_user_info['avatar'];
-        $this->success('保存成功', ['userInfo' => $new_user_info]);
+        $user = UserModel::get($user_info['id']);
+        $this->success('保存成功', ['userInfo' => $user->getInfo()]);
     }
 
     /***
