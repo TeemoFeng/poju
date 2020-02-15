@@ -168,7 +168,7 @@ class Homepage extends ApiBase {
 
             $v['start_time'] = str_replace('-', '.', $v['start_time']);
             $v['end_time'] = str_replace('-', '.', $v['end_time']);
-//            $host = request()->root(true);
+            $v['jump_url'] = $host .'/summit/' . $v['summit_id'];
 
         });
         $this->success('', ['count' => $count, 'list' => $list]);

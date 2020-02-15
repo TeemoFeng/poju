@@ -15,20 +15,4 @@
 define('APP_PATH', __DIR__ . '/../app/');
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
-//header("Access-Control-Allow-Origin: *");
-$origin = isset($_SERVER['HTTP_ORIGIN'])? $_SERVER['HTTP_ORIGIN'] : '';
-$allowOrigin = array(
-    'http://dist.morketing.com',
-    'http://localhost:3000',
-);
 
-if (in_array($origin, $allowOrigin)) {
-    header("Access-Control-Allow-Origin:".$origin);
-}
-header("Access-Control-Allow-Origin: http://dist.morketing.com");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
-header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,Token,X-Requested-With,device');
-header("Access-Control-Allow-Credentials: true");
-if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
-    exit;
-}

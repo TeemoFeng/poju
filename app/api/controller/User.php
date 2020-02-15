@@ -234,7 +234,7 @@ class User extends ApiBase
 
         $postData['password'] = generateMD5WithSalt($postData['password1']);
         $postData['status'] = 0;
-        $postData['tid'] = $postData['direction'];
+        $postData['tid'] = $postData['direction'] ? : 0;
         $postData['nickname'] = hideAccount($postData['mobile']);
         unset($postData['password1'],$postData['password2']);
         UserModel::create($postData,true);
