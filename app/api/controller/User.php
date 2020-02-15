@@ -256,7 +256,7 @@ class User extends ApiBase
     {
         $state = time().mt_rand(10000, 99999);
         $appid =  Config::get('wechat_login')['appid'];
-        $redirect_uri = urlencode(url('api/user/wechat','',true,true));
+        $redirect_uri = urlencode('https://www.morketing.com/index/o_auth/wechat');
         $url='https://open.weixin.qq.com/connect/qrconnect?appid='.$appid.'&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_login&state='.$state.'#wechat_redirect';
         $this->success('', ['url' => $url]);
     }
