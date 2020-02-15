@@ -254,7 +254,7 @@ class User extends ApiBase
      */
     public function wxlogin()
     {
-        $state = time().mt_rand(10000, 99999);
+        $state = 'new'.time().mt_rand(10000, 99999);
         $appid =  Config::get('wechat_login')['appid'];
         $redirect_uri = urlencode('https://www.morketing.com/index/o_auth/wechat');
         $url='https://open.weixin.qq.com/connect/qrconnect?appid='.$appid.'&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_login&state='.$state.'#wechat_redirect';
@@ -471,6 +471,7 @@ class User extends ApiBase
             $this->error('取消失败');
         }
         $count = Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('collections', 1);
+        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->value('collections');
         $this->success('取消成功', ['collection_count' => $count]);
 
     }
@@ -570,8 +571,9 @@ class User extends ApiBase
         if ($res === false) {
             $this->error('取消失败');
         }
-        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('likes', 1);
-        $this->success('取消成功', ['likes_count ' => $count]);
+        Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('likes', 1);
+        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->value('likes');
+        $this->success('取消成功', ['likes_count' => $count]);
 
     }
 
