@@ -75,13 +75,6 @@ class ApiBase
      */
     public function __construct(Request $request = null)
     {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
-        header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,Token,X-Requested-With,device');
-        header("Access-Control-Allow-Credentials: true");
-        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
-            exit;
-        }
         $this->request = is_null($request) ? Request::instance() : $request;
         $this->db_app = Db::connect('database_morketing');
         // 控制器初始化
