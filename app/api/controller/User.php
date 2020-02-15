@@ -470,7 +470,7 @@ class User extends ApiBase
         if ($res === false) {
             $this->error('取消失败');
         }
-        $count = Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('collections', 1);
+        Db::name('report')->where(['id' => $collection_info['video_id']])->setDec('collections', 1);
         $count = Db::name('report')->where(['id' => $collection_info['video_id']])->value('collections');
         $this->success('取消成功', ['collection_count' => $count]);
 
@@ -632,6 +632,8 @@ class User extends ApiBase
         }
         $this->db_app->table('user')->where(['id' => $user_info['id']])->update($update);
         $new_user_info = $this->db_app->table('user')->where(['id' => $user_info['id']])->find();
+        $host = Config::get('morketing_avatar_url');
+        $new_user_info['avatar'] = $host.$new_user_info['avatar'];
         $this->success('保存成功', ['userInfo' => $new_user_info]);
     }
 
