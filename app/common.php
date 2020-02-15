@@ -209,6 +209,7 @@ function sys_repaire_url($url, $user_type = 1, $reverse = false)
 //                $host = \think\Config::get('morketing_avatar_url');
 //                return $url && strpos($url, 'http') !== false ? $url : $host . $url;
 //            }
+            $host = \think\Config::get('morketing_avatar_url');
             return $url && strpos($url, 'http') !== false ? $url : $host . $url;
         } else {
             return $url && strpos($url, 'http') !== false ? $url : $host . $url;
