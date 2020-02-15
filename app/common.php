@@ -206,12 +206,11 @@ function sys_repaire_url($url, $user_type = 1, $reverse = false)
         if($user_type == 1) {
             //如果原先是嘉宾权限被修改之后，头像地址
             if (strpos($url, 'upload') !== false) {
-                $host = \think\Config::get('poju_avatar_url');
+                $host = \think\Config::get('morketing_avatar_url');
                 return $url && strpos($url, 'http') !== false ? $url : $host . $url;
             }
             return $url && strpos($url, 'http') !== false ? $url : $host . $url;
         } else {
-            $host = \think\Config::get('poju_avatar_url');
             return $url && strpos($url, 'http') !== false ? $url : $host . $url;
 
         }
