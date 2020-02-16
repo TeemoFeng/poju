@@ -32,7 +32,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'collectList', 'cancelCollect', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'updateInfo', 'sendMailCode', 'wxlogin', 'wechat'];
+    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'sendMailCode', 'wxlogin', 'wechat'];
 
 
 
@@ -437,7 +437,7 @@ class User extends ApiBase
                 $v['likes'] = $video_info['likes'];
                 $admin_info = $admin->where(['id' => $video_info['release_user']])->find();
                 $v['release_user'] = $admin_info['account'];
-                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ? $host. $admin_info['avatar'] : $host . '/static/api/img/avatar.png';
             });
 
         }
@@ -538,7 +538,7 @@ class User extends ApiBase
                 $v['likes'] = $video_info['likes'];
                 $admin_info = $admin->where(['id' => $video_info['release_user']])->find();
                 $v['release_user'] = $admin_info['account'];
-                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ? $host. $admin_info['avatar'] : $host . '/static/api/img/avatar.png';
             });
 
         }
