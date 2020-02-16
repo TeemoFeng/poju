@@ -7,6 +7,12 @@
         </div>
     </div>
     <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>简介：</span></label>
+        <div>
+            <input class="from-text" id="profile" name="profile" type="text" value="{$model.profile|default=''}" />
+        </div>
+    </div>
+    <div class="from-group">
         <label class="from-label fl"><b>*</b><span>开始时间：</span></label>
         <div><input type="text" name="start_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.start_time}{/if}"></div>
     </div>

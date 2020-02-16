@@ -143,7 +143,7 @@ class Homepage extends ApiBase {
         if ($page > $num) {
             $list = [];
         } else {
-            $list = Db::name('category')->where($where)->field('id summit_id,name,img,start_time,end_time,address,number')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $list = Db::name('category')->where($where)->field('id summit_id,name,img,start_time,end_time,address,number,profile')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
         }
         $host = request()->root(true);
         array_walk($list, function (&$v) use($host) {
@@ -168,6 +168,7 @@ class Homepage extends ApiBase {
 
             $v['start_time'] = str_replace('-', '.', $v['start_time']);
             $v['end_time'] = str_replace('-', '.', $v['end_time']);
+            $v['profile'] = mb_strlen( $v['profile'], 'utf-8' ) > 100 ? mb_substr( $v['profile'], 0, 100 ) . '...' : $v['profile'];
             $v['jump_url'] = $host .'/summit/' . $v['summit_id'];
 
         });
