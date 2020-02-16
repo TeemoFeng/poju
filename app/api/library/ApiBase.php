@@ -99,9 +99,9 @@ class ApiBase
             }
         } else {
             // 如果有传递token才验证是否登录状态
-            if ($token) {
-                $this->initToken($token);
-            }
+//            if ($token) {
+//                $this->initToken($token);
+//            }
         }
 
     }

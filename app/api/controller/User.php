@@ -231,7 +231,11 @@ class User extends ApiBase
         if ($postData['code'] != $session['code']) {
             $this->error('验证码错误');
         }
-
+        $mobile = is_mobile();
+        $postData['source'] = 1;
+        if ($mobile) {
+            $postData['source'] = 2;
+        }
         $postData['password'] = generateMD5WithSalt($postData['password1']);
         $postData['status'] = 0;
         $postData['tid'] = $postData['direction'] ? : 0;
