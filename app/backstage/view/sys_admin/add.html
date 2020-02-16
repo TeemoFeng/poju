@@ -1,4 +1,4 @@
-﻿<form action="{url('/backstage/sys_admin/add')}" method="POST" ajax="true" data-valid="true" success="msg.tips" novalidate >
+﻿<form action="{url('/backstage/sys_admin/add')}" method="POST" ajax="true" success="msg.tips" >
     <input data-val="true" id="id" name="id" type="hidden" value="{$admin.id|default=0}" />
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>账号：</span></label>
@@ -6,6 +6,16 @@
             <input class="from-text" id="account" name="account" remote="{:url('backstage/SysAdmin/check_account',['id'=>isset($admin.id)?($admin.id):0])}" remote-msg="系统已有此账号" required="" required-msg="账号不能为空！" type="text" value="{$admin.account|default=''}" />
         </div>
     </div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>头像【133*133】：</span></label>
+        <div>
+            <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="avatar" data-rander-model="unload" value="{$admin.avatar|default=''}" >
+        </div>
+    </div>
+
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>密码：</span></label>
         <div>
@@ -49,6 +59,6 @@
 </form>
 <script>
     $(function () {
-        parseInt($("#id").val()) ? ($("#password").prop("readonly", true), $("#pwd").prop("readonly", true),window.formRequest.validate($("[data-valid='true']"))) : "";
+        parseInt($("#id").val()) ? ($("#password").prop("readonly", true), $("#pwd").prop("readonly", true)) : "";
     });
 </script>

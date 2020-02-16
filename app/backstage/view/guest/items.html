@@ -33,7 +33,7 @@
         <h5>共创人&演讲嘉宾</h5>
     </div>
     <div class="action-bar">
-        <a href="{:url('backstage/Guest/add')}" ajax="true" model-area="1000px,650px" left-mini="true" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+        <a href="{:url('backstage/Guest/add')}" ajax="true" model-area="1210px,670px" left-mini="true" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
         <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
         <div class="dropdown">
             <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
@@ -66,7 +66,7 @@
             <td><input type="text" name="_{$item.id}"value="{$item.sort}" class="list-sort bg" /></td>
             <td>{if $item.sid==0}演讲嘉宾{else/}共创人{/if}</td>
             <td>{$item.Category.name}</td>
-            <td><a class="act_btn" href="{:url('backstage/Guest/add',['id'=>$item.id])}" left-mini="true" ajax="true" model-area="1000px,650px" success="msg.model">编辑</a>
+            <td><a class="act_btn" href="{:url('backstage/Guest/add',['id'=>$item.id])}" left-mini="true" ajax="true" model-area="1210px,670px" success="msg.model">编辑</a>
                 <a class="act_btn" href="{:url('backstage/Guest/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a></td>
         </tr>
         {/foreach}

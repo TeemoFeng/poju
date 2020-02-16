@@ -18,19 +18,11 @@
         <label class="from-label fl"><b>*</b><span>类别：</span></label>
         <div>
             <select class="from-select" data-rander-model="selectize" name="sid" data-value="{$model.sid|default=0}">
-              <option value="0">演讲嘉宾</option>
-              <option value="1">共创人</option>
+                <option value="0">演讲嘉宾</option>
+                <option value="1">共创人</option>
             </select>
         </div>
     </div>
-
-    <div class="from-group">
-        <label class="from-label fl"><b>*</b><span>届别：</span></label>
-        <div>
-            <select class="from-select" data-rander-model="selectize" name="cid" data-url="{:url('backstage/Category/getAllList')}" data-value="{$model.cid|default=0}"></select>
-        </div>
-    </div>
-
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>头像【133*133】：</span></label>
         <div>
@@ -41,13 +33,19 @@
         </div>
     </div>
     <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>届别：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="sid" data-url="{:url('backstage/Category/getAllList')}" data-value="{$model.cid|default=0}"></select>
+        </div>
+    </div>
+    <div class="from-group">
         {php}
-            $checked = isset($model['is_new_power']) && $model['is_new_power'] == 1 ? 'checked' : '';
+        $checked = isset($model['is_new_power']) && $model['is_new_power'] == 1 ? 'checked' : '';
         {/php}
         <label class="from-label fl"><b>*</b><span>新势力：</span></label>
         <div style="line-height: 32px;">
-		    <input type="checkbox" name="is_new_power" value="1" {$checked}>
-		</div>
+            <input type="checkbox" name="is_new_power" value="1" {$checked}>
+        </div>
     </div>
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>简介：</span></label>
@@ -58,14 +56,10 @@
         <div><textarea name="text" class="from-textarea" rows="5">{$model.text|default=''}</textarea></div>
     </div>
     <div class="from-group">
-        <label class="from-label fl"><b>*</b><span>排序：</span></label>
-        <div><input type="text" name="sort" class="from-text" value="{$model.sort|default=1}"></div>
-    </div>
-    <div class="from-group">
         <label class="from-label fl"><b>*</b><span>演讲场次：</span></label>
         <div>
             <a class="file-bg add-info"><i class="iconfont icon-add"></i>添加信息</a>
-            <input type="hidden" name="info" value="{$model.info|default=''}">
+            <input type="hidden" name="info" value='{$model.info|default=''}'>
             <ul class="info-block"></ul>
         </div>
     </div>
