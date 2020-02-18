@@ -32,7 +32,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'sendMailCode', 'wxlogin', 'wechat'];
+    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'sendMailCode', 'wxlogin', 'wechat', 'forgotPassword'];
 
 
 
@@ -672,6 +672,53 @@ class User extends ApiBase
         }
 
 
+    }
+
+    /***
+     * Action 找回密码
+     * @author ywf
+     * @license /api/user/forgotPassword POST
+     * @para string mobile_prefix  手机国家区号|Y
+     * @para string mobile  手机号|Y
+     * @para string code  手机验证码|Y
+     * @para string new_password  新密码|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    1:密码已修改,0:1.您尚未注册，请先注册,2.修改失败
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function forgotPassword()
+    {
+        $postData = $this->request->post();
+        if (empty($postData['mobile'])) {
+            $this->error('请填写手机号');
+        }
+        if (empty($postData['mobile_prefix'])) {
+            $this->error('请选择国家区号');
+        }
+        if (empty($postData['code'])) {
+            $this->error('请填写手机验证码');
+        }
+        $session = Session::get('mobile' . $postData['mobile']);
+        if ($postData['code'] != $session['code']) {
+            $this->error('短信验证码错误');
+        }
+        $password = generateMD5WithSalt($postData['new_password']);
+
+        $model = UserModel::get(['mobile'=>$postData['mobile'],'mobile_prefix' => $postData['mobile_prefix']]);
+        if (empty($model)) {
+            $this->error('您尚未注册，请先注册');
+        }
+
+        $res = UserModel::update(['password'=>$password],['id'=>$model['id']],true);
+        if ($res === false) {
+            $this->error("修改失败");
+        }
+
+        if($model['tid']==2){
+            $this->db_app->table('sys_admin')->where(['uid' => $model['id']])->update(['password'=>$password]);
+        }
+        $this->success('密码已修改');
     }
 
 
