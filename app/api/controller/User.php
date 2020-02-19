@@ -588,6 +588,7 @@ class User extends ApiBase
      * @para string user_id  用户id|Y
      * @para string avatar   用户头像|Y
      * @para string mk_id    用户名|Y
+     * @para string mobile_prefix 手机国际区号，默认86|Y
      * @para string mobile  手机号|Y
      * @para string code    手机号验证码|Y
      * @para string email   邮箱号|Y
@@ -613,11 +614,15 @@ class User extends ApiBase
         }
         $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
         if (isset($postData['mobile'])) {
+            if (empty($postData['mobile_prefix'])) {
+                $this->error('请选择国家区号');
+            }
             $session = Session::get('mobile' . $postData['mobile']);
             if ($postData['code'] != $session['code']) {
                 $this->error('短信验证码错误');
             }
             $update['mobile'] = $postData['mobile'];
+            $update['mobile_prefix'] = $postData['mobile_prefix'];
 
         }
         if(isset($postData['email'])){
