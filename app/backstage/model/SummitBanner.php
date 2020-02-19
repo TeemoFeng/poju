@@ -30,7 +30,7 @@ class SummitBanner extends BaseModel
 
     public function homepageBannerList()
     {
-        return $this->where(['status' => self::STATUS2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();
+        return $this->where(['status' => self::STATUS2])->field($this->show_fields)->order('sort ASC')->limit(5)->select()->toArray();
     }
 
 }
