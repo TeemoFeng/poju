@@ -34,7 +34,7 @@ class Summit extends Base
         } else if (empty($start_date) && !empty($end_date)) {
             $where['start_time'] = ['<', $end_date];
         }
-        $list = SummitModel::where($where)->paginate(20)->each(function ($item){
+        $list = SummitModel::where($where)->paginate(20, false ,['query'=>request()->param()])->each(function ($item){
             if (empty($item->img)) {
                 $item->img = '/static/backend/images/ico-pic.png';
             }

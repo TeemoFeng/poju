@@ -232,7 +232,7 @@ class User extends ApiBase
             $this->error('验证码错误');
         }
         $mobile = is_mobile();
-        $postData['source'] = 1;
+        $postData['source'] = 5;
         if ($mobile) {
             $postData['source'] = 2;
         }
