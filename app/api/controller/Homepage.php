@@ -53,7 +53,7 @@ class Homepage extends ApiBase {
         $reportModel    = new Report();
         //获取首页bannner轮播图
         $banner_list = $summitModel->homepageBannerList();
-        //近期活动强推广告位4个
+        //近期活动强推广告位3个
         $recommend_fixed = $recommendModel->recommendFixed();
         //近期活动普通广告位
         $recommend_ordinary = $recommendModel->recommendOrdinary();
@@ -168,7 +168,6 @@ class Homepage extends ApiBase {
 
             $v['start_time'] = str_replace('-', '.', $v['start_time']);
             $v['end_time'] = str_replace('-', '.', $v['end_time']);
-            $v['profile'] = mb_strlen( $v['profile'], 'utf-8' ) > 100 ? mb_substr( $v['profile'], 0, 100 ) . '...' : $v['profile'];
             $v['jump_url'] = $host .'/summit/' . $v['summit_id'];
 
         });

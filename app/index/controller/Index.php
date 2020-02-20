@@ -31,7 +31,7 @@ class Index extends WebBase
         $lx = $fragment->where(['sid' => $infoModel['id']])->select();
         //往期回顾
         $ads = new Ads();
-        $adsList = $ads->where('tid','=',0)->order('displayorder','asc')->select();
+        $adsList = $ads->where('tid','=',$infoModel['id'])->order('displayorder','asc')->select();
         //合作伙伴
         $cooperative = new Cooperative();
         $cooperList = $cooperative->where('sid','=',$infoModel['id'])->order('sort','asc')->select();

@@ -59,6 +59,11 @@ class Recommend extends Base
             if (!is_numeric($postData['sort'])) {
                 return json(['code' => 0, 'msg' => '展示顺序格式错误']);
             }
+            if(isset($postData['is_show'])){
+                $postData['is_show'] = 1;
+            }else{
+                $postData['is_show'] = 0;
+            }
             if (empty($postData['id'])) {
                 //新增
                 $res = RecommendModel::create($postData,true);

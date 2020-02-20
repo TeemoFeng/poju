@@ -44,6 +44,15 @@
         </div>
     </div>
     <div class="from-group">
+        {php}
+        $checked = isset($model['is_show']) && $model['is_show'] == 1 ? 'checked' : '';
+        {/php}
+        <label class="from-label fl"><b>*</b><span>固定强推广告位图标：</span></label>
+        <div style="line-height: 32px;">
+            <input type="checkbox" name="is_show" value="1" {$checked}>
+        </div>
+    </div>
+    <div class="from-group">
         <label class="from-label fl "><b>*</b><span>跳转链接：</span></label>
         <div>
             <input class="from-text" id="jump_url" name="jump_url" type="text" value="{$model.jump_url|default=''}" />

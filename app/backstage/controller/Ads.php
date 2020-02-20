@@ -9,14 +9,25 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Ads as Ad;
+use app\backstage\model\Category;
 class Ads extends  Base
 {
     public function items()
     {
-       $ads = new Ad();
-       $list = $ads->where('tid','=',0)->order('displayorder','asc')->select();
-       $this->assign('AdsItems',$list);
-       return $this->fetch();
+        $ads = new Ad();
+        $category = new Category();
+        $sid = $this->request->param('sid');
+        if (!empty($sid))
+        {
+            $list = $ads->with('category')->where('tid','=',$sid)->order('displayorder','asc')->paginate(20);
+        }else{
+            $list = $ads->with('category')->order('displayorder','asc')->paginate(20);
+        }
+        $nav = $category->select();
+        $this->assign("list",$nav);
+        $this->assign("page",$list);
+        $this->assign("key",$sid);
+        return $this->fetch();
     }
     public function add()
     {
