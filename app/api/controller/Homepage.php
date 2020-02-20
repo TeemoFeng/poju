@@ -270,10 +270,11 @@ class Homepage extends ApiBase {
         if (empty($video_info) || $video_info['type'] == 1) {
             $this->error('页面迷路了~~');
         }
+        $host = request()->root(true);
         $admin = new SysAdmin();
         $admin_info = $admin->where(['id' => $video_info['release_user']])->find();
         $video_info['release_user'] = $admin_info['account'];
-        $video_info['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+        $video_info['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ? $host . $admin_info['avatar'] : $host . '/static/api/img/avatar.png';
         //判定用户是否登录
         $collection = $likes = 0;
         if ($this->user) {
