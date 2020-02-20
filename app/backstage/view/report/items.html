@@ -24,32 +24,32 @@
     </div>
 </div>
 <form action="{:url('backstage/Report/sort')}" ajax="true" success="msg.tips" method="post">
-    <table class="ord_table" theme="no-rl-border">
+    <table class="ord_table" theme="no-rl-border" style="table-layout: fixed;">
         <thead>
         <tr>
             <th width="20px"><input type="checkbox" class="cheack-all"></th>
-            <th>标题</th>
-            <th>简介</th>
+            <th width="160">标题</th>
+            <th width="200">简介</th>
             <th>标签</th>
             <th>类别</th>
-            <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
-            <th>链接地址</th>
+            <th width="60"><input type="submit" value="排序" class="sort-btn" /></th>
+            <th style="width: 200px">链接地址</th>
             <th>状态</th>
-            <th width="200px">操作</th>
+            <th width="200">操作</th>
         </tr>
         </thead>
         <tbody>
         {foreach name="items" item="item"}
         <tr>
             <td><input type="checkbox" value="{$item.id}"></td>
-            <td>{$item.title}
+            <td style="width: 160px;">{$item.title}
                 {$item.img ?= '<img class="preview" data-url="' . $item.img . '" src="__BACKEND__/images/ico-pic.png" />'}
             </td>
-            <td>{$item.profile}</td>
+            <td style="width: 160px;"><div style="width:100%;overflow: auto;">{$item.profile}</div></td>
             <td>{$item.tag}</td>
             <td>{$type[$item.type]}</td>
             <td><input type="text" name="_{$item.id}" value="{$item.sort}" class="list-sort bg" /></td>
-            <td>{$item.jump_url}</td>
+            <td style="width: 200px;"><div style="width:100%;overflow: auto;">{$item.jump_url}</div></td>
             <td>{if $item.status==1}<span style="color: red">下线</span>{else/}<span style="color:  #00B83F">上线</span>{/if}</td></td>
             <td>
                 {if $item.status == 1}
@@ -65,7 +65,7 @@
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="8">
+            <td colspan="9">
                 <div class="fr page-box">{$items->render()}</div>
             </td>
         </tr>
