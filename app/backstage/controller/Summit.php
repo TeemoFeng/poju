@@ -9,6 +9,8 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Category as SummitModel;
+use think\Route;
+
 class Summit extends Base
 {
     //会议列表
@@ -92,6 +94,7 @@ class Summit extends Base
                 $res = SummitModel::create($postData,true);
             } else {
                 //编辑
+
                 $res = SummitModel::update($postData,['id'=>$postData['id']],true);
             }
 
