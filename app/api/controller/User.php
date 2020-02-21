@@ -32,7 +32,7 @@ class User extends ApiBase
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'sendMailCode', 'wxlogin', 'wechat', 'forgotPassword'];
+    protected $noNeedLogin = ['login', 'sendCode', 'register', 'mobileLogin', 'mobilePrefixList', 'sendMailCode', 'wxlogin', 'forgotPassword'];
 
 
 
@@ -246,16 +246,7 @@ class User extends ApiBase
 
     }
 
-    /**
-     * Action 微信登录请求
-     * @author ywf
-     * @license /api/user/wxlogin POST
-     * @para string 无   无
-     * @field string code   1:成功;0:失败
-     * @field string data.url   打开微信页面url
-     * @jsondata 无
-     * @jsondatainfo {"code":1,"msg":"","time":"1572510481","data":{"url":"xxx"}}
-     */
+
     public function wechat()
     {
         $state = 'new'.time().mt_rand(10000, 99999);
