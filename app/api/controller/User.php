@@ -42,6 +42,7 @@ class User extends ApiBase
      * @license /api/user/login POST
      * @para string account   用户名/手机号/邮箱|Y
      * @para string password   密码|Y
+     * @para string oauth     微信unionid,微信登录关联已有账号的时候需要用|N
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:1.账号不存在。2.抱歉！您的账号被限制登录,3.密码错误,code=1:登录成功
      * @field string data.userInfo    用户信息
@@ -69,6 +70,10 @@ class User extends ApiBase
         if(!verifyMD5Code($postData['password'],$userModel['password'])){
             $this->error('密码错误');
         }
+        if(!empty($postData['oauth'])){
+            $this->db_app->table('oauth_third')->where(['unionid'=>$postData['oauth']])->setField('uid',$userModel['id']);
+        }
+
         $this->direct($userModel['id']);
         $this->success("登录成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
     }
@@ -148,6 +153,7 @@ class User extends ApiBase
      * @para string mobile_prefix 手机国际区号，默认86|Y
      * @para string mobile   手机号|Y
      * @para string code     短信验证码|Y
+     * @para string oauth     微信unionid,微信登录关联已有账号的时候需要用|N
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:1.短信验证码错误,2.账号未找到,请先注册,3.登录失败。code=1:登录成功
      * @field string data.userInfo    用户信息
@@ -160,6 +166,7 @@ class User extends ApiBase
         $mobile_prefix = $this->request->post('mobile_prefix') ?: '86';
         $mobile = $this->request->post('mobile');
         $code = $this->request->post('code');
+        $oauth = $this->request->post('oauth', '');
         if (empty($mobile)) {
             $this->error('请输入手机号');
             return false;
@@ -178,7 +185,9 @@ class User extends ApiBase
             $this->error('账号未找到,请先注册');
             return false;
         }
-
+        if(!empty($oauth)){
+            $this->db_app->table('oauth_third')->where(['unionid'=>$oauth])->setField('uid',$user['id']);
+        }
         //登录操作
         $this->direct($user['id']);
         if ($this->isLogin()) {
@@ -206,6 +215,7 @@ class User extends ApiBase
      * @para string position   职位|Y
      * @para string intro      简介|N
      * @para string direction  账号类型，0：用户注册，1：机构注册|Y
+     * @para string oauth  微信unionid，微信关联新账号的时候要需要用|N
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:1.该账号已被注册,2.该邮箱已被注册,3.该手机号已被注册,4.两次输入的密码不一致,5.验证码错误,。code=1:账号注册成功
      * @jsondata {"mk_id":"ywf","password1":"123456","password2":"123456","email":"1234567@qq.com","name":"yanceshi","mobile_prefix":"86","mobile":"18339817899","code":"1234","company":"阿里巴巴", "position":"经理","intro":"sdfsf","direction":"0"}
@@ -236,10 +246,17 @@ class User extends ApiBase
         if ($mobile) {
             $postData['source'] = 2;
         }
+
         $postData['password'] = generateMD5WithSalt($postData['password1']);
         $postData['status'] = 0;
         $postData['tid'] = $postData['direction'] ? : 0;
         $postData['nickname'] = hideAccount($postData['mobile']);
+        if(!empty($postData['oauth'])){
+            $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $postData['oauth']])->find();
+            $postData['nickname'] = $oauth['nickname'];
+            $imgModel = getImage($oauth['avatar'],'./upload/avatar/'.date('Y-m').'/',$oauth['unionid']);
+            $postData['avatar'] = $imgModel['save_path'];
+        }
         unset($postData['password1'],$postData['password2']);
         UserModel::create($postData,true);
         $this->success('账号注册成功！');
@@ -278,7 +295,10 @@ class User extends ApiBase
         $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
         $res = curl_get($url);
         $access_token = (array) json_decode($res, true);
-        if ($access_token['openid']) {
+        if (!empty($access_token['errcode'])) {
+            $this->error('微信授权失败，请重试');
+        }
+        if ($access_token['unionid']) {
             Cache::set('wxlogin_access_token',$access_token['access_token'],7000);
             $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
             if(empty($oauth))
@@ -327,8 +347,12 @@ class User extends ApiBase
         }
         $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
         $res = curl_get($url);
-        if ($res !== false) {
-            $access_token = (array) json_decode($res, true);
+        $access_token = (array) json_decode($res, true);
+        if (!empty($access_token['errcode'])) {
+            $this->error('微信授权失败，请重试');
+        }
+        if ($access_token['unionid']) {
+
             //用户已登录
             $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
             if (!empty($oauth)) {

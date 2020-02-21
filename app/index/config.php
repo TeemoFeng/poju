@@ -10,9 +10,16 @@ return [
         '__IMG__'=>'/static/images',
         '__F__' => '/static/fonts'
     ],
+    //峰会
     'wechat_login' =>[
     'appid' => 'wx5609266423c0e163',
-    'secret'=> '95ef1528aa0f72d59ba743ee6b136c0f',
-],
+    'secret'=> '67487b26e0bd56115db33307f1b7455f',
+    ],
+
+    //官网
+//    'wechat_login' =>[
+//        'appid' => 'wx844fa51cfccdf437',
+//        'secret'=> 'e00137f4867283f3376c446144420399'
+//    ],
 
 ];
