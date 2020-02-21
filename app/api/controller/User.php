@@ -294,6 +294,7 @@ class User extends ApiBase
         }
         $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
         $res = curl_get($url);
+        dump($res);die;
         $access_token = (array) json_decode($res, true);
         if (!empty($access_token['errcode'])) {
             $this->error('微信授权失败，请重试');

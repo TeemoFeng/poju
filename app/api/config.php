@@ -7,9 +7,10 @@
  */
 
 return [
+    //峰会
     'wechat_login' =>[
-        'appid' => 'wx844fa51cfccdf437',
-        'secret'=> 'e00137f4867283f3376c446144420399'
+        'appid' => 'wx5609266423c0e163',
+        'secret'=> '67487b26e0bd56115db33307f1b7455f',
     ],
     'weibo_logo' => [
         'key'=>'2180706416',
