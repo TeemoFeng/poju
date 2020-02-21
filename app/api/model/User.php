@@ -8,6 +8,7 @@
 
 namespace app\api\model;
 
+use think\Db;
 use think\Model;
 /**
  * 用户
@@ -20,6 +21,11 @@ class User extends Model
      * 表名
      * @var string
      */
+    public function __construct($data = [])
+    {
+        parent::__construct($data);
+        $this->db_app = Db::connect('database_morketing');
+    }
 
     protected $connection = [
         // 数据库类型
@@ -105,6 +111,14 @@ class User extends Model
             $data[$field] = $this[$field];
         }
 
+        //查询该用户是否绑定微信
+        $oauth = $this->db_app->table('oauth_third')->where(['uid' => $this['id'], 'platform' => 'wechat'])->find();
+        $data['wx_bind'] = '0';
+        $data['wx_nickname'] = '';
+        if (!empty($oauth)) {
+            $data['wx_bind'] = '1';
+            $data['wx_nickname'] = $oauth['nickname'];
+        }
         return $data;
     }
 

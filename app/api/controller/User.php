@@ -256,7 +256,7 @@ class User extends ApiBase
      * @jsondata 无
      * @jsondatainfo {"code":1,"msg":"","time":"1572510481","data":{"url":"xxx"}}
      */
-    public function wxlogin()
+    public function wechat()
     {
         $state = 'new'.time().mt_rand(10000, 99999);
         $appid =  Config::get('wechat_login')['appid'];
@@ -265,63 +265,101 @@ class User extends ApiBase
         $this->success('', ['url' => $url]);
     }
 
-    //微信登录提交
-    public function wechat()
+    /**
+     * Action 微信登录请求[首页用户快捷登录]
+     * @author ywf
+     * @license /api/user/wxlogin POST
+     * @para string code     微信返回的code
+     * @field string code   1:成功;0:失败
+     * @field string type   1:授权成功，2：登录成功
+     * @field string oauth   type等于1返回 oauth 微信的unionid
+     * @field string userInfo   type等于2返回用户信息
+     * @field string token   type等于2返回token
+     * @jsondata 无
+     * @jsondatainfo
+     */
+    public function wxlogin()
     {
-        $code = $this->request->get('code');
-        $state = $this->request->get('state');
+        $code = $this->request->post('code');
         if(empty($code)){
-            return null;
+            $this->error('未获取到code！');
+        }
+        $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
+        $res = curl_get($url);
+        $access_token = (array) json_decode($res, true);
+        if ($access_token['openid']) {
+            Cache::set('wxlogin_access_token',$access_token['access_token'],7000);
+            $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
+            if(empty($oauth))
+            {
+                $data = $this->getUserInfoByUnionid($access_token);
+                $info['openid'] = $data['openid'];
+                $info['unionid'] = $data['unionid'];
+                $info['nickname'] = $data['nickname'];
+                $info['avatar'] = $data['headimgurl'];
+                $info['platform'] = 'wechat';
+                $info['uid'] = 0;
+                $this->db_app->table('oauth_third')->insert($info);
+                $this->success('授权成功',['type' => 1,'oauth' => $info['unionid']]);
+            }else if($oauth['uid'] == 0){
+                $this->success('授权成功',['type' => 1,'oauth' => $oauth['unionid']]);
+            }else{
+                $userModel = UserModel::get(['id' => $oauth['uid']]);
+                $this->direct($userModel['id']);
+                $this->success("登录成功", ['type' => 2, 'userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
+            }
+
+        }else{
+            $this->error('微信授权失败，请重试');
+        }
+    }
+
+
+    /**
+     * Action 用户设置绑定微信[需要用户已登录]
+     * @author ywf
+     * @license /api/user/wxBind POST
+     * @para string code     微信返回的code
+     * @field string code   1:账号绑定成功;0:微信授权失败
+     * @field string data
+     * @field string data.userInfo  用户信息
+     * @field string data.toekn  新生成的token
+     * @jsondata 无
+     * @jsondatainfo {"code":1,"msg":"账号绑定成功","time":"1578992818","data":{"userInfo":{"id":2521,"mk_id":"1234","mobile_prefix":"86","mobile":"15011555866","email":"123456@qq.com","nickname":"150****5866","password":"6x12Vc8V79786P65e03]b0ia8s3f_d1u15Na123e*89lde88","avatar":"","tid":0,"intro":"","status":0,"display_order":10000,"create_time":1578916569,"update_time":1578916569,"tags":"","company":"111","position":"dfsd","token":"","name":"1234","is_guest":1},"token":"0fa93b27-5229-4dce-9f52-0c2b070291d1"}}
+     */
+    public function wxBind()
+    {
+
+        $code = $this->request->post('code');
+        if(empty($code)){
+            $this->error('未获取到code！');
         }
         $url ='https://api.weixin.qq.com/sns/oauth2/access_token?appid='.Config::get('wechat_login')['appid'].'&secret='.Config::get('wechat_login')['secret'].'&code='.$code.'&grant_type=authorization_code';
         $res = curl_get($url);
         if ($res !== false) {
             $access_token = (array) json_decode($res, true);
-            Cache::set('wxlogin_access_token',$access_token['access_token'],7000);
-            if (!empty($this->user)) {
-                //用户已登录
-                $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
-                if (!empty($oauth)) {
-                    $this->db_app->table('oauth_third')->where('unionid','=',$oauth['unionid'])->setField('uid',$this->user->id);
-                    $this->direct($this->user->id);
-                    $this->success('账号绑定成功！');
-                }else{
-                    $data = $this->getUserInfoByUnionid($access_token);
-                    $info['openid'] = $data['openid'];
-                    $info['unionid'] = $data['unionid'];
-                    $info['nickname'] = $data['nickname'];
-                    $info['avatar'] = $data['headimgurl'];
-                    $info['platform'] = 'wechat';
-                    $info['uid'] = $this->user->id;
-                    $this->db_app->table('oauth_third')->insert($info);
-                    $this->direct($this->user->id);
-                    $this->success('账号绑定成功！');
-                }
-            } else {
-                $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
-                if(empty($oauth))
-                {
-                    $data = $this->getUserInfoByUnionid($access_token);
-                    $info['openid'] = $data['openid'];
-                    $info['unionid'] = $data['unionid'];
-                    $info['nickname'] = $data['nickname'];
-                    $info['avatar'] = $data['headimgurl'];
-                    $info['platform'] = 'wechat';
-                    $info['uid'] = 0;
-                    $this->db_app->table('oauth_third')->insert($info);
-                    $this->success('授权成功',['oauth' => $info]);
-                }else if($oauth['uid'] == 0){
-                    $this->success('授权成功',['oauth' => $oauth]);
-                }else{
-                    $userModel = UserModel::get(['id' => $oauth['uid']]);
-                    $this->direct($userModel['id']);
-                    $this->success('登录成功！');
-                }
+            //用户已登录
+            $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $access_token['unionid']])->find();
+            if (!empty($oauth)) {
+                $this->db_app->table('oauth_third')->where('unionid','=',$oauth['unionid'])->setField('uid',$this->user->id);
+                $this->direct($this->user->id);
+                $this->success("账号绑定成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
+            }else{
+                $data = $this->getUserInfoByUnionid($access_token);
+                $info['openid'] = $data['openid'];
+                $info['unionid'] = $data['unionid'];
+                $info['nickname'] = $data['nickname'];
+                $info['avatar'] = $data['headimgurl'];
+                $info['platform'] = 'wechat';
+                $info['uid'] = $this->user->id;
+                $this->db_app->table('oauth_third')->insert($info);
+                $this->direct($this->user->id);
+                $this->success("账号绑定成功", ['userInfo' => $this->user->getInfo(), 'token' => $this->getToken()]);
             }
-            return json($access_token);
-        }else{
-            return false;
+        } else {
+            $this->error('微信授权失败，请重试');
         }
+
     }
 
     public function getUserInfoByUnionid($res)
