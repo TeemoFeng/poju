@@ -280,6 +280,7 @@ class User extends ApiBase
      * @para string code     微信返回的code
      * @field string code   1:成功;0:失败
      * @field string type   1:授权成功，2：登录成功
+     * @field string avatar  微信头像
      * @field string oauth   type等于1返回 oauth 微信的unionid
      * @field string userInfo   type等于2返回用户信息
      * @field string token   type等于2返回token
@@ -311,9 +312,9 @@ class User extends ApiBase
                 $info['platform'] = 'wechat';
                 $info['uid'] = 0;
                 $this->db_app->table('oauth_third')->insert($info);
-                $this->success('授权成功',['type' => 1,'oauth' => $info['unionid']]);
+                $this->success('授权成功',['type' => 1,'avatar' => $data['headimgurl'],'oauth' => $info['unionid']]);
             }else if($oauth['uid'] == 0){
-                $this->success('授权成功',['type' => 1,'oauth' => $oauth['unionid']]);
+                $this->success('授权成功',['type' => 1,'avatar' => $oauth['avatar'], 'oauth' => $oauth['unionid']]);
             }else{
                 $userModel = UserModel::get(['id' => $oauth['uid']]);
                 $this->direct($userModel['id']);
