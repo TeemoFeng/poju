@@ -50,6 +50,9 @@ class Report extends Base
             if (!is_numeric($postData['sort'])) {
                 return json(['code' => 0, 'msg' => '展示顺序格式错误']);
             }
+            if ($postData['type'] == 2) {
+                $postData['jump_url'] = $postData['jump_url'] . '&autoplay=true';
+            }
             if (empty($postData['id'])) {
                 //新增
                 $admin_info = Session::get("UserInfo");
