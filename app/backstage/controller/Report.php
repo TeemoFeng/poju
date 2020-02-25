@@ -52,10 +52,9 @@ class Report extends Base
             }
             if ($postData['type'] == 2) {
                 $auto_play = '&autoplay=true';
-                if (strpos($postData['jump_url'],'youku.com' )) {
-                    $auto_play = '?autoplay=true';
+                if (!strpos($postData['jump_url'],'youku.com' )) {
+                    $postData['jump_url'] = $postData['jump_url'] . $auto_play;
                 }
-                $postData['jump_url'] = $postData['jump_url'] . $auto_play;
             }
             if (empty($postData['id'])) {
                 //新增
