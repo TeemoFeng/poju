@@ -264,7 +264,7 @@ class Homepage extends ApiBase {
         }
 
         $video_info = Db::name('report')->where(['id' => $video_id])->field('id video_id,title,tag,profile,type,img,jump_url play_url,views,likes,collections,release_user,create_time')->find();
-        $video_info['jump_url'] = htmlspecialchars_decode($video_info['play_url']);
+        $video_info['play_url'] = htmlspecialchars_decode($video_info['play_url']);
         $host = request()->root(true);
         $video_info['img'] = $host . $video_info['img'];
 
