@@ -51,7 +51,11 @@ class Report extends Base
                 return json(['code' => 0, 'msg' => '展示顺序格式错误']);
             }
             if ($postData['type'] == 2) {
-                $postData['jump_url'] = $postData['jump_url'] . '&autoplay=true';
+                $auto_play = '&autoplay=true';
+                if (strpos($postData['jump_url'],'youku.com' )) {
+                    $auto_play = '?autoplay=true';
+                }
+                $postData['jump_url'] = $postData['jump_url'] . $auto_play;
             }
             if (empty($postData['id'])) {
                 //新增
