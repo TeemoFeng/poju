@@ -35,6 +35,18 @@ class Recommend extends BaseModel
 
     }
 
+    //修改时间格式
+    public function getStartTimeAttr($start)
+    {
+        return str_replace('-', '.', $start);
+    }
+
+    public function getEndTimeAttr($end)
+    {
+        return str_replace('-', '.', $end);
+    }
+
+
     //活动推荐固定广告位
     public function recommendFixed()
     {

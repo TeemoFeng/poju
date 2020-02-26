@@ -28,6 +28,17 @@ class SummitBanner extends BaseModel
 
     }
 
+    //修改时间格式
+    public function getStartTimeAttr($start)
+    {
+        return str_replace('-', '.', $start);
+    }
+
+    public function getEndTimeAttr($end)
+    {
+        return str_replace('-', '.', $end);
+    }
+
     public function homepageBannerList()
     {
         return $this->where(['status' => self::STATUS2])->field($this->show_fields)->order('sort ASC')->limit(5)->select()->toArray();
