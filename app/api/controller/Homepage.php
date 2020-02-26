@@ -205,6 +205,7 @@ class Homepage extends ApiBase {
         $page_size = $this->request->post('page_size', 10, 'intval');
         $count = Db::name('report')->where($where)->count();
         $num = ceil($count/$page_size);
+        $host = request()->root(true);
         if ($page > $num) {
             $list = [];
         } else {
@@ -218,7 +219,7 @@ class Homepage extends ApiBase {
                 }
                 $admin_info = $admin->where(['id' => $v['release_user']])->find();
                 $v['release_user'] = $admin_info['account'];
-                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ?: '/static/api/img/avatar.png';
+                $v['avatar'] = isset($admin_info['avatar']) && !empty($admin_info['avatar']) ? $host . $admin_info['avatar']: $host . '/static/api/img/avatar.png';
             });
 
         }
