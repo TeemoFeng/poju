@@ -640,8 +640,11 @@ class User extends ApiBase
      * @author ywf
      * @license /api/user/updateInfo POST
      * @para string user_id  用户id|Y
-     * @para string avatar   用户头像|Y
-     * @para string mk_id    用户名|Y
+     * @para string avatar   用户头像（修改头像传）|Y
+     * @para string mk_id    用户名（修改用户名传）|Y
+     * @para string company  公司名称（修改公司名需要传）|Y
+     * @para string nickname 昵称|Y
+     * @para string name     姓名|Y
      * @para string mobile_prefix 手机国际区号，默认86|Y
      * @para string mobile  手机号|Y
      * @para string code    手机号验证码|Y
@@ -665,6 +668,15 @@ class User extends ApiBase
         }
         if (isset($postData['mk_id'])) {
             $update['mk_id'] = $postData['mk_id'];
+        }
+        if (isset($postData['company'])) {
+            $update['company'] = $postData['company'];
+        }
+        if (isset($postData['nickname'])) {
+            $update['nickname'] = $postData['nickname'];
+        }
+        if (isset($postData['company'])) {
+            $update['name'] = $postData['name'];
         }
         $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
         if (isset($postData['mobile'])) {

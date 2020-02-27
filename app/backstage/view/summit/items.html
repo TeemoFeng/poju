@@ -12,7 +12,7 @@
         .search{display: inline-block;}
         .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
         .k{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
-        input.search-btn{height: 30px;width: 50px;background: #f75959;color: #fff;border: none}
+        input.search-btn{height: 30px;width: 50px;background: #f71435;color: #fff;border: none}
         .imgFlex{ display: flex; display: -webkit-flex;align-items: center;}
         .of{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;max-width: 500px;display: inline-block}
         .button {
@@ -50,7 +50,7 @@
     </div>
     <a href="{:url('/backstage/Summit/items')}"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
 
-    <span style="padding-left: 100px;"><a href="{:url('/backstage/Summit/add')}" ajax="true" model-area="630px,500px" success="msg.model"><i class="iconfont icon-add"></i>创建会议</a></span>
+    <span><a href="{:url('/backstage/Summit/add')}" ajax="true" model-area="630px,500px" success="msg.model"><i class="iconfont icon-add"></i>创建会议</a></span>
 
 </div>
 <table class="ord_table" theme="no-rl-border">
@@ -58,10 +58,10 @@
     {volist name="items" id="summit"}
     <tr>
         <td width="25%" align="center" valign="middle">
-            <a href="{$summit.img}" target="_blank"><img src="{$summit.img}" style="height: 140px;width: 180px;padding-top: 10px;" /> </a>
+            <a href="{$summit.img}" target="_blank"><img src="{$summit.img}" style="height: 90px;width: 150px;padding-top: 7px;" /> </a>
 
         </td>
-        <td width="45%">
+        <td width="45%" style="line-height: 16px">
             <ul>
                 <li style="font-size: 20px;"><b>{$summit.name}</b></li>
                 <li>会议时间：{$summit.start_time} - {$summit.end_time}</li>

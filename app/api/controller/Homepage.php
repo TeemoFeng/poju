@@ -16,6 +16,7 @@ use app\backstage\model\Recommend as RecommendModel;
 use app\backstage\model\SysAdmin;
 use think\Config;
 use think\Db;
+use app\backstage\model\SysConfig as SCModel;
 
 /**
  * 用户
@@ -27,7 +28,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright'];
 
     /***
      * Action 前台首页
@@ -541,8 +542,24 @@ class Homepage extends ApiBase {
         $this->success('点赞成功',['likes_count' => $count]);
     }
 
+    /***
+     * Action 底部版权信息
+     * @author ywf
+     * @license /api/homepage/copyright POST
+     * @para string 无|N
+     * @field string code   1:成功;
+     * @field string data.copyright   版权信息
+     * @field string data.beian   icp备案号
+     * @jsondata
+     * @jsondatainfo {"code":1,"msg":"","time":"1582792362","data":{"title":"破·局 | MS2019-全球营销商业峰会","description":"有破有立，突破棋局","intro":"Morketing Summit系全球营销内容信息服务平台Morketing旗下的活动品牌，延承Morketing大愿景“营销连接商业世界”，从营销视角覆盖品牌、游戏、电商、应用、数据、技术、和全球化等多板块。\r\n在前两届峰会上，国内外近两百位行业领袖登台演讲，现已成为全球商业的顶尖营销盛会。\r\n","zanzhu":"yangshanshan@morketing.com、qinwei@morketing.com","copyright":"COPYRIGHT © 2014-2019  Morketing版权所有","beian":"京ICP备16042578号-1","gzh":"\/upload\/image\/2018-09\/707bd5eb157f988ca3baba375d1c5e23.jpg","wx_img":"\/upload\/image\/2019-11\/23ec0a24c0ab1bedd48b3552a1471b86.jpg","prize_banner":"\/upload\/image\/2018-11\/0c57f73f5dd8180685487bc3ef52b1e7.png"}}
+     */
+    public function copyright()
+    {
+        $sc = new SCModel();
+        $sys_config = $sc->column("value","name");
+        $this->success('', $sys_config);
 
-
+    }
 
 
 }

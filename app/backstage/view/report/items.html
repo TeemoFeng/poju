@@ -29,7 +29,7 @@
         <tr>
             <th width="20px"><input type="checkbox" class="cheack-all"></th>
             <th width="160">标题</th>
-            <th width="200">简介</th>
+            <th style="width: 200px">简介</th>
             <th>标签</th>
             <th>类别</th>
             <th width="60"><input type="submit" value="排序" class="sort-btn" /></th>
@@ -45,7 +45,7 @@
             <td style="width: 160px;">{$item.title}
                 {$item.img ?= '<img class="preview" data-url="' . $item.img . '" src="__BACKEND__/images/ico-pic.png" />'}
             </td>
-            <td style="width: 160px;"><div style="width:100%;overflow: auto;">{$item.profile}</div></td>
+            <td style="width: 200px;"><div style="width:100%;overflow: auto;word-break:keep-all; white-space:nowrap;">{$item.profile}</div></td>
             <td>{$item.tag}</td>
             <td>{$type[$item.type]}</td>
             <td><input type="text" name="_{$item.id}" value="{$item.sort}" class="list-sort bg" /></td>
