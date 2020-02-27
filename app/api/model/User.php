@@ -106,7 +106,7 @@ class User extends Model
     public function getInfo()
     {
         $data = [];
-        foreach (['id', 'mk_id', 'mobile_prefix','mobile', 'email','nickname', 'avatar', 'isbind', 'name', 'is_guest', 'password', 'company', 'position'] as $field) {
+        foreach (['id', 'tid', 'mk_id', 'mobile_prefix','mobile', 'email','nickname', 'avatar', 'isbind', 'name', 'is_guest', 'password', 'company', 'position'] as $field) {
 
             $data[$field] = $this[$field];
         }
