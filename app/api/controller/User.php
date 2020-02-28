@@ -486,6 +486,8 @@ class User extends ApiBase
                 if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $video_info['img'];
+                } else {
+                    $v['img'] = $video_info['img'];
                 }
                 $v['views'] = $video_info['views'];
                 $v['likes'] = $video_info['likes'];
@@ -587,6 +589,8 @@ class User extends ApiBase
                 if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $video_info['img'];
+                } else {
+                    $v['img'] = $video_info['img'];
                 }
                 $v['views'] = $video_info['views'];
                 $v['likes'] = $video_info['likes'];
@@ -675,7 +679,7 @@ class User extends ApiBase
         if (isset($postData['nickname'])) {
             $update['nickname'] = $postData['nickname'];
         }
-        if (isset($postData['company'])) {
+        if (isset($postData['name'])) {
             $update['name'] = $postData['name'];
         }
         $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
