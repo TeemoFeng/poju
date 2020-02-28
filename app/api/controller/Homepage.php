@@ -561,5 +561,23 @@ class Homepage extends ApiBase {
 
     }
 
+    /***
+     * Action 查看近期推荐，并返回最新浏览量
+     * @author ywf
+     * @license /api/homepage/recommendViews POST
+     * @para string recommend_id  近期推荐id|N
+     * @field string code   1:成功;
+     * @field string data.views   浏览量
+     * @jsondata {"recommend_id":"1"}
+     * @jsondatainfo
+     */
+    public function recommendViews()
+    {
+        $recommend_id = $this->request->post('recommend_id');
+        Db::name('recommend')->where(['id' => $recommend_id])->setInc('views', 1);
+        $count = Db::name('recommend')->where(['id' => $recommend_id])->value('views');
+        $this->success('',['views' => $count]);
+
+    }
 
 }
