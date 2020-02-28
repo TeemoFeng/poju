@@ -667,25 +667,28 @@ class User extends ApiBase
         if (empty($postData['user_id'])) {
             $this->error('请先登录');
         }
-        if (isset($postData['avatar'])) {
+        if (!empty($postData['avatar'])) {
             $update['avatar'] = $postData['avatar'];
         }
-        if (isset($postData['mk_id'])) {
+        if (!empty($postData['mk_id'])) {
             $update['mk_id'] = $postData['mk_id'];
         }
-        if (isset($postData['company'])) {
+        if (!empty($postData['company'])) {
             $update['company'] = $postData['company'];
         }
-        if (isset($postData['nickname'])) {
+        if (!empty($postData['nickname'])) {
             $update['nickname'] = $postData['nickname'];
         }
-        if (isset($postData['name'])) {
+        if (!empty($postData['name'])) {
             $update['name'] = $postData['name'];
         }
         $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
-        if (isset($postData['mobile'])) {
+        if (!empty($postData['mobile'])) {
             if (empty($postData['mobile_prefix'])) {
                 $this->error('请选择国家区号');
+            }
+            if (empty($postData['code'])) {
+                $this->error('请输入短信验证码');
             }
             $session = Session::get('mobile' . $postData['mobile']);
             if ($postData['code'] != $session['code']) {
@@ -695,14 +698,17 @@ class User extends ApiBase
             $update['mobile_prefix'] = $postData['mobile_prefix'];
 
         }
-        if(isset($postData['email'])){
+        if(!empty($postData['email'])){
+            if (empty($postData['email_code'])) {
+                $this->error('请输入邮箱验证码');
+            }
             if($postData['email_code'] != session('emailCode' . $postData['email'])){
                 $this->error('邮件验证码输入错误');
             }
             $update['email'] = $postData['email'];
 
         }
-        if(isset($postData['password'])){
+        if(!empty($postData['password'])){
             if(!verifyMD5Code($postData['oldpwd'],$user_info['password'])){
                 $this->error('原始密码输入错误');
             }
