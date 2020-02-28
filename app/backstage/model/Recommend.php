@@ -27,6 +27,11 @@ class Recommend extends BaseModel
         self::STATUS2 => '上线',
     ];
 
+    public function getTitleAttr($title)
+    {
+        return htmlspecialchars_decode($title);
+    }
+
     //图片地址
     public function getImgAttr($url)
     {
