@@ -26,6 +26,16 @@ class Report extends BaseModel
         self::STATUS2 => '上线',
     ];
 
+    public function getTitleAttr($title)
+    {
+        return htmlspecialchars_decode($title);
+    }
+
+    public function getProfileAttr($profile)
+    {
+        return htmlspecialchars_decode($profile);
+    }
+
     //图片地址
     public function getImgAttr($url)
     {

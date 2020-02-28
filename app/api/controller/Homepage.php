@@ -148,7 +148,8 @@ class Homepage extends ApiBase {
         }
         $host = request()->root(true);
         array_walk($list, function (&$v) use($host) {
-
+            $v['name'] = htmlspecialchars_decode($v['name']);
+            $v['profile'] = htmlspecialchars_decode($v['profile']);
             if ($v['img'] && strpos($v['img'], 'http') === false)
             {
                 $v['img'] =  $host . $v['img'];
@@ -214,6 +215,8 @@ class Homepage extends ApiBase {
             $admin = new SysAdmin();
             $host = request()->root(true);
             array_walk($list, function(&$v) use ($admin, $host) {
+                $v['title'] = htmlspecialchars_decode($v['title']);
+                $v['profile'] = htmlspecialchars_decode($v['profile']);
                 if ($v['img'] && strpos($v['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $v['img'];
@@ -266,6 +269,8 @@ class Homepage extends ApiBase {
         }
 
         $video_info = Db::name('report')->where(['id' => $video_id])->field('id video_id,title,tag,profile,type,img,jump_url play_url,views,likes,collections,release_user,create_time')->find();
+        $video_info['title'] = htmlspecialchars_decode($video_info['title']);
+        $video_info['profile'] = htmlspecialchars_decode($video_info['profile']);
         $video_info['play_url'] = htmlspecialchars_decode($video_info['play_url']);
         $host = request()->root(true);
         $video_info['img'] = $host . $video_info['img'];
@@ -332,6 +337,8 @@ class Homepage extends ApiBase {
             $list = Db::name('report')->where($where)->field('id video_id,title,tag,profile,img,create_time')->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
             $host = request()->root(true);
             array_walk($list, function(&$v) use ($host) {
+                $v['title'] = htmlspecialchars_decode($v['title']);
+                $v['profile'] = htmlspecialchars_decode($v['profile']);
                 if ($v['img'] && strpos($v['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $v['img'];

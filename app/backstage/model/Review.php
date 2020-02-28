@@ -26,6 +26,16 @@ class Review extends BaseModel
 
     }
 
+    public function getTitleAttr($title)
+    {
+        return htmlspecialchars_decode($title);
+    }
+
+    public function getProfileAttr($profile)
+    {
+        return htmlspecialchars_decode($profile);
+    }
+
     public function homepageReviewList()
     {
         return $this->where(['status' => self::STATUS2])->field($this->show_fields)->order('sort ASC')->limit(4)->select()->toArray();

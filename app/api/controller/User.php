@@ -480,9 +480,9 @@ class User extends ApiBase
                 $v['collection_id'] = $v['id'];
                 unset($v['id'],$v['uid']);
                 $v['video_id'] = $video_info['video_id'];
-                $v['title'] = $video_info['title'];
+                $v['title'] = htmlspecialchars_decode($video_info['title']);
                 $v['tag'] = $video_info['tag'];
-                $v['profile'] = $video_info['profile'];
+                $v['profile'] = htmlspecialchars_decode($video_info['profile']);
                 if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $video_info['img'];
@@ -579,13 +579,14 @@ class User extends ApiBase
             $admin = new SysAdmin();
             array_walk($list, function(&$v) use ( $videoModel, $host, $admin) {
                 $video_info = $videoModel->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->where(['id' => $v['video_id']])->find();
+                $v['title'] = htmlspecialchars_decode($video_info['title']);
                 $v['user_id'] = $v['uid'];
                 $v['likes_id'] = $v['id'];
                 unset($v['id'], $v['uid']);
                 $v['video_id'] = $video_info['video_id'];
-                $v['title'] = $video_info['title'];
+                $v['title'] = htmlspecialchars_decode($video_info['title']);
                 $v['tag'] = $video_info['tag'];
-                $v['profile'] = $video_info['profile'];
+                $v['profile'] = htmlspecialchars_decode($video_info['profile']);
                 if ($video_info['img'] && strpos($video_info['img'], 'http') === false)
                 {
                     $v['img'] =  $host . $video_info['img'];

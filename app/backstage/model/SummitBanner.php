@@ -28,6 +28,11 @@ class SummitBanner extends BaseModel
 
     }
 
+    public function getNameAttr($name)
+    {
+        return htmlspecialchars_decode($name);
+    }
+
     //修改时间格式
     public function getStartTimeAttr($start)
     {
