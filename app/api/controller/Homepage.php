@@ -137,6 +137,7 @@ class Homepage extends ApiBase {
     public function summit()
     {
         $where['state'] = 1; //开放中的
+        $where['delete_time'] = ['<>', 1];
         $page = $this->request->post('page', 1, 'intval');
         $page_size = $this->request->post('page_size', 10, 'intval');
         $count = Db::name('category')->where($where)->count();

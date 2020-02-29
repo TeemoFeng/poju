@@ -32,10 +32,10 @@
 </head>
 <body>
 <div class="fixed-bg">
-   <img src="__IMG__/f1.png" class="f1 f-img"/>
-   <img src="__IMG__/f2.png" class="f2 f-img"/>
-   <img src="__IMG__/f3.png" class="f3 f-img"/>
-   <img src="__IMG__/f4.png" class="f4 f-img"/>
+   <img src="{$model.bg_top_left|default='__IMG__/f1.png'}" class="f1 f-img"/>
+   <img src="{$model.bg_bottom_left|default='__IMG__/f2.png'}" class="f2 f-img"/>
+   <img src="{$model.bg_bottom_right|default='__IMG__/f3.png'}" class="f3 f-img"/>
+   <img src="{$model.bg_top_right|default='__IMG__/f4.png'}" class="f4 f-img"/>
 </div>
 
 <div class="header animated fadeInDown">

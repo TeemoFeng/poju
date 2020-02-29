@@ -83,6 +83,47 @@
                         <input type="hidden" name="img" data-rander-model="unload" value="{$model.img|default=''}">
                     </div>
                 </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>背景图左上：</span></label>
+                    <div>
+                        <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                        <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+                        <div class="imglist"></div>
+                        <input type="hidden" name="bg_top_left" data-rander-model="unload" value="{$model.bg_top_left|default=''}">
+                    </div>
+                </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>背景图左下：</span></label>
+                    <div>
+                        <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                        <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+                        <div class="imglist"></div>
+                        <input type="hidden" name="bg_bottom_left" data-rander-model="unload" value="{$model.bg_bottom_left|default=''}">
+                    </div>
+                </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>背景图右上：</span></label>
+                    <div>
+                        <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                        <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+                        <div class="imglist"></div>
+                        <input type="hidden" name="bg_top_right" data-rander-model="unload" value="{$model.bg_top_right|default=''}">
+                    </div>
+                </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>背景图右下：</span></label>
+                    <div>
+                        <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                        <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+                        <div class="imglist"></div>
+                        <input type="hidden" name="bg_bottom_right" data-rander-model="unload" value="{$model.bg_bottom_right|default=''}">
+                    </div>
+                </div>
+
                 <div class="from-group">
                     <label class="from-label fl"><b>*</b><span>会场图【1200*auto】：</span></label>
                     <div>
