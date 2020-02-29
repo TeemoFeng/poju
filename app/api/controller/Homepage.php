@@ -137,15 +137,15 @@ class Homepage extends ApiBase {
     public function summit()
     {
         $where['state'] = 1; //开放中的
-        $where['delete_time'] = ['<>', 1];
+
         $page = $this->request->post('page', 1, 'intval');
         $page_size = $this->request->post('page_size', 10, 'intval');
-        $count = Db::name('category')->where($where)->count();
+        $count = Db::name('category')->where($where)->whereNull('delete_time')->count();
         $num = ceil($count/$page_size);
         if ($page > $num) {
             $list = [];
         } else {
-            $list = Db::name('category')->where($where)->field('id summit_id,name,img,start_time,end_time,address,number,profile')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $list = Db::name('category')->where($where)->whereNull('delete_time')->field('id summit_id,name,img,start_time,end_time,address,number,profile')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
         }
         $host = request()->root(true);
         array_walk($list, function (&$v) use($host) {
