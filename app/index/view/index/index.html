@@ -31,7 +31,7 @@
 
 </head>
 <body>
-<div class="fixed-bg">
+<div class="fixed-bg" id="body">
    <img src="{$model.bg_top_left|default='__IMG__/f1.png'}" class="f1 f-img"/>
    <img src="{$model.bg_bottom_left|default='__IMG__/f2.png'}" class="f2 f-img"/>
    <img src="{$model.bg_bottom_right|default='__IMG__/f3.png'}" class="f3 f-img"/>
@@ -455,6 +455,9 @@
     });
 </script>
 <script>
+    var bg_img = '{$model.bg_img}';
+    $("#body").css("background-image","url("+bg_img+")");
+
     if($('body').width()>1200){
         $('.video-tabs ul').mCustomScrollbar()
     };
@@ -494,6 +497,7 @@
  */
 $(function(){
     //team
+
   (function(){
         var dialog = $(".teamDetaile");
 
