@@ -28,7 +28,7 @@ class Extension extends Base
         $id = $this->request->param("id");
 
         $qrcode = new Qrcode();
-        $res = $qrcode->create_qrcode($id, 1);
+        $res = $qrcode->create_qrcode($id, 2);
         if ($res['code'] == 1) {
             //将小程序路径存储到会议表中
             $res = Category::update(['qrcode_path' => $res['path']], ['id' => $id]);

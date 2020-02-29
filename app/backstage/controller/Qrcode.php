@@ -109,7 +109,7 @@ class Qrcode extends Base
             $qrcode = array(
                 'scene'			=> 'id=' . $qrcode_id,//二维码所带参数
                 'width'			=> 430,
-                'page'			=> 'page/index/index',//二维码跳转路径（要已发布小程序）
+                'page'			=> 'page/conversation/index',//二维码跳转路径（要已发布小程序）
                 'auto_color'	=> true
             );
         } else {
