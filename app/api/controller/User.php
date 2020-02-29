@@ -665,6 +665,8 @@ class User extends ApiBase
     public function updateInfo()
     {
         $postData = $this->request->post();
+        $user = new UserModel();
+
         if (empty($postData['user_id'])) {
             $this->error('请先登录');
         }
@@ -672,6 +674,9 @@ class User extends ApiBase
             $update['avatar'] = $postData['avatar'];
         }
         if (!empty($postData['mk_id'])) {
+            if(!$user->isNotReg($postData['mk_id'],'mk_id')) {
+                $this->error('该账号已被注册');
+            }
             $update['mk_id'] = $postData['mk_id'];
         }
         if (!empty($postData['company'])) {
@@ -684,10 +689,16 @@ class User extends ApiBase
             $update['name'] = $postData['name'];
         }
         $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
+
+
         if (!empty($postData['mobile'])) {
             if (empty($postData['mobile_prefix'])) {
                 $this->error('请选择国家区号');
             }
+            if(!$user->isNotReg($postData['mobile'],'mobile', $postData['mobile_prefix'])) {
+                $this->error('该手机号已被注册');
+            }
+
             if (empty($postData['code'])) {
                 $this->error('请输入短信验证码');
             }
@@ -700,12 +711,16 @@ class User extends ApiBase
 
         }
         if(!empty($postData['email'])){
+            if(!$user->isNotReg($postData['email'],'email')) {
+                $this->error('该邮箱已被注册');
+            }
             if (empty($postData['email_code'])) {
                 $this->error('请输入邮箱验证码');
             }
             if($postData['email_code'] != session('emailCode' . $postData['email'])){
                 $this->error('邮件验证码输入错误');
             }
+
             $update['email'] = $postData['email'];
 
         }
