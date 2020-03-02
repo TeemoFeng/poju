@@ -196,6 +196,7 @@ function sys_repaire_url($url, $user_type = 1, $reverse = false)
         return str_replace($host, '', $url);
     } else {
         if (empty($url)) {
+            $host = \think\Config::get('morketing_avatar_url');
             return $host . '/static/api/img/avatar.png';
         }
         if($user_type == 1) {
