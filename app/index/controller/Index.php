@@ -16,7 +16,7 @@ class Index extends WebBase
         if(empty($sid)){
             $infoModel = $this->category->getLastOne();
         }else{
-            $infoModel = $this->category->find($sid);
+            $infoModel = $this->category->find($sid);``
         }
 
         //共创人/演讲嘉宾

@@ -191,12 +191,7 @@ function sys_uuid()
  */
 function sys_repaire_url($url, $user_type = 1, $reverse = false)
 {
-    if (empty($url)) {
-        return '';
-    }
-
     $host = request()->root(true);
-
     if ($reverse) {
         return str_replace($host, '', $url);
     } else {
