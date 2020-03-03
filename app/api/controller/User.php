@@ -100,7 +100,7 @@ class User extends ApiBase
      * @license /api/user/sendCode POST
      * @para string mobile_prefix 手机国际区号，默认86|Y
      * @para string mobile 手机号|Y
-     * @para string type  1:注册，2：手机登录，其他暂时可以不传|N
+     * @para string type  1:注册|修改手机号2：手机登录，其他暂时可以不传|N
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:1.请在20秒后再次发送,2.发送验证码失败。code=1:发送成功
      * @jsondata {"mobile_prefix":"86","mobile":"18339817892"}
