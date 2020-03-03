@@ -100,6 +100,7 @@ class User extends ApiBase
      * @license /api/user/sendCode POST
      * @para string mobile_prefix 手机国际区号，默认86|Y
      * @para string mobile 手机号|Y
+     * @para string type  1:注册，2：手机登录，其他暂时可以不传|N
      * @field string code   1:成功;0:失败
      * @field string msg    code=0:1.请在20秒后再次发送,2.发送验证码失败。code=1:发送成功
      * @jsondata {"mobile_prefix":"86","mobile":"18339817892"}
@@ -109,9 +110,22 @@ class User extends ApiBase
     {
         $mobile = $this->request->post('mobile');
         $mobile_prefix = $this->request->post('mobile_prefix') ?: '86'; //2020-01-04添加国外手机区号
+        $type = $this->request->post('type', 0);
+        $user = new UserModel();
         if (empty($mobile)) {
             $this->error('请填写手机号');
         }
+        if ($type == 1) {
+            if(!$user->isNotReg($mobile,'mobile', $mobile_prefix)) {
+                $this->error('该手机号已被注册');
+            }
+        }
+        if ($type == 2) {
+            if($user->isNotReg($mobile,'mobile', $mobile_prefix)) {
+                $this->error('该手机号尚未注册，请先注册');
+            }
+        }
+
         //判定该1分钟内是否已发送
         $session = Session::get('mobile' . $mobile);
         if ($session) {
