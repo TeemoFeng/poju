@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="top_menu">
-        <div class="fl"><img src="__BACKEND__/images/sys_logo2.png" height="50" width="50"  class="breathe-logo" /></div>
+        <div class="fl"><img src="<?php echo (isset($SysConfig['logo']) && ($SysConfig['logo'] !== '')?$SysConfig['logo']:'__BACKEND__/images/sys_logo2.png'); ?>" height="50" width="50"  class="breathe-logo" /></div>
         <div class="fl top_nav"><a href="http://dist.morketing.com" target="_blank">前台首页</a></div>
         <div class="fr dropdown">
             <a href="javascript:;">{$AdminInfo.account}</a>

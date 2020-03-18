@@ -45,6 +45,15 @@
             </div>
         </div>
         <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>网站logo：</span></label>
+            <div>
+                <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+                <a class="file-bg"><i class="iconfont icon-upload"></i>选择文件</a>
+                <div class="imglist"></div>
+                <input type="hidden" name="logo" data-rander-model="unload" value="{$sys_config.logo|default=''}" >
+            </div>
+        </div>
+        <div class="from-group">
             <label class="from-label fl"><b>*</b><span>首页微信分享配图：</span></label>
             <div>
                 <input type="file" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
@@ -72,6 +81,7 @@
         msg.unload("[name='gzh']");
         msg.unload("[name='wx_img']");
         msg.unload("[name='prize_banner']");
+        msg.unload("[name='logo']");
     </script>
 </body>
 </html>

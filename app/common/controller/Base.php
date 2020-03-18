@@ -1,11 +1,17 @@
 <?php
 namespace app\common\controller;
 use think\Controller;
+use app\backstage\model\SysConfig as SCModel;
+use think\View;
+
 class Base extends Controller
 {
     protected $AdminInfo;
     protected function _initialize()
     {
+        $sc = new SCModel();
+        $sys_config = $sc->column("value","name");
+        view::share('SysConfig', $sys_config);
        if ($this->request->session("UserInfo")==null)
        {
            $this->redirect(url("/backstage/login"));

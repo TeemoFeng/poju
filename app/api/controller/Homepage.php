@@ -588,4 +588,27 @@ class Homepage extends ApiBase {
 
     }
 
+    /***
+     * Action 网站logo
+     * @author ywf
+     * @license /api/homepage/webLogo POST
+     * @para string 无
+     * @field string code   1:成功;
+     * @jsondata
+     * @jsondatainfo
+     */
+    public function webLogo()
+    {
+        $sc = new SCModel();
+        $sys_config = $sc->column("value","name");
+        $host = request()->root(true);
+        if (empty($sys_config['logo'])) {
+            $logo = $host. '/static/backend/images/sys_logo2.png';
+        } else {
+            $logo = $host. $sys_config['logo'];
+        }
+
+        $this->success('',['logo' => $logo]);
+    }
+
 }
