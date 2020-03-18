@@ -28,7 +28,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo'];
 
     /***
      * Action 前台首页
