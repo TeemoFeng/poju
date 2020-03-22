@@ -626,11 +626,15 @@ class Homepage extends ApiBase {
         $sp = new Special();
 
         $banner_advert = $sp->where(['status' => 0])->order('displayorder ASC')->field('name,img,url')->find();
+        $host = request()->root(true);
         if (empty($banner_advert)) {
             $banner_advert = [];
+        } else {
+            $banner_advert['img'] = $host. $banner_advert['img'];
         }
         $this->success('',['banner_advert' => $banner_advert]);
     }
+
 
 
 
