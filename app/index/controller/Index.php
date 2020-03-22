@@ -21,9 +21,9 @@ class Index extends WebBase
         if (!empty($user_id)) {
             //获取用户信息
             $this->db_app = Db::connect('database_morketing');
-            $use_info = $this->db_app->table('user')->where(['id' => $user_id])->find();
+            $user_info = $this->db_app->table('user')->where(['id' => $user_id])->find();
             if (!empty($user_info)) {
-                Session::set('userInfo', $use_info);
+                Session::set('userInfo', $user_info);
             }
 
         }
