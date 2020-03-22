@@ -65,6 +65,7 @@
                     <label class="from-label fl"><b>*</b><span>Description：</span></label>
                     <div><input type="text" name="meta_description" value="{$model.meta_description|default=''}" class="from-text"></div>
                 </div>
+
                 <div class="from-group">
                     <label class="from-label fl"><b>*</b><span>LOGO：</span></label>
                     <div>
@@ -148,8 +149,22 @@
                     <div><input type="text" name="ticket" value="{$model.ticket|default=''}" class="from-text"></div>
                 </div>
                 <div class="from-group">
+                    <?php $check = isset($model) ? $model['sign_way'] : 0 ?>
+                    <label class="from-label fl"><b>*</b><span>报名方式：</span></label>
+                    <input  class="iptradio" type="radio" name="sign_way" value="1" {if $check == 0 || $check == 1 } echo checked {/if} /> 外部报名
+                    <input  class="iptradio" type="radio" name="sign_way" value="2"  {if $check == 2} echo checked {/if}/> 内部报名
+                </div>
+
+                <div class="from-group neibu">
+                    <label class="from-label fl"><b>*</b><span>内部报名填写表单：</span></label>
+                    <div>
+                        <select class="from-select" multiple="multiple" data-rander-model="selectize" lab="label" name="diy_form[]" data-url="{:url('backstage/category/getElemItems')}" data-value="{$model.diy_form|default=''}"></select>
+                    </div>
+                </div>
+
+                <div class="from-group waibu">
                     <label class="from-label fl"><b></b><span>报名地址：</span></label>
-                    <div><input type="text" name="enter" value="{$model.enter|default=''}" class="from-text"></div>
+                    <div><input type="text" name="enter"  value="{$model.enter|default=''}" class="from-text"></div>
                 </div>
 
                 <div class="from-group">
@@ -216,5 +231,30 @@
                 $(this).parent().siblings().css("color",log);
             }
         });
+
+        var sign_way=$("input[name=sign_way]:checked").val();
+        if (sign_way == "1") {
+            $(".neibu").css("display","none");
+            $(".waibu").css("display","block");
+        }
+        if (sign_way == "2") {
+            $(".neibu").css("display","block");
+            $(".waibu").css("display","none");
+        }
+
+        $("input[name=sign_way]").each(function(){
+            $(this).click(function(){
+                var sign_way = $(this).val();
+                if(sign_way=="1"){
+                    $(".neibu").css("display","none");
+                    $(".waibu").css("display","block");
+                }
+                if(sign_way=="2"){
+                    $(".neibu").css("display","block");
+                    $(".waibu").css("display","none");
+                }
+            });
+        });
     });
+
 </script>

@@ -8,6 +8,8 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Category as T;
+use think\Db;
+
 class Category extends Base
 {
     public function items()
@@ -38,6 +40,16 @@ class Category extends Base
         $cg = new T();
         if ($this->request->isPost()){
             $data = $this->request->post();
+
+            if ($data['sign_way'] == 2) {
+                if (empty($data['diy_form'])) {
+                    return json(['code' => 0, 'msg' => '内部报名请选择需要填写的表单项']);
+                }
+                $data['diy_form'] = implode(',',$data['diy_form']) .',';
+            } else {
+                unset($data['diy_form']);
+            }
+
             if ($data['id']==0){
                 unset($data['id']);
                 return $cg->addNode($data);
@@ -48,7 +60,8 @@ class Category extends Base
             $id = $this->request->param("id");
             $pid = $this->request->param("pid");
             if ($id != null){
-                $this->assign("model",$cg->find($id));
+                $model = $cg->find($id);
+                $this->assign("model", $model);
             }
             $this->assign('tree_pid',$pid?:0);
             return $this->fetch();
@@ -100,5 +113,13 @@ class Category extends Base
         $prop = $this->request->param('prop');
         $n = $cg->where("id","in",$idlist)->setField($act,$prop);
         return json($n>0?["code"=>1,"msg"=>"设置成功！"]:["code"=>2,"msg"=>"当前没记录属性发生改变"]);
+    }
+
+    public function getElemItems()
+    {
+        //从官网后去填写标签
+        $this->db_app = Db::connect('database_morketing');
+        $items = $this->db_app->table('diy_form')->select();
+        return json($items);
     }
 }

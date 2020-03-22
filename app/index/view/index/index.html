@@ -309,7 +309,12 @@
         <p class="wow animated fadeInUp">{$SysConfig.copyright|default=''} <a href="http://www.beian.miit.gov.cn" target="_blank">{$SysConfig.beian|default=''}</a></p>
     </div>
 </div>
-<div class="footfix"><a href="{$model.enter|default=''}" target="_blank" class="signBtn"><i class="icon icon_b"></i>我要报名</a>
+<div class="footfix">
+    {if $model.sign_way == 1}
+    <a href="{$model.enter|default=''}" target="_blank" class="signBtn"><i class="icon icon_b"></i>我要报名</a>
+    {else /}
+    <a href="javascript:;" class="signBtn baoming" data-id="{$model.id}"><i class="icon icon_b"></i>我要报名</a>
+    {/if}
     <a href="javascript:;" class="spBtn"><i class="icon icon_z"></i>我要赞助
     <div class="emailDiv"> <span>成为大会赞助商请联系 ：</span>{$SysConfig.zanzhu}</div></a>
     <a href="javascript:;" class="signBtn dec_btn"><i class="icon icon_dec"></i>奖项申报</a>
@@ -564,7 +569,8 @@ $(function(){
     })();
 });
 
- //点击项目申报弹窗
+
+    //点击项目申报弹窗
    
     $(".footfix .dec_btn").on("click", function(){
 		   
@@ -600,11 +606,31 @@ $(function(){
                 }
 				
             });
-		  })	
+		  })
 
 </script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
+
+    //获取用户是否登录
+    var receive =  window.opener["filter"];
+    console.log(receive);
+    //点击报名填写表单
+    $(".footfix .baoming").on("click", function () {
+        var id = $(this).attr('data-id');
+        $.get('/index/index/getform?id=' + id, function (data) {
+            var index = layer.open({
+                type: 1,
+                title: false,
+                fixed: false,
+                area: ["500px", "400px"],
+                skin: 'financing-layer',
+                content: data,
+                anim: 5
+            });
+        });
+    });
+
     function isWeiXin(){
         var ua = window.navigator.userAgent.toLowerCase();
         if(ua.match(/MicroMessenger/i) == 'micromessenger'){

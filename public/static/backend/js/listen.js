@@ -150,7 +150,12 @@
                             selectpicker.data("onchange")?formRequest.getFunction(selectpicker.data("onchange")).apply(this, [value]):"";
                         }
                     });
-                        selectpicker.get(0).nodeName != "INPUT" && s[0].selectize.setValue(selectpicker.data("value"));
+                        selectpicker.get(0).nodeName != "INPUT" &&
+                        function () {
+                            selectpicker[0].hasAttribute('multiple')?
+                                s[0].selectize.setValue(selectpicker.data("value").split(',')):
+                                s[0].selectize.setValue(selectpicker.data("value"));
+                        }();
                     },"json")
                     :(function(){
                         var s = selectpicker.selectize({create: true});
