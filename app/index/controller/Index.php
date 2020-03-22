@@ -9,6 +9,7 @@ use app\backstage\model\Guest;
 use app\backstage\model\Topic;
 use app\backstage\model\Video;
 use think\Db;
+use think\Session;
 
 class Index extends WebBase
 {
@@ -16,6 +17,17 @@ class Index extends WebBase
     {
 
         $sid = $this->request->param('sid');
+        $user_id = $this->request->param('u');
+        if (!empty($user_id)) {
+            //获取用户信息
+            $this->db_app = Db::connect('database_morketing');
+            $use_info = $this->db_app->table('user')->where(['id' => $user_id])->find();
+            if (!empty($user_info)) {
+                Session::set('userInfo', $use_info);
+            }
+
+        }
+
         if(empty($sid)){
             $infoModel = $this->category->getLastOne();
         }else{
@@ -129,33 +141,38 @@ class Index extends WebBase
     {
 
         $id = $this->request->param('id');
+        $user_info = Session::get('userInfo');
+        if (empty($user_info)) {
+            return json(['code'=>3,'msg'=>'您尚未登录，请先登录！']);
+        }
         $model = $this->category->where(['id' => $id])->find();
         if(empty($model)){
             return json(['code'=>2,'msg'=>'请求出错了！']);
         }
-        return $this->createForm($model['diy_form'], $id);
+        return json($this->createForm($model['diy_form'], $id, $user_info));
 
     }
 
-    private function createForm($str = null,$infoId)
+    private function createForm($str = null, $cid, $user_info)
     {
         //获取官网设置的form表单
         $this->db_app = Db::connect('database_morketing');
-        $elemItem = $this->db_app->table('diy_form')->select();
-
 
         $idList = explode(',',$str);
         $formStrHead = '<div class="financing-modal upload-financing-modal" id="report-modal"><div class="modal-dialog"><div class="modal-content"><div class="f-table">'.
-            '<form action="'.url('index/index/subInfo').'" ajax="true" novalidate="novalidate" data-valid="true" method="post" success="mk.msg.tips">'.
-            '<input type="hidden" name="cid" value="'.$infoId.'"><ul>';
+            '<form action="'.url('index/index/subInfo').'" ajax="true" novalidate="novalidate"  method="post" success="msg.tips">'.
+            '<input type="hidden" name="cid" value="'.$cid.'"><input type="hidden" name="user_id" value="'.$user_info['id'].'"><ul>';
         $formStrEnd = '<li><div class="f-name"></div><div class="f-con clearfix"><div class="f-btns"><button class="set-btn">提交</button></div></div></li></ul></form></div></div></div></div>';
         foreach ($idList as $item){
-//            $elemItem = DiyForm::get($item);
             $elemItem = $this->db_app->table('diy_form')->where(['id' => $item])->find();
             $validate = explode(',',$elemItem['validate']);
             $v = '';
             if (!empty($elemItem)) {
+                if (isset($user_info[$elemItem['name']]) && !empty($user_info[$elemItem['name']])) {
+                    $v .= ' value="'.$user_info[$elemItem['name']].'"';
+                }
                 foreach ($validate as $vItem){
+
                     switch ($vItem){
                         case 'required':
                             $v.=' required required-msg="请填写'.$elemItem['label'].'"';
@@ -204,30 +221,68 @@ class Index extends WebBase
             }
 
         }
-        return $formStrHead.$formStrEnd;
+        return ['code' => 1, 'data' => $formStrHead.$formStrEnd];
 
     }
 
     public function subInfo()
     {
-        // if(empty($this->UserInfo)){
-        //     return json(['code'=>2,'msg'=>'未登录！']);
-        // }
         $postData = $this->request->post();
+        //查看该用户是否已经报名
+        $is_post = Db::name('summit_enroll')->where(['user_id' => $postData['user_id'], 'cid' => $postData['cid']]);
+        if (!empty($is_post)) {
+            return json(['code'=> 0,'msg'=>'该会议您已报名']);
+        }
+        $this->db_app = Db::connect('database_morketing');
+        //获取会议id
+        $cid = $postData['cid'];
+        if (empty($cid)) {
+            return json(['code'=> 0,'msg'=>'出现未知错误']);
+        }
+        $diy_form = $this->category->where(['id' => $cid])->value('diy_form');
+        $idList = explode(',',$diy_form);
+        foreach ($idList as $item){
+            $elemItem = $this->db_app->table('diy_form')->where(['id' => $item])->find();
+            $validate = explode(',',$elemItem['validate']);
+            $v = '';
+            if (!empty($elemItem)) {
+                foreach ($validate as $vItem){
+                    $error = 0;
+                    switch ($vItem){
+                        case 'required':
+                            if (empty($postData[$elemItem['name']])) {
+                                $error = 1;
+                                $msg = $elemItem['label'] . '不能为空';
+                            }
+                            break;
+                        case 'email':
+                            $result  = filter_var($postData[$elemItem['name']], FILTER_VALIDATE_EMAIL);
+                            if ($result === false) {
+                                $error = 1;
+                                $msg = '请填写正确的' . $elemItem['label'];
+                            }
+                            break;
+                        case 'mobile':
+                            if(!preg_match("/^1[345678]{1}\d{9}$/",$postData['mobile'])) {
+                                $error = 1;
+                                $msg = '请填写正确的' . $elemItem['label'];
+                            }
+                            break;
+                    }
+                    if ($error == 1) {
+                        return json(['code'=> 0,'msg'=> $msg]);
+                    }
+                }
+
+
+            }
+
+        }
+
         if (!empty($postData['name'])) {
             $res = preg_match('/\d+/', $postData['name']);
             if ($res) {
                 return json(['code'=> 0,'msg'=>'姓名格式不正确']);
-            }
-        }
-        if (!empty($postData['mobile'])) {
-            if(!preg_match("/^1[345678]{1}\d{9}$/",$postData['mobile'])) {
-                return json(['code' => 0, 'msg' => '请填写正确的手机号']);
-            }
-        }
-        if (!empty($postData['email'])) {
-            if (!filter_var($postData['email'], FILTER_VALIDATE_EMAIL)) {
-                return json(['code' => 0, 'msg' => '请填写正确的邮箱']);
             }
         }
 
@@ -250,14 +305,9 @@ class Index extends WebBase
             }
         }
 
-        // $postData['uid'] = $this->UserInfo['id'];
         $postData['sub_time'] = time();
-        //$isSub = DiyInfo::where(['uid'=>$this->UserInfo['id'],'tid'=>$postData['tid']])->find();
-        // if(empty($isSub)){
-        DiyInfo::create($postData,true);
-        //  }
-        cookie($postData['tid'],time(),604800);
-        return json(['code'=>1,'msg'=>'提交成功,再次【点击下载】即可下载完整报告']);
+        Db::name('summit_enroll')->insert($postData);
+        return json(['code'=>1,'msg'=>'报名成功']);
     }
 
 }

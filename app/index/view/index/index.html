@@ -612,22 +612,31 @@ $(function(){
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
 
-    //获取用户是否登录
-    var receive =  window.opener["filter"];
-    console.log(receive);
     //点击报名填写表单
     $(".footfix .baoming").on("click", function () {
         var id = $(this).attr('data-id');
         $.get('/index/index/getform?id=' + id, function (data) {
-            var index = layer.open({
-                type: 1,
-                title: false,
-                fixed: false,
-                area: ["500px", "400px"],
-                skin: 'financing-layer',
-                content: data,
-                anim: 5
-            });
+            if (data.code == 1) {
+                var index = layer.open({
+                    type: 1,
+                    title: false,
+                    fixed: false,
+                    area: ["500px", "500px"],
+                    skin: 'financing-layer',
+                    content: data.data,
+                    anim: 5
+                });
+            } else if(data.code == 2) {
+                layer.msg(data.msg);
+            } else if(data.code == 3) {
+                layer.msg(data.msg, {
+                    icon: 2,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.href="http://dist.morketing.com/user/login";
+                });
+            }
+
         });
     });
 
