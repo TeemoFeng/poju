@@ -229,7 +229,7 @@ class Index extends WebBase
     {
         $postData = $this->request->post();
         //查看该用户是否已经报名
-        $is_post = Db::name('summit_enroll')->where(['user_id' => $postData['user_id'], 'cid' => $postData['cid']]);
+        $is_post = Db::name('summit_enroll')->where(['user_id' => $postData['user_id'], 'cid' => $postData['cid']])->find();
         if (!empty($is_post)) {
             return json(['code'=> 0,'msg'=>'该会议您已报名']);
         }
