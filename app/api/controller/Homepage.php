@@ -11,6 +11,7 @@ namespace app\api\controller;
 use app\api\library\ApiBase;
 use app\backstage\model\Report;
 use app\backstage\model\Review;
+use app\backstage\model\Special;
 use app\backstage\model\SummitBanner;
 use app\backstage\model\Recommend as RecommendModel;
 use app\backstage\model\SysAdmin;
@@ -28,7 +29,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert'];
 
     /***
      * Action 前台首页
@@ -610,5 +611,27 @@ class Homepage extends ApiBase {
 
         $this->success('',['logo' => $logo]);
     }
+
+    /***
+     * Action banner图广告位
+     * @author ywf
+     * @license /api/homepage/bannerAdvert POST
+     * @para string 无
+     * @field string code   1:成功;
+     * @jsondata 空
+     * @jsondatainfo
+     */
+    public function bannerAdvert()
+    {
+        $sp = new Special();
+
+        $banner_advert = $sp->where(['status' => 0])->order('displayorder ASC')->field('name,img,url')->find();
+        if (empty($banner_advert)) {
+            $banner_advert = [];
+        }
+        $this->success('',['banner_advert' => $banner_advert]);
+    }
+
+
 
 }
