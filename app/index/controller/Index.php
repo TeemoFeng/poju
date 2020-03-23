@@ -241,10 +241,15 @@ class Index extends WebBase
         }
         $diy_form = $this->category->where(['id' => $cid])->value('diy_form');
         $idList = explode(',',$diy_form);
+        $this->db_app = Db::connect('database_morketing');
+        $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
+        $user_update = []; //完善用户信息
         foreach ($idList as $item){
             $elemItem = $this->db_app->table('diy_form')->where(['id' => $item])->find();
             $validate = explode(',',$elemItem['validate']);
-            $v = '';
+            if (isset($user_info[$elemItem['name']]) && empty($user_info[$elemItem['name']])) {
+                $user_update[$elemItem['name']] = $postData[$elemItem['name']];
+            }
             if (!empty($elemItem)) {
                 foreach ($validate as $vItem){
                     $error = 0;
@@ -306,7 +311,11 @@ class Index extends WebBase
         }
 
         $postData['sub_time'] = time();
-        Db::name('summit_enroll')->insert($postData);
+        $res = Db::name('summit_enroll')->insert($postData);
+        $this->db_app->table('user')->where(['id' => $postData['user_id']])->update($user_update);
+        if ($res === false) {
+            return json(['code'=> 0,'msg'=>'报名失败请重试']);
+        }
         return json(['code'=>1,'msg'=>'报名成功']);
     }
 
