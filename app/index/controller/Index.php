@@ -312,7 +312,10 @@ class Index extends WebBase
 
         $postData['sub_time'] = time();
         $res = Db::name('summit_enroll')->insert($postData);
-        $this->db_app->table('user')->where(['id' => $postData['user_id']])->update($user_update);
+        if (!empty($user_update)) {
+            $this->db_app->table('user')->where(['id' => $postData['user_id']])->update($user_update);
+        }
+
         if ($res === false) {
             return json(['code'=> 0,'msg'=>'报名失败请重试']);
         }

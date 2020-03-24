@@ -15,7 +15,7 @@
     <h5>近期推荐</h5>
 </div>
 <div class="action-bar">
-    <a href="{:url('/backstage/Recommend/add')}" ajax="true" model-area="800px,550px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    <a href="{:url('/backstage/Recommend/add')}" ajax="true" model-area="800px,450px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
     <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
     <div class="dropdown">
         <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
@@ -62,7 +62,7 @@
                 {else /}
                 <a class="act_btn" href="{:url('backstage/Recommend/status',['id'=>$item.id, 'status' => 1])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要下线吗？">下线</a>
                 {/if}
-                <a class="act_btn" href="{:url('backstage/Recommend/add',['id'=>$item.id])}" ajax="true" model-area="800px,550px" success="msg.model">编辑</a>
+                <a class="act_btn" href="{:url('backstage/Recommend/add',['id'=>$item.id])}" ajax="true" model-area="800px,450px" success="msg.model">编辑</a>
                 <a class="act_btn" href="{:url('backstage/Recommend/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要删除该记录吗？">删除</a>
             </td>
         </tr>

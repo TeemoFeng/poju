@@ -1344,22 +1344,23 @@
 .financing-modal .f-table ul li {
     position: relative;
     margin-bottom: 22px;
+    line-height: 40px;
 }
 
 .financing-modal .f-table .f-name {
     width: 100px;
     text-align: right;
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 0;
+    transform: translateY(-50%);
     font-weight: bold;
-    height: 40px;
-    line-height: 40px;
+    line-height: 1.5;
 }
-
 .financing-modal .f-table .f-con {
     padding-left: 120px;
     margin-right: 30px;
+    line-height: 40px;
     display: inline-block;
     width: 100%;
     -webkit-box-sizing: border-box;
@@ -1379,8 +1380,8 @@
 }
 
 
-.financing-modal .f-table .f-con label{ height: 20px; line-height: 20px; display: inline-flex; display: -webkit-inline-flex; margin-right: 10px;}
-.financing-modal .f-table .f-con .f-input-auto{ width: auto; margin-left: 10px; position: relative; top:2px;}
+.financing-modal .f-table .f-con label{ height: 20px; line-height: 20px; display: inline-flex; display: -webkit-inline-flex; margin-right: 10px;align-items:center}
+.financing-modal .f-table .f-con .f-input-auto{ width: auto; margin-left: 10px; margin-right:5px;position: relative;height:auto; }
 .financing-modal .f-table .f-con .f-ttarea{ height:auto; line-height: 20px; padding:12px;}
 .financing-modal .f-table .f-con select{appearance:menulist;-moz-appearance: menulist; -webkit-appearance: menulist;}
 
@@ -1406,7 +1407,7 @@
     line-height: normal;
 }
 
-.upload-financing-modal .f-table{padding:40px 40px 20px 20px;}
+.upload-financing-modal .f-table{padding:40px 40px 20px 40px;}
 .upload-financing-modal .modal-dialog{ margin: 0; max-height: auto;}
 .upload-mark {
     position: relative;
