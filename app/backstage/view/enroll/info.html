@@ -1,0 +1,55 @@
+<table class="ord_table">
+    <tr>
+        <td rowspan="4" style="padding: 0;width: 120px;text-align: center;"><img src="{$model.avatar|default=''}" style="max-width: 90%"></td>
+        <td style="width: 130px">名字：</td>
+        <td>{$model.name|default=''}</td>
+        <td style="width: 130px">账号：</td>
+        <td>{$model.mk_id|default=''}</td>
+    </tr>
+    <tr>
+        <td>邮箱：</td>
+        <td>{$model.email|default=''}</td>
+        <td>手机号：</td>
+        <td>{$model.mobile|default=''}</td>
+    </tr>
+    <tr>
+        <td>公司：</td>
+        <td>{$model.company|default=''}</td>
+        <td>部门：</td>
+        <td>{$model.department|default=''}</td>
+    </tr>
+    <tr>
+        <td>职位：</td>
+        <td>{$model.position|default=''}</td>
+        <td>账号类别:</td>
+        <td>{if $model.tid==0}
+            <b style="color: #888">普通会员</b>
+            {elseif $model.tid==1/}
+            <b style="color: #aa00aa">机构号</b>
+            {elseif $model.tid==2/}
+            <b style="color: #aa00aa">官方账号</b>
+            {elseif $model.tid==3 /}
+            <b style="color: #f00">特邀作者</b>
+            {/if}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">是否出海:
+            {if $model.oversea==0}
+                是
+            {elseif /}
+                否
+            {/if}
+        </td>
+        <td colspan="5">出海国家: {$model.country}</td>
+    </tr>
+    <tr>
+        <td colspan="5">提交时间: {$model.sub_time}</td>
+    </tr>
+
+    <tr>
+        <td colspan="5">个人简介:<br>
+            {$model.intro|default=''}
+        </td>
+    </tr>
+</table>
