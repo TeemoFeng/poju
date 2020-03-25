@@ -6,12 +6,32 @@
     <title></title>
     {include file="/shared/head"}
     <script type="text/javascript" src="__BACKEND__/js/jquery.dragsort-0.5.2.min.js"></script>
+    <script src="__BACKEND__/js/jquery.validate.min.js"></script>
+    <script src="__BACKEND__/js/selectize.min.js"></script>
+    <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <style>
+        .search{display: inline-block;}
+        .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+        .k{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+        input.search-btn{height: 30px;width: 50px;background: #f71435;color: #fff;border: none}
+    </style>
+
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
 <div class="frame-title">
     <h5>用户报名列表</h5>
 </div>
 <div class="action-bar">
+    <div class="search">
+        <form method="get" action="{:url('backstage/enroll/items')}">
+            会议名称 <input type="text" name="summit_name" placeholder="填写要搜索的会议名" class="from-text k" value="{$summit_name|default=''}">
+            <input type="text" name="sd" class="from-text date" id="start_time" data-rander-model="date" value="{$sd|default=''}" placeholder="报名开始时间"> 至
+            <input type="text" name="ed" class="from-text date" id="end_time" data-rander-model="date" value="{$ed|default=''}" placeholder="报名结束时间">
+
+            <input type="submit" class="search-btn" value="搜索" onclick="return checkForm()" />
+        </form>
+    </div>
+
     <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
     <div class="dropdown">
         <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
@@ -19,6 +39,7 @@
             <li batch='true' success="msg.tips" data-url="{:url('/backstage/enroll/deleteInBatch')}" data-confirm="确定要删除这些记录吗？">删除所选记录</li>
         </ul>
     </div>
+    <a href="{:url('backstage/enroll/getExcel',['summit_name'=>$summit_name,'sd'=>$sd, 'ed' => $ed])}" target="_blank"><i class="iconfont icon-daochu"></i>数据导出</a>
 </div>
 <form action="{:url('backstage/enroll/sort')}" ajax="true" success="msg.tips" method="post">
     <table class="ord_table" theme="no-rl-border">
@@ -66,3 +87,26 @@
 </form>
 </body>
 </html>
+<script>
+
+    laydate.render({
+        elem: '#start_time'
+    });
+
+    laydate.render({
+        elem: '#end_time'
+    });
+
+    function  checkForm() {
+        var start_time = $('#start_time').val();
+        var end_time = $('#end_time').val();
+        if (start_time != '' && end_time != '') {
+            if (start_time > end_time) {
+                layer.msg('开始时间不能大于结束时间', { icon: 2, time: 2000 });
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>
