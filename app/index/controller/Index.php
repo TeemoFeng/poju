@@ -204,8 +204,8 @@ class Index extends WebBase
                     case 3:
                         $option = explode(',',$elemItem['option']);
                         $opt = '';
-                        foreach ($option as $oItem){
-                            $opt.='<label><input class="f-input f-input-auto" name="'.$elemItem['name'].'" type="radio"> '. $oItem.'</label>';
+                        foreach ($option as $k => $oItem){
+                            $opt.='<label><input class="f-input f-input-auto" name="'.$elemItem['name'].'" type="radio" value="'.$k.'"> '. $oItem.'</label>';
                         }
                         $formStrHead.='<li><div class="f-name">'.$elemItem['label'].'：</div><div class="f-con">'.$opt.'</div></li>';
                         break;
