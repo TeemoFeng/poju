@@ -6,10 +6,11 @@
             <input class="from-text" id="title" name="title" type="text" value="{$model.title|default=''}" />
         </div>
     </div>
+
     <div class="from-group">
-        <label class="from-label fl "><b>*</b><span>标签：</span></label>
+        <label class="from-label fl"><b>*</b><span>标签：</span></label>
         <div>
-            <input class="from-text" id="tag" name="tag" type="text" value="{$model.tag|default=''}" />
+            <select class="from-select" data-rander-model="selectize" name="tag" data-url="{:url('backstage/Recommend/getTagList')}" data-value="{$model.tag|default=1}"></select>
         </div>
     </div>
 

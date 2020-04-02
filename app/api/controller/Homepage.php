@@ -9,6 +9,7 @@
 namespace app\api\controller;
 
 use app\api\library\ApiBase;
+use app\backstage\controller\Recommend;
 use app\backstage\model\Report;
 use app\backstage\model\Review;
 use app\backstage\model\Special;
@@ -29,7 +30,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag'];
 
     /***
      * Action 前台首页
@@ -71,9 +72,31 @@ class Homepage extends ApiBase {
     }
 
     /***
+     * Action 近期推荐标签分类
+     * @author ywf
+     * @license /api/homepage/recommendTag POST
+     * @para string type  无
+     * @field string code   1:成功;0:失败
+     * @field string msg    无提示
+     * @field string list  列表
+     * @field string list.id  标签id
+     * @field string list.name  标签名
+     * @jsondata
+     * @jsondatainfo
+     */
+    public function recommendTag()
+    {
+        $recommendController = new Recommend();
+        $list = $recommendController->getTagList();
+        $this->success('', ['list' => $list]);
+    }
+
+
+    /***
      * Action 近期推荐列表页
      * @author ywf
      * @license /api/homepage/recommend POST
+     * @para string tag  标签类型：默认1|Y
      * @para string page  页面数,默认1|Y
      * @para string page_size  一页显示条数,默认28|N
      * @field string code   1:成功;0:失败
@@ -94,19 +117,20 @@ class Homepage extends ApiBase {
      */
     public function recommend()
     {
+        $tag = $this->request->post('tag', 1, 'intval');
         $page = $this->request->post('page', 1, 'intval');
         $page_size = $this->request->post('page_size', 28, 'intval');
         if (!is_numeric($page_size) || $page_size == 0) {
             $page_size = 28;
         }
         $recommendModel = new RecommendModel();
-        $count = $recommendModel->count();
+        $count = $recommendModel->where(['tag' => $tag])->count();
 
         $num = ceil($count/$page_size);
         if ($page > $num) {
             $list = [];
         } else {
-            $list = $recommendModel->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
+            $list = $recommendModel->where(['tag' => $tag])->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
 
         }
         $this->success('', ['count' => $count, 'list' => $list]);

@@ -21,6 +21,10 @@ class Recommend extends BaseModel
         self::TYPE1 => '普通轮播广告位',
         self::TYPE2 => '固定强推广告位',
     ];
+    public static $tags = [
+        self::TYPE1 => 'Morketing官方活动',
+        self::TYPE2 => '行业活动',
+    ];
 
     public static $status = [
         self::STATUS1 => '下线',

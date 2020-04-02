@@ -19,6 +19,7 @@ class Recommend extends Base
 
         $this->assign("items", $list);
         $this->assign("type", RecommendModel::$types);
+        $this->assign("tag", RecommendModel::$tags);
         $this->assign('status_str', RecommendModel::$status);
         return $this->fetch();
     }
@@ -98,6 +99,23 @@ class Recommend extends Base
             [
                 'id' => '2',
                 'name' => '固定强推广告位',
+            ],
+        ];
+        return $list;
+
+    }
+
+    //获取标签列表
+    public function getTagList()
+    {
+        $list = [
+            [
+                'id' => '1',
+                'name' => 'Morketing官方活动',
+            ],
+            [
+                'id' => '2',
+                'name' => '行业活动',
             ],
         ];
         return $list;
