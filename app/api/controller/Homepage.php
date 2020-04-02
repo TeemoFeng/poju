@@ -86,8 +86,7 @@ class Homepage extends ApiBase {
      */
     public function recommendTag()
     {
-        $recommendController = new Recommend();
-        $list = $recommendController->getTagList();
+        $list = \app\backstage\model\Recommend::$list;
         $this->success('', ['list' => $list]);
     }
 

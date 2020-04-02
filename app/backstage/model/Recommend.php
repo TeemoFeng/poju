@@ -15,6 +15,17 @@ class Recommend extends BaseModel
     const STATUS1 = 1;
     const STATUS2 = 2;
 
+    public static $list = [
+        [
+            'id' => '1',
+            'name' => 'Morketing官方活动',
+        ],
+        [
+            'id' => '2',
+            'name' => '行业活动',
+        ],
+    ];
+
     public $show_fields = 'id recommend_id,title,tag,start_time,end_time,address,type,is_show,img,jump_url,views';
     protected $resultSetType = 'collection';
     public static $types = [

@@ -108,16 +108,7 @@ class Recommend extends Base
     //获取标签列表
     public function getTagList()
     {
-        $list = [
-            [
-                'id' => '1',
-                'name' => 'Morketing官方活动',
-            ],
-            [
-                'id' => '2',
-                'name' => '行业活动',
-            ],
-        ];
+        $list = \app\backstage\model\Recommend::$list;
         return $list;
 
     }
