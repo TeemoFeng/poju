@@ -47,6 +47,11 @@ class Recommend extends BaseModel
         return htmlspecialchars_decode($title);
     }
 
+    public function getTagAttr($k)
+    {
+        return Recommend::$tags[$k];
+    }
+
     //图片地址
     public function getImgAttr($url)
     {
@@ -70,7 +75,8 @@ class Recommend extends BaseModel
     //活动推荐固定广告位
     public function recommendFixed()
     {
-        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(3)->select()->toArray();
+        $list =  $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(3)->select()->toArray();
+        return $list;
 
     }
 
