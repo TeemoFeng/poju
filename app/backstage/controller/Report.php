@@ -54,7 +54,6 @@ class Report extends Base
             if ($postData['type'] == 2) {
                 $auto_play = '&autoplay=true';
                 if (!strpos($postData['jump_url'],'youku.com' ) && !strpos($postData['jump_url'],'live.vhall.com' )) {
-                    dump(12);die;
                     $postData['jump_url'] = $postData['jump_url'] . $auto_play;
                 }
             }
