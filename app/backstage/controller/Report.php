@@ -50,9 +50,11 @@ class Report extends Base
             if (!is_numeric($postData['sort'])) {
                 return json(['code' => 0, 'msg' => '展示顺序格式错误']);
             }
+
             if ($postData['type'] == 2) {
                 $auto_play = '&autoplay=true';
-                if (!strpos($postData['jump_url'],'youku.com' ) || !strpos($postData['jump_url'],'live.vhall.com' )) {
+                if (!strpos($postData['jump_url'],'youku.com' ) && !strpos($postData['jump_url'],'live.vhall.com' )) {
+                    dump(12);die;
                     $postData['jump_url'] = $postData['jump_url'] . $auto_play;
                 }
             }

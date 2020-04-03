@@ -19,7 +19,6 @@ class Recommend extends Base
 
         $this->assign("items", $list);
         $this->assign("type", RecommendModel::$types);
-        $this->assign("tag", RecommendModel::$tags);
         $this->assign('status_str', RecommendModel::$status);
         return $this->fetch();
     }
