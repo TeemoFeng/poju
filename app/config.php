@@ -259,5 +259,5 @@ return [
         'doc' => ['doc','docx','xls','xlsx','ppt','pptx','pdf','txt','md','xml'],
     ],
 
-    'morketing_avatar_url' => 'http://test.morketing.com',
+    'morketing_avatar_url' => 'http://www.morketing.com',
 ];
