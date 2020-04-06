@@ -251,10 +251,23 @@ class User extends ApiBase
         if ($postData['password1'] != $postData['password2']) {
             $this->error('两次输入的密码不一致');
         }
+        if (empty($postData['code'])) {
+            $this->error('短信验证码不能为空');
+        }
+        if ($postData['direction'] == 0) {
+            if (empty($postData['company'])) {
+                $this->error('公司名不能为空');
+            }
+            if (empty($postData['position'])) {
+                $this->error('职位不能为空');
+            }
+        }
+
         $session = Session::get('mobile' . $postData['mobile']);
         if ($postData['code'] != $session['code']) {
             $this->error('验证码错误');
         }
+
         $mobile = is_mobile();
         $postData['source'] = 5;
         if ($mobile) {
@@ -271,7 +284,7 @@ class User extends ApiBase
             $imgModel = getImage($oauth['avatar'],'./upload/avatar/'.date('Y-m').'/',$oauth['unionid']);
             $postData['avatar'] = $imgModel['save_path'];
         }
-        unset($postData['password1'],$postData['password2']);
+        unset($postData['password1'], $postData['password2'], $postData['code'], $postData['direction']);
         $uid = UserModel::allowField(true)->insertGetId($postData);
         if ($uid !== false) {
             if (!empty($postData['oauth'])) {
