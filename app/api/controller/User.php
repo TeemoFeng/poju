@@ -281,7 +281,7 @@ class User extends ApiBase
         if(!empty($postData['oauth'])){
             $oauth = $this->db_app->table('oauth_third')->where(['unionid' => $postData['oauth']])->find();
             $postData['nickname'] = $oauth['nickname'];
-            $imgModel = getImage($oauth['avatar'],'./upload/avatar/'.date('Y-m').'/',$oauth['unionid']);
+            $imgModel = getImage($oauth['avatar'],'/upload/avatar/'.date('Y-m').'/',$oauth['unionid'] . 'png');
             $postData['avatar'] = $imgModel['save_path'];
         }
         unset($postData['password1'], $postData['password2'], $postData['code'], $postData['direction']);
