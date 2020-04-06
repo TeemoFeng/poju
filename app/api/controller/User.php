@@ -285,11 +285,11 @@ class User extends ApiBase
             $postData['avatar'] = $imgModel['save_path'];
         }
         unset($postData['password1'], $postData['password2'], $postData['code'], $postData['direction']);
-        $uid = UserModel::allowField(true)->insertGetId($postData);
-        if ($uid !== false) {
+        $user = UserModel::create($postData,true);
+        if ($user !== false) {
             if (!empty($postData['oauth'])) {
                 //更新第三方存储id
-                $this->db_app->table('oauth_third')->where(['unionid' => $postData['oauth']])->update(['uid' => $uid]);
+                $this->db_app->table('oauth_third')->where(['unionid' => $postData['oauth']])->update(['uid' => $user->id]);
             }
 
             $this->success('账号注册成功！');
