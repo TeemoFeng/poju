@@ -272,7 +272,7 @@ class User extends ApiBase
             $postData['avatar'] = $imgModel['save_path'];
         }
         unset($postData['password1'],$postData['password2']);
-        $uid = UserModel::insertGetId($postData,true);
+        $uid = UserModel::allowField(true)->insertGetId($postData);
         if ($uid !== false) {
             if (!empty($postData['oauth'])) {
                 //更新第三方存储id
