@@ -42,6 +42,9 @@ class Login extends Controller
         $post = strtolower($this->request->post("code"));
         $account = $this->request->post("mobile");
         $sms_code = $this->request->post("sms_code");
+        if (empty($sms_code)) {
+            return json(["code"=>5,"msg"=>"请输入短信验证码"]);
+        }
         if ($sms_code != session('mobileCode')) {
             $data = ["code"=>5,"msg"=>"手机验证码错误"];
             return json($data);
