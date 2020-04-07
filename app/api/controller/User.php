@@ -269,7 +269,7 @@ class User extends ApiBase
         }
 
         $mobile = is_mobile();
-        $postData['source'] = 5;
+        $postData['source'] = 1;
         if ($mobile) {
             $postData['source'] = 2;
         }
