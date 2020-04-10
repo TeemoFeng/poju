@@ -15,7 +15,7 @@
 define('APP_PATH', __DIR__ . '/../app/');
 $origin = isset($_SERVER['HTTP_ORIGIN'])? $_SERVER['HTTP_ORIGIN'] : '';
 $allowOrigin = array(
-    'http://dist.morketing.com',
+    'https://ms.morketing.com',
     'http://localhost:3000',
 );
 
