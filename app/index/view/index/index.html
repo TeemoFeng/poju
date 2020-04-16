@@ -57,30 +57,32 @@
         </div>
     </div>
 </div>
-<div class="banner wow animated fadeIn">
-   
-        <img src="{$model.img|default='__IMG__/bgimg.png'}" class="video-bg-img" />
-   <!--<div class="center-video-box">
-        <div class="videos clearfix animated fadeInUp" >
-            <div class="fl player_box"><iframe src="" id="iframes" style="width:100%;height: 100%;border: none" scrolling="no"></iframe></div>
-            <div class="video-tabs fr">
-                {foreach name='videos' item='item'}
-                <header class="date_header date_header_first">{:date('m.d',$key)}</header>
-                <ul>
-                    {foreach name='item' item='vo'}
-                    <li data-src="{:url('index/index/video',['id'=>$vo.id])}">
-                        <div class="video_add">{$vo.name}</div>
-                        <p>{$vo.theme}</p>
-                    </li>
-                    {/foreach}
-                </ul>
-                {/foreach}
-            </div>
-        </div>-->
-    </div>
-</div>
+
 <!--banner-end-->
 <div class="indexWrap">
+    <div class="banner wow animated fadeIn">
+
+        <img src="{$model.img|default='__IMG__/bgimg.png'}" class="video-bg-img" />
+        <!--<div class="center-video-box">
+             <div class="videos clearfix animated fadeInUp" >
+                 <div class="fl player_box"><iframe src="" id="iframes" style="width:100%;height: 100%;border: none" scrolling="no"></iframe></div>
+                 <div class="video-tabs fr">
+                     {foreach name='videos' item='item'}
+                     <header class="date_header date_header_first">{:date('m.d',$key)}</header>
+                     <ul>
+                         {foreach name='item' item='vo'}
+                         <li data-src="{:url('index/index/video',['id'=>$vo.id])}">
+                             <div class="video_add">{$vo.name}</div>
+                             <p>{$vo.theme}</p>
+                         </li>
+                         {/foreach}
+                     </ul>
+                     {/foreach}
+                 </div>
+             </div>-->
+        <!--</div>-->
+    </div>
+
   <!--<div class="redbg"><img src="__IMG__/eyeBg.png"/></div>-->
     <div class="wid"> <a id="introduction" class="target-fix"></a>
         <div class="intro">

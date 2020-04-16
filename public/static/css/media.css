@@ -246,7 +246,8 @@
   .banner{
     overflow: visible;
     position: relative;
-    z-index: 3;padding-top: 62px;
+    /*z-index: 3;*/
+    padding-top: 62px;
   }
   .video-tabs ul li{border-bottom: 0px solid #99989b;padding: 2px 2px 2px 10px; display:inline-block; min-height: auto;padding-top: 0; padding-bottom: 0; vertical-align: top; height: 100%;}
   .video-tabs ul li .video_add{ font-size: 14px;}

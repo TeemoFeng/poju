@@ -26,11 +26,11 @@ class Mysql extends Driver
             // 数据库名
             'database'    => 'morketing',
             // 数据库用户名
-//            'username'    => 'morketing',
-            'username'    => 'root',
+            'username'    => 'morketing',
+//            'username'    => 'root',
             // 数据库密码
-//            'password'    => 'aYMy4SC4bxwtxD6X',
-            'password'    => 'root',
+            'password'    => 'aYMy4SC4bxwtxD6X',
+//            'password'    => 'root',
             // 数据库编码默认采用utf8
             'charset'     => 'utf8',
             // 数据库表前缀

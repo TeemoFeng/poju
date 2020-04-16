@@ -59,6 +59,7 @@ class User extends ApiBase
         if (empty($postData['password'])) {
             $this->error('请输入密码');
         }
+
         //查询morketing中是否已存在该用户信息
         $userModel = $this->db_app->table('user')->where('email|mobile|mk_id','=',$postData['account'])->find();
         if (empty($userModel)){
