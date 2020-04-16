@@ -9,7 +9,7 @@
     box-sizing: border-box;
     overflow: hidden;
     padding-top: 84px;
-    z-index: 3;
+    z-index: 0;
 }
 
 .banner .flexslider {

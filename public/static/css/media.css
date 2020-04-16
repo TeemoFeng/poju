@@ -547,6 +547,7 @@
   .banner {
     height: auto;
     background-image: none;
+    z-index: 0;
   }
   .indexWrap {
     background-image: none;

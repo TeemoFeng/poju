@@ -152,7 +152,7 @@ $(document).ready(function(e) {
                 "opacity" : 0.5,
                 "onComplete" : function(){
                     TweenMax.to($("#stateBox"), 0.5, {
-                        "top" : '50%',
+                        "top" : '60%',
                         "display" : "block",
                         "ease" : Back.easeOut.config(2),
                         "onComplete" : function(){
