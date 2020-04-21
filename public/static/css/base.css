@@ -189,7 +189,7 @@ opacity:0;
 .footfix .weixin span { text-align: center; color: #9ca1a8; font-size: 14px; display: block; height: auto; padding: 10px 0 0 0; margin: 0 12px; line-height: inherit; border-top: 1px dashed #979a9f; }
 .footfix .w_about:hover { background: url(/static/images/fx_bg.png) no-repeat center/cover; }
 .footfix .stateBtn { border-bottom: none }
-.footfix .emailDiv { position: absolute; top: 0; left: 0; z-index: -1; background: #FF2E2E; text-align: center; height: 100%; line-height: 50px; color: #fff; font-size: 18px; font-weight: normal; width: 550px; transition: .5s; -o-transition: .5s; -ms-transition: .5s; -moz-transition: .5s; -webkit-transition: .5s; opacity:0 }
+.footfix .emailDiv { position: absolute; top: 0; left: 0; z-index: -1; background: #FF2E2E; text-align: center; height: auto; line-height: 50px; color: #fff; font-size: 18px; font-weight: normal; width: 550px; transition: .5s; -o-transition: .5s; -ms-transition: .5s; -moz-transition: .5s; -webkit-transition: .5s; opacity:0 }
 .footfix .emailDiv span { font-size: 21px; font-weight: bold; }
 .footfix .spBtn:hover .emailDiv {-moz-transform: translateX(-551px); -ms-transform: translateX(-551px); -o-transform: translateX(-551px); -webkit-transform: translateX(-551px);transform: translateX(-551px); opacity:1 }
 /*手机样式*/

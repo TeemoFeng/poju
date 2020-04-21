@@ -84,7 +84,7 @@ class Recommend extends BaseModel
     //活动推荐普通广告位
     public function recommendOrdinary ()
     {
-        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->limit(10)->select()->toArray();
+        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->limit(12)->select()->toArray();
     }
 
 }
