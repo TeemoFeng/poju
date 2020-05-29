@@ -176,6 +176,21 @@
                     <label class="from-label fl"><b>*</b><span>结束时间：</span></label>
                     <div><input type="text" name="end_time" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d',time())}{else/}{$model.end_time}{/if}"></div>
                 </div>
+
+                <div class="from-group">
+                    <?php $check = isset($model) ? $model['show_guess'] : 0 ?>
+                    <label class="from-label fl"><b>*</b><span>是否展示共创人：</span></label>
+                    <input  class="iptradio" type="radio" name="show_guess" value="1" {if $check == 0 || $check == 1 } echo checked {/if} /> 展示
+                    <input  class="iptradio" type="radio" name="show_guess" value="2"  {if $check == 2} echo checked {/if}/> 不展示
+                </div>
+
+                <div class="from-group">
+                    <?php $check = isset($model) ? $model['show_prize'] : 0 ?>
+                    <label class="from-label fl"><b>*</b><span>是否展示灵眸奖：</span></label>
+                    <input  class="iptradio" type="radio" name="show_prize" value="1" {if $check == 0 || $check == 1 } echo checked {/if} /> 展示
+                    <input  class="iptradio" type="radio" name="show_prize" value="2"  {if $check == 2} echo checked {/if}/> 不展示
+                </div>
+
             </div>
           <div class="tab-item">
             

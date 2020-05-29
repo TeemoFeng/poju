@@ -38,6 +38,7 @@ class Index extends WebBase
         $guest = new Guest();
         $guestList = $guest->where(['sid'=>0, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //演讲嘉宾
         $builder = $guest->where(['sid'=>1, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //共建人
+
         //峰会议程
         $agenda = new Agenda();
         $agendaItems = $agenda->where('sid','=',$infoModel['id'])->order('sort','asc')->select();

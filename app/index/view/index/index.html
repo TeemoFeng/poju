@@ -42,17 +42,26 @@
     <div class="menuBtn"></div>
     <div class="top clearfix">
         <div class="logo fl"><a href="javascript:;"><img alt="{$model.name}" src="{$model.logo|default=''}"/></a></div>
+    {if $model.show_guess==1}
         <div class="nav fr" style="padding-right: 100px;">
+    {else /}
+        <div class="nav fr" style="padding-right: 350px;">
+    {/if}
             <ul class="clearfix">
                 <li><a href="#introduction">峰会简介</a></li>
+                {if $model.show_guess==1}
                 <li><a href="#builder">共创人</a></li>
                 <li><a href="#guest">演讲嘉宾</a></li>
+                {/if}
                 <li><a href="#agenda">峰会议程</a></li>
                 <li><a href="#partner">合作伙伴</a></li>
                 <li><a href="#review">往届回顾</a></li>
                 <li><a href="#contact">联系我们</a></li>
                 <!--<li><a href="{$model.ticket}" target="_blank">购票通道</a></li>-->
+                {if $model.show_prize==1}
                 <li><a href="{:url('index/index/prize', ['sid'=> $sid])}">MorketingAwards灵眸奖</a></li>
+                {/if}
+
             </ul>
         </div>
     </div>
@@ -95,9 +104,9 @@
             </div>
             <!--<a href="{$model.ticket}" target="_blank" class="buyBtn wow animated fadeInUp">立即购票</a> </div>-->
         <!--简介-end-->
-      
-      
-       <a id="builder" class="target-fix"></a>
+
+        {if $model.show_guess==1}
+        <a id="builder" class="target-fix"></a>
         <div class="guest">
             <div class="subtit">
                 <div class="red_num wow animated fadeInLeft">02</div>
@@ -177,12 +186,11 @@
                 </ul>
                 <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="0" cid="{$sid}" page="1" total="{$guest->lastPage()}">更多嘉宾</a>
           </div>
-          
-          
-            <a id="agenda" class="target-fix"></a> <a id="guest" class="target-fix"></a> </div>
+        {/if}
+            <a id="agenda" class="target-fix"></a> <a class="target-fix"></a> </div>
         <div class="agenda">
             <div class="subtit">
-                <div class="red_num wow animated fadeInLeft">04</div>
+                <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}04 {else/}02{/if}</div>
                 <h2 class="tit wow animated fadeInRight"> 峰会议程 <span>Summit  Agenda</span> </h2>
             </div>
             <div class="wid wow animated fadeIn">
@@ -244,7 +252,7 @@
         <a id="partner" class="target-fix"></a>
         <div class="partner">
             <div class="subtit">
-                <div class="red_num wow animated fadeInLeft">05</div>
+                <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}05 {else/}03{/if}</div>
                 <h2 class="tit wow animated fadeInRight"> 合作伙伴 <span>Cooperative  Partner</span> </h2>
             </div>
             <div class="p_warp">
@@ -265,7 +273,7 @@
         <a id="review" class="target-fix"></a>
         <div class="review">
             <div class="subtit">
-                <div class="red_num wow animated fadeInLeft">06</div>
+                <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}06{else/}04{/if}</div>
                 <h2 class="tit wow animated fadeInRight"> 往届回顾 <span>Past  Review</span> </h2>
             </div>
             <div class="reviewList wow animated fadeInUp flexslider">
@@ -279,7 +287,7 @@
         <a id="contact" class="target-fix"></a>
         <div class="contact">
             <div class="subtit">
-                <div class="red_num wow animated fadeInLeft">07</div>
+                <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}07 {else/}05{/if}</div>
                 <h2 class="tit wow animated fadeInRight"> 联系我们 <span>Contact  Us</span> </h2>
             </div>
             <div class="contop clearfix">
@@ -319,7 +327,9 @@
     {/if}
     <a href="javascript:;" class="spBtn"><i class="icon icon_z"></i>我要赞助
     <div class="emailDiv"> <span>成为大会赞助商请联系 ：</span>{$SysConfig.zanzhu}</div></a>
+    {if $model.show_prize==1}
     <a href="javascript:;" class="signBtn dec_btn"><i class="icon icon_dec"></i>奖项申报</a>
+    {/if}
     <a href="javascript:;" class="stateBtn"><i class="icon_z"></i>订阅会议动态</a>
     <a href="javascript:;" class="w_about"><div class="weixin"><img src="{$SysConfig.gzh|default=''}"/><span>关注微信 了解更多</span></div></a>
 </div>
