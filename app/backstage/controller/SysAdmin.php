@@ -1,6 +1,7 @@
 <?php
 namespace app\backstage\controller;
 use app\backstage\model\SysAdmin as Admin;
+use app\backstage\model\SysAdminRole;
 use think\Request;
 use app\common\controller\Base;
 class SysAdmin extends Base
@@ -13,10 +14,42 @@ class SysAdmin extends Base
         $this->admin = new Admin();
     }
 
+//    public function index()
+//    {
+//        $date =$this->admin->select();
+//        $this->assign("admin_list",$date);
+//        return $this->fetch();
+//    }
+
     public function index()
     {
-        $date =$this->admin->select();
-        $this->assign("admin_list",$date);
+        $search = $this->request->param();
+        $where = [];
+        if (!empty($search['mobile'])) {
+            $where['account|tel|email'] = $search['mobile'];
+        }
+        if (!empty($search['role'])) {
+            $uids = SysAdminRole::where(['rid' => $search['role']])->column('uid');
+            $where['id'] = ['in', $uids];
+        }
+        if (!empty($search['position'])) {
+            $where['position_id'] = $search['position'];
+        }
+        $sys_admin_role_model = new SysAdminRole();
+        $sys_role_model = new \app\backstage\model\SysRole();
+        $roles_arr = \app\backstage\model\SysRole::column('id,role_name');
+        $items = $this->admin->where($where)->paginate(20, false, ['query' => $search])->each(function ($item, $key
+        ) use ($sys_admin_role_model, $sys_role_model) {
+            $rids = $sys_admin_role_model->where(['uid' => $item->id])->column('rid');
+            $roles_name = '暂无分配角色';
+            if (!empty($rids)) {
+                $roles_name = $sys_role_model->where(['id' => ['in', $rids]])->column('role_name');
+                $roles_name = implode(',' ,$roles_name);
+            }
+            $item->role_name = $roles_name;
+        });
+        $this->assign("role_list",$roles_arr);
+        $this->assign("items",$items);
         return $this->fetch();
     }
     public function add()

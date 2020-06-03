@@ -7,6 +7,19 @@
     {include file="/shared/head"}
     <script src="__BACKEND__/js/jquery.validate.min.js"></script>
     <script src="__BACKEND__/js/selectize.min.js"></script>
+    <style>
+        .search{display: inline-block;}
+        .action-bar{
+            height:auto;line-height: 34px;
+        }
+        .action-bar a{height:34px;line-height:34px;vertical-align:middle}
+        .search{display: inline-block;}
+        .date{display: inline-block;width: 160px;height: 34px;vertical-align: middle;box-sizing:border-box;}
+        .k{display: inline-block;width: 150px;height: 34px;vertical-align: middle;box-sizing:border-box;}
+        input.search-btn{height: 34px;width: 50px;background: #f75959;color: #fff;border: none;vertical-align:middle}
+        select[name="role"],select[name="position"]{height: 34px;width: 120px;border-color: #ccc;vertical-align:middle;}
+
+    </style>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
 <div class="frame-title">
@@ -14,7 +27,7 @@
 </div>
 <div class="action-bar">
     <a href="{:url('/backstage/sys_admin/add')}" ajax="true" model-area="630px,400px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
-    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <a href="{:url('backstage/sys_admin/index')}"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
     <div class="dropdown">
         <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
         <ul class="down-left">
@@ -22,6 +35,24 @@
             <li batch='true' success="msg.tips" data-url="{:url('/backstage/sys_admin/liftBanAdminInBatch')}" data-confirm="确定要操作这些数据吗？">解除禁用</li>
             <li batch='true' success="msg.tips" data-url="{:url('/backstage/sys_admin/deleteAdminInBatch')}" data-confirm="确定要删除这些管理员吗？">删除所选管理员</li>
         </ul>
+    </div>
+
+    <div class="search">
+        <form method="get" action="{:url('backstage/sys_admin/index')}">
+            <input type="text" name="mobile" placeholder="账号/手机号/邮箱" class="from-text k" value="{$Think.get.mobile|default=''}">
+            角色：
+            <select name="role">
+                <option value="">请选择</option>
+                {foreach name="role_list" item="vo" key="k"}
+                {if !empty($Think.get.role) && $k==$Think.get.role}
+                <option value="{$k}" selected>{$vo}</option> 
+                {else /}
+                <option value="{$k}">{$vo}</option>
+                {/if}
+                {/foreach}
+            </select>
+            <input type="submit" class="search-btn checkForm" value="搜索" />
+        </form>
     </div>
 </div>
 <table class="ord_table" theme="no-rl-border">
@@ -31,18 +62,20 @@
         <th>账号</th>
         <th>手机号</th>
         <th>邮箱</th>
+        <th>角色</th>
         <th>状态</th>
         <th>创建日期</th>
         <th width="110px">操作</th>
     </tr>
     </thead>
     <tbody>
-    {volist name="admin_list" id="admin"}
+    {volist name="items" id="admin"}
     <tr>
         <td><input type="checkbox" value="{$admin.id}"></td>
         <td>{$admin.account}</td>
         <td>{$admin.tel}</td>
         <td>{$admin.email}</td>
+        <td>{$admin.role_name}</td>
         <td>{$admin.state==0?"<b style='color:green'>正常</b>":"<b style='color:red'>禁用</b>"}</td>
         <td>{$admin.create_time}</td>
         <td><a class="act_btn" href="{:url('/backstage/sys_admin/add',['id'=>$admin.id])}" ajax="true" model-area="630px,400px" success="msg.model">编辑</a>
@@ -51,6 +84,26 @@
     </tr>
     {/volist}
     </tbody>
+    <tfoot>
+    <tr>
+        <td><input type="checkbox" class="cheack-all"></td>
+        <td colspan="9">
+            <div class="fl" style="display:none">
+                <button class="btn fl mr-10">批量删除</button>
+                <div class="dropdown fl mr-10" act="click">
+                    <a href="javascript:;" data-dropdown='click'>更多操作</a>
+                    <ul class="down-left">
+                        <li>置顶所选记录</li>
+                        <li>推荐至首页</li>
+                        <li>删除所选记录</li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="fr page-box">{$items->render()}</div>
+        </td>
+    </tr>
+    </tfoot>
 </table>
 
 </body>
