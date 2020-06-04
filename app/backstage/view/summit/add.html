@@ -8,6 +8,13 @@
     </div>
 
     <div class="from-group">
+        <label class="from-label fl "><b>*</b><span>域名标题（纯英文字母）：</span></label>
+        <div>
+            <input class="from-text" id="realm_name" name="realm_name" type="text" value="{$model.realm_name|default=''}" />
+        </div>
+    </div>
+
+    <div class="from-group">
         <label class="from-label fl "><b>*</b><span>简介：</span></label>
         <div>
             <input class="from-text" id="profile" name="profile" type="text" value="{$model.profile|default=''}" />
