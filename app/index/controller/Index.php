@@ -16,7 +16,7 @@ class Index extends WebBase
     public function index()
     {
 
-        $sid = $this->request->param('sid');
+        $sid = $this->request->param('summit');
         $user_id = $this->request->param('u');
         if (!empty($user_id)) {
             //获取用户信息
@@ -31,7 +31,7 @@ class Index extends WebBase
         if(empty($sid)){
             $infoModel = $this->category->getLastOne();
         }else{
-            $infoModel = $this->category->find($sid);
+            $infoModel = $this->category->where(['realm_name' => $sid])->find();
         }
 
         //共创人/演讲嘉宾
