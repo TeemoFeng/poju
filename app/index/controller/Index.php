@@ -16,7 +16,7 @@ class Index extends WebBase
     public function index()
     {
 
-        $sid = $this->request->param('summit');
+        $sid = $this->request->param('sid');
         $user_id = $this->request->param('u');
         if (!empty($user_id)) {
             //获取用户信息
