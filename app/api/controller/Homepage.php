@@ -10,6 +10,7 @@ namespace app\api\controller;
 
 use app\api\library\ApiBase;
 use app\backstage\controller\Recommend;
+use app\backstage\model\RecommendRule;
 use app\backstage\model\Report;
 use app\backstage\model\Review;
 use app\backstage\model\Special;
@@ -75,19 +76,25 @@ class Homepage extends ApiBase {
      * Action 近期推荐标签分类
      * @author ywf
      * @license /api/homepage/recommendTag POST
-     * @para string type  无
+     * @para string tid    返回的标签id
      * @field string code   1:成功;0:失败
      * @field string msg    无提示
      * @field string list  列表
      * @field string list.id  标签id
      * @field string list.name  标签名
+     * @field string filter  筛选列表
+     * @field string filter.add_tpl
      * @jsondata
      * @jsondatainfo
      */
     public function recommendTag()
     {
-        $list = \app\backstage\model\Recommend::$list;
-        $this->success('', ['list' => $list]);
+        $recommendRuleModel = new RecommendRule();
+        $list = $recommendRuleModel->where(['pid' => 22])->select();
+        $tid = $this->request->post('tid', $recommendRuleModel->getFirstChildId(22));
+        $filterItems = toTree(collection($recommendRuleModel->getChildByPid($tid))->toArray(),'id','pid','subItems',42);
+
+        $this->success('', ['list' => $list, 'filter' => $filterItems]);
     }
 
 
@@ -96,6 +103,9 @@ class Homepage extends ApiBase {
      * @author ywf
      * @license /api/homepage/recommend POST
      * @para string tag  标签类型：默认1|Y
+     * @para string hid  所属行业：默认0|Y
+     * @para string gid  活动规模：默认0|Y
+     * @para string city  城市：默认0|Y
      * @para string page  页面数,默认1|Y
      * @para string page_size  一页显示条数,默认28|N
      * @field string code   1:成功;0:失败
@@ -116,20 +126,34 @@ class Homepage extends ApiBase {
      */
     public function recommend()
     {
-        $tag = $this->request->post('tag', 1, 'intval');
+        $tag = $this->request->post('tag', 42, 'intval'); //活动分类
+        $hid = $this->request->post('hid', 0, 'intval');
+        $gid = $this->request->post('gid', 0, 'intval');
+        $city = $this->request->post('city', 0, 'intval');
         $page = $this->request->post('page', 1, 'intval');
         $page_size = $this->request->post('page_size', 28, 'intval');
         if (!is_numeric($page_size) || $page_size == 0) {
             $page_size = 28;
         }
         $recommendModel = new RecommendModel();
-        $count = $recommendModel->where(['tag' => $tag])->count();
+        $where['tag'] = $tag;
+        $where['status'] = RecommendModel::TYPE2;
+        if (!empty($hid)) {
+            $where['hid'] = $hid;
+        }
+        if (!empty($gid)) {
+            $where['hid'] = $gid;
+        }
+        if (!empty($city)) {
+            $where['city'] = $city;
+        }
+        $count = $recommendModel->where($where)->count();
 
         $num = ceil($count/$page_size);
         if ($page > $num) {
             $list = [];
         } else {
-            $list = $recommendModel->where(['tag' => $tag])->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
+            $list = $recommendModel->where($where)->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
 
         }
         $this->success('', ['count' => $count, 'list' => $list]);

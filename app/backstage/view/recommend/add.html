@@ -10,7 +10,29 @@
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>标签：</span></label>
         <div>
-            <select class="from-select" data-rander-model="selectize" name="tag" data-url="{:url('backstage/Recommend/getTagList')}" data-value="{$model.tag|default=1}"></select>
+            <input type="text" readonly class="from-text" value="{$tag_name|default=''}">
+            <input type="hidden" name="tag" value="{$tid|default=0}">
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>城市：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="city" data-url="{:url('backstage/RecommendRule/getChild',['pid'=>$cityPid])}" data-value="{$model.city|default=0}"></select>
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>规模：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="gid" data-url="{:url('backstage/RecommendRule/getChild',['pid'=>$gPid])}" data-value="{$model.gid|default=0}"></select>
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>所属行业：</span></label>
+        <div>
+            <select class="from-select" data-rander-model="selectize" name="hid" data-url="{:url('backstage/RecommendRule/getChild',['pid'=>$hPid])}" data-value="{$model.hid|default=0}"></select>
         </div>
     </div>
 

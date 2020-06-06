@@ -332,3 +332,29 @@ function getImage($url, $save_dir = '', $filename = '', $type = 0)
     unset($img, $url);
     return array('file_name' => $filename, 'save_path' => $save_dir . $filename, 'error' => 0);
 }
+
+/*
+ * 转化成树形结构
+ * */
+function toTree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
+{
+    $tree = array();
+    if (is_array($list)) {
+        $refer = array();
+        foreach ($list as $key => $data) {
+            $refer[$data[$pk]] =& $list[$key];
+        }
+        foreach ($list as $key => $data) {
+            $parentId = $data[$pid];
+            if ($root == $parentId) {
+                $tree[] =& $list[$key];
+            } else {
+                if (isset($refer[$parentId])) {
+                    $parent           =& $refer[$parentId];
+                    $parent[$child][] =& $list[$key];
+                }
+            }
+        }
+    }
+    return $tree;
+}

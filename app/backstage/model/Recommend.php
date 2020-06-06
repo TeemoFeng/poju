@@ -15,16 +15,16 @@ class Recommend extends BaseModel
     const STATUS1 = 1;
     const STATUS2 = 2;
 
-    public static $list = [
-        [
-            'id' => '1',
-            'name' => 'Morketing官方活动',
-        ],
-        [
-            'id' => '2',
-            'name' => '行业活动',
-        ],
-    ];
+//    public static $list = [
+//        [
+//            'id' => '1',
+//            'name' => 'Morketing官方活动',
+//        ],
+//        [
+//            'id' => '2',
+//            'name' => '行业活动',
+//        ],
+//    ];
 
     public $show_fields = 'id recommend_id,title,tag,start_time,end_time,address,type,is_show,img,jump_url,views';
     protected $resultSetType = 'collection';
@@ -32,10 +32,10 @@ class Recommend extends BaseModel
         self::TYPE1 => '普通轮播广告位',
         self::TYPE2 => '固定强推广告位',
     ];
-    public static $tags = [
-        self::TYPE1 => 'Morketing官方活动',
-        self::TYPE2 => '行业活动',
-    ];
+//    public static $tags = [
+//        self::TYPE1 => 'Morketing官方活动',
+//        self::TYPE2 => '行业活动',
+//    ];
 
     public static $status = [
         self::STATUS1 => '下线',
@@ -49,7 +49,9 @@ class Recommend extends BaseModel
 
     public function getTagAttr($k)
     {
-        return Recommend::$tags[$k];
+        $recommendR = new RecommendRule();
+        $tag = $recommendR->get($k);
+        return $tag['name'];
     }
 
     //图片地址

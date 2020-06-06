@@ -15,7 +15,9 @@
     <h5>近期推荐</h5>
 </div>
 <div class="action-bar">
-    <a href="{:url('/backstage/Recommend/add')}" ajax="true" model-area="800px,450px" success="msg.model"><i class="iconfont icon-add"></i>添加</a>
+    {foreach name='tag_list' item='item'}
+    <a href="{:url('backstage/Recommend/add',['tid'=>$item.id])}" ajax="true" model-area="800px,450px" success="msg.model"><i class="iconfont icon-add"></i>添加<b style="color: #fff">{$item.name}</b></a>
+    {/foreach}
     <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
     <div class="dropdown">
         <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>

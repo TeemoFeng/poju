@@ -14,13 +14,27 @@ class Recommend extends Base
     //近期推荐列表
     public function items()
     {
-
         $list = RecommendModel::order('sort ASC')->paginate(20);
+//        $tag_list = RecommendModel::$list;
+        $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
+        $this->assign("tag_list", $tag_list);
 
         $this->assign("items", $list);
         $this->assign("type", RecommendModel::$types);
         $this->assign('status_str', RecommendModel::$status);
         return $this->fetch();
+    }
+
+    //筛选规则列表
+    public function rule()
+    {
+        $pid = 22;
+        if(empty($pid)){
+            return $this->fetch();
+        }else{
+            $this->assign(['p'=>$pid]);
+            return $this->fetch('list');
+        }
     }
 
     //添加推荐
@@ -31,8 +45,14 @@ class Recommend extends Base
             if (empty($postData['title'])) {
                 return json(['code' => 0, 'msg' => '请填写标题']);
             }
-            if (empty($postData['tag'])) {
-                return json(['code' => 0, 'msg' => '请填写标签']);
+            if (empty($postData['city'])) {
+                return json(['code' => 0, 'msg' => '请选择城市']);
+            }
+            if (empty($postData['gid'])) {
+                return json(['code' => 0, 'msg' => '请选择规模']);
+            }
+            if (empty($postData['hid'])) {
+                return json(['code' => 0, 'msg' => '请选择所属行业']);
             }
             if (empty($postData['start_time'])) {
                 return json(['code' => 0, 'msg' => '请选择开始时间']);
@@ -79,6 +99,19 @@ class Recommend extends Base
             }
         } else {
             $id = $this->request->param("id");
+            $tid = $this->request->param('tid');
+            $tModel = \app\backstage\model\RecommendRule::get($tid);
+            $tag_name = $tModel['name'];
+            $cityPid = \app\backstage\model\RecommendRule::where(['pid'=>$tModel['id'],'add_tpl'=>'city'])->value('id');
+            $hPid = \app\backstage\model\RecommendRule::where(['pid'=>$tModel['id'],'add_tpl'=>'hid'])->value('id');
+            $gPid = \app\backstage\model\RecommendRule::where(['pid'=>$tModel['id'],'add_tpl'=>'gid'])->value('id');
+            $this->assign([
+                'cityPid'=>$cityPid,
+                'hPid'=>$hPid,
+                'gPid'=>$gPid,
+                'tid' => $tid,
+                'tag_name' => $tag_name,
+            ]);
             if ($id != null) {
                 $model = RecommendModel::get($id);
                 $this->assign("model",$model);

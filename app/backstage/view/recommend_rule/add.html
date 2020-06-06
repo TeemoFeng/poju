@@ -1,0 +1,84 @@
+<link rel="stylesheet" href="__BACKEND__/js/minicolor/jquery.minicolors.css">
+<script src="__BACKEND__/js/minicolor/jquery.minicolors.min.js"></script>
+<script src="__BACKEND__/js/ztree/jquery.ztree.all.min.js"></script>
+<link href="__BACKEND__/js/ztree/metro.css" rel="stylesheet" />
+<script type="text/javascript">
+    var setting = {
+        callback: { onClick: zTreeOnClick },
+        data: {
+            simpleData: { enable: true, idKey: "id", pIdKey: "pid" }
+        }
+    };
+    function zTreeOnClick(event, treeId, treeNode) {
+        $("[name='pid']").val(treeNode.id);
+        $(".tree-text").val(treeNode.name);
+        $(".ztree_box").hide();
+    };
+    $(document).ready(function () {
+        $.getJSON("{:url('backstage/recommendRule/getAll',['id'=>$tree_pid])}", function (data) {
+            if(data.root){
+                data.list.push({ "id": data.root.id, "name": data.root.name, open: true});
+            }
+            $.fn.zTree.init($("#treeDemo"), setting, data.list);
+            var _id = $("[name='pid']").val(), _tree = $.fn.zTree.getZTreeObj("treeDemo"), node = _tree.getNodeByParam('id', _id);
+            _tree.selectNode(node);
+            _tree.setting.callback.onClick(null, _tree.setting.treeId, node);
+        });
+    });
+</script>
+<form action="{:url('backstage/recommendRule/add')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="id" value="{$model.id|default=0}">
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>上级栏目：</span></label>
+        <div>
+            <input type="hidden" name="pid" value="{$model.pid|default=$tree_pid}">
+            <input type="text" class="from-text tree-text"/>
+        </div>
+    </div>
+    <div class="ztree_box"><ul id="treeDemo" class="ztree"></ul></div>
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>栏目名称：</span></label>
+        <div>
+            <input type="text" name="name" value="{$model.name|default=''}" class="from-text" style="color:{$model.color|default='#000'}">
+            <input type="text" value="{$model.color|default='#000'}" name="color" class="color-select" >
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b></b><span>栏目备注：</span></label>
+        <div>
+            <input type="text" name="remark" value="{$model.remark|default=''}" class="from-text">
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><b></b><span>编辑模板：</span></label>
+        <div>
+            <input type="text" name="add_tpl" value="{$model.add_tpl|default=''}" class="from-text">
+        </div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
+    </div>
+</form>
+<script>
+    $(function () {
+        $(".tree-text").click(function () {
+            var _e = $(this), _epp = _e.parent().position();
+            $(".ztree_box").css({ "top": _epp.top + _e.height() + 1, "left": _epp.left, "width": _e.width()});
+            $(".ztree_box").toggle();
+        });
+
+        $(".color-select").minicolors({change: function(hex, opacity) {
+                var log = hex ? hex : 'transparent';
+                if (opacity) log += ', ' + opacity;
+                $(this).attr("value",log);
+                $(this).parent().siblings().css("color",log);
+            }
+        });
+
+    });
+    msg.unload("#img");
+</script>
