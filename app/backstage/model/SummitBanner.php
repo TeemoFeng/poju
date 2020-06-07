@@ -13,7 +13,7 @@ class SummitBanner extends BaseModel
     const STATUS1 = 1;
     const STATUS2 = 2;
     protected $resultSetType = 'collection';
-
+    public static $table_field = ['title' => '标题', 'tag' => '标签', 'jump_url' => '跳转地址', 'views' => '点击量'];
     public $show_fields = 'id banner_id,title,tag,img,jump_url';
     public static $status = [
         self::STATUS1 => '下线',

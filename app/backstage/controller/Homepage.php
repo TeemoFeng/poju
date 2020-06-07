@@ -7,21 +7,78 @@
  */
 
 namespace app\backstage\controller;
+use app\backstage\model\Import as ImportModel;
 use app\common\controller\Base;
 use app\backstage\model\SummitBanner;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Homepage extends Base
 {
     //banner列表
     public function items()
     {
+        $title = $this->request->param('title', '');
+        $export = $this->request->param('export', '');
+        $where = [];
+        if (!empty($title)) {
+            $where['title'] = ['like', '%'.$title.'%'];
+        }
+        if (!empty($export)) {
+            $data = SummitBanner::where($where)->order('views', 'DESC')->select();
+            $this->export($data);
+            exit();
+        }
 
-        $list = SummitBanner::order('sort ASC')->paginate(20);
+        $list = SummitBanner::where($where)->order('sort ASC')->paginate(20);
         $status_str = SummitBanner::$status;
         $this->assign('status_str', $status_str);
         $this->assign("items", $list);
+        $this->assign("title", $title);
         return $this->fetch();
     }
 
+    //导出用户数据
+    public function export($data)
+    {
+        set_time_limit(0);
+        $chat = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
+
+        $th = SummitBanner::$table_field;
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle("顶部轮播数据");
+        $startRowIndex = 1;
+        $i = 0;
+        foreach ($chat as $index => $t) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($chat[$index])->setWidth(30);
+        }
+
+        foreach($th as $index => $t){
+
+            $sheet->setCellValue($chat[$i].$startRowIndex, $t);
+
+            $i++;
+        }
+
+        foreach ($data as $index=>$item){
+            $startRowIndex +=1;
+            $j = 0;
+            foreach ($th as $key=>$vo){
+
+                $sheet->setCellValue($chat[$j].$startRowIndex, $item[$key]);
+                $j++;
+            }
+
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.date('Ymd',time()).'轮播数据'.'.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+
+    }
     //添加首页banner图
     public function add()
     {

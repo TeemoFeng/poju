@@ -9,20 +9,77 @@
 namespace app\backstage\controller;
 use app\common\controller\Base;
 use app\backstage\model\Recommend as RecommendModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Recommend extends Base
 {
     //近期推荐列表
     public function items()
     {
-        $list = RecommendModel::order('sort ASC')->paginate(20);
+        $title = $this->request->param('title', '');
+        $export = $this->request->param('export', '');
+        $where = [];
+        if (!empty($title)) {
+            $where['title'] = ['like', '%'.$title.'%'];
+        }
+        if (!empty($export)) {
+            $data = RecommendModel::where($where)->order('views', 'DESC')->select();
+            $this->export($data);
+            exit();
+        }
+        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20);
 //        $tag_list = RecommendModel::$list;
         $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
         $this->assign("tag_list", $tag_list);
+        $this->assign("title", $title);
 
         $this->assign("items", $list);
         $this->assign("type", RecommendModel::$types);
         $this->assign('status_str', RecommendModel::$status);
         return $this->fetch();
+    }
+
+    //导出用户数据
+    public function export($data)
+    {
+        set_time_limit(0);
+        $chat = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
+
+        $th = RecommendModel::$table_field;
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle("近期推荐数据");
+        $startRowIndex = 1;
+        $i = 0;
+        foreach ($chat as $index => $t) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($chat[$index])->setWidth(30);
+        }
+
+        foreach($th as $index => $t){
+
+            $sheet->setCellValue($chat[$i].$startRowIndex, $t);
+
+            $i++;
+        }
+
+        foreach ($data as $index=>$item){
+            $startRowIndex +=1;
+            $j = 0;
+            foreach ($th as $key=>$vo){
+
+                $sheet->setCellValue($chat[$j].$startRowIndex, $item[$key]);
+                $j++;
+            }
+
+        }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.date('Ymd',time()).'近期推荐数据'.'.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+
     }
 
     //筛选规则列表

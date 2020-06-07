@@ -31,7 +31,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews'];
 
     /***
      * Action 前台首页
@@ -636,6 +636,8 @@ class Homepage extends ApiBase {
 
     }
 
+
+
     /***
      * Action 网站logo
      * @author ywf
@@ -682,7 +684,23 @@ class Homepage extends ApiBase {
         $this->success('',['banner_advert' => $banner_advert]);
     }
 
+    /***
+     * Action 查看顶部banner，并返回最新浏览量banner
+     * @author ywf
+     * @license /api/homepage/bannerViews POST
+     * @para string banner_id   banner列表id|Y
+     * @field string code   1:成功;
+     * @field string data.views   浏览量
+     * @jsondata {"banner_id":"1"}
+     * @jsondatainfo
+     */
+    public function bannerViews()
+    {
+        $recommend_id = $this->request->post('banner_id');
+        Db::name('summit_banner')->where(['id' => $recommend_id])->setInc('views', 1);
+        $count = Db::name('summit_banner')->where(['id' => $recommend_id])->value('views');
+        $this->success('',['views' => $count]);
 
-
+    }
 
 }

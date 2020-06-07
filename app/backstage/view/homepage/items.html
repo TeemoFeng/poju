@@ -6,6 +6,21 @@
     <title></title>
     {include file="/shared/head"}
     <script type="text/javascript" src="__BACKEND__/js/jquery.dragsort-0.5.2.min.js"></script>
+    <style>
+        .search{display: inline-block;}
+        .date{display: inline-block;width: 160px;height: 34px;vertical-align: middle;box-sizing:border-box;}
+        .k{display: inline-block;width: 150px;height: 34px;vertical-align: middle;box-sizing:border-box;}
+        input.search-btn{height: 34px;width: 50px;background: #f75959;color: #fff;border: none;vertical-align:middle}
+        select[name="source"],select[name="tid"]{height: 34px;width: 90px;border-color: #ccc;vertical-align:middle;}
+        .form-select{
+            height: 34px;min-width: 180px;max-width: 200px;border-color: #ccc;display: inline-block;vertical-align: middle;
+        }
+        .action-bar{
+            height:auto;line-height: 34px;
+        }
+        .action-bar a{height:34px;line-height:34px;vertical-align:middle}
+    </style>
+
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
 <div class="frame-title">
@@ -22,6 +37,18 @@
             <li batch='true' success="msg.tips" data-url="{:url('/backstage/Homepage/offlineInBatch')}" data-confirm="确定要下线这些记录吗？">下线所选记录</li>
         </ul>
     </div>
+
+    <div class="search layui-layer-content" >
+        <form method="get" action="{:url('backstage/Homepage/items')}" id="search-form">
+            <input type="text" name="title" placeholder="标题" class="from-text k" value="{$title|default=''}">
+            <input type="hidden" name="export" value="">
+
+            <input type="button" class="search-btn checkForm" value="搜索" />
+            <input type="submit" style="width: 80px" class="search-btn export" value="导出Excle"/>
+
+        </form>
+    </div>
+
 </div>
 <form action="{:url('backstage/Homepage/sort')}" ajax="true" success="msg.tips" method="post">
     <table class="ord_table" theme="no-rl-border" style="table-layout: fixed;">
@@ -33,6 +60,7 @@
             <th width="60px"><input type="submit" value="排序" class="sort-btn" /></th>
             <th>链接地址</th>
             <th>状态</th>
+            <th>浏览量</th>
             <th width="200px">操作</th>
         </tr>
         </thead>
@@ -47,6 +75,7 @@
             <td><input type="text" name="_{$item.id}" value="{$item.sort}" class="list-sort bg" /></td>
             <td style="width: 200px;"><div style="width:100%;overflow: auto;">{$item.jump_url}</div></td>
             <td>{if $item.status==1}<span style="color: red">下线</span>{else/}<span style="color:  #00B83F">上线</span>{/if}</td></td>
+            <td>{$item.views}</td>
             <td>
                 {if $item.status == 1}
                 <a class="act_btn" href="{:url('backstage/Homepage/status',['id'=>$item.id, 'status' => 2])}" ajax="true" success="msg.tips" data-method="post" data-confirm="确定要上线吗？">上线</a>
@@ -61,7 +90,7 @@
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="7">
+            <td colspan="8">
                 <div class="fr page-box">{$items->render()}</div>
             </td>
         </tr>
@@ -70,3 +99,20 @@
 </form>
 </body>
 </html>
+
+<script>
+    $(function() {
+        //提交查询
+        $('.checkForm').click(function(){
+            $('input[name="export"]').val( '' );
+            $('#search-form').submit();
+        });
+
+    });
+
+    $('.export').on( 'click', function() {
+        $('input[name="export"]').val( 'export' );
+        return true;
+    });
+</script>
+
