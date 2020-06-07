@@ -92,7 +92,7 @@ class Homepage extends ApiBase {
         $recommendRuleModel = new RecommendRule();
         $list = $recommendRuleModel->where(['pid' => 22])->select();
         $tid = $this->request->post('tid', $recommendRuleModel->getFirstChildId(22));
-        $filterItems = toTree(collection($recommendRuleModel->getChildByPid($tid))->toArray(),'id','pid','subItems',42);
+        $filterItems = toTree(collection($recommendRuleModel->getChildByPid($tid))->toArray(),'id','pid','subItems',$tid);
 
         $this->success('', ['list' => $list, 'filter' => $filterItems]);
     }
