@@ -7,6 +7,7 @@
  */
 
 namespace app\backstage\controller;
+use app\backstage\model\Category;
 use app\common\controller\Base;
 use app\backstage\model\Recommend as RecommendModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -28,7 +29,11 @@ class Recommend extends Base
             $this->export($data);
             exit();
         }
-        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20);
+        $recommendR = new \app\backstage\model\RecommendRule();
+        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20)->each(function ($item) use($recommendR){
+            $tag = $recommendR->where(['id' => $item->tag])->find();
+            $item->tag_name = $tag['name'];
+        });
 //        $tag_list = RecommendModel::$list;
         $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
         $this->assign("tag_list", $tag_list);
