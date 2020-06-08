@@ -31,7 +31,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews','userTreaty'];
 
     /***
      * Action 前台首页
@@ -703,4 +703,25 @@ class Homepage extends ApiBase {
 
     }
 
+    /***
+     * Action 查看用户协议
+     * @author ywf
+     * @license /api/homepage/userTreaty POST
+     * @para string 无|N
+     * @field string code   1:成功;
+     * @field string data.content   用户协议
+     * @jsondata
+     * @jsondatainfo {"treaty":"xxx"}
+     */
+    public function userTreaty()
+    {
+        $sc = new SCModel();
+        $sys_config = $sc->column("value","name");
+        $content = '';
+        if (isset($sys_config['treaty'])) {
+            $content = $sys_config['treaty'];
+        }
+        $this->success('', ['treaty' => $content]);
+
+    }
 }

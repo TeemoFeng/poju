@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     {include file="shared/head"}
     <script src="__BACKEND__/js/laydate/laydate.js"></script>
+    <link rel="stylesheet" href="__BACKEND__/js/minicolor/jquery.minicolors.css">
+    <script src="__BACKEND__/js/minicolor/jquery.minicolors.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__BACKEND__/editor/ueditor.all.min.js"> </script>
     <title>Config</title>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
@@ -71,6 +75,14 @@
                 <input type="hidden" name="prize_banner" data-rander-model="unload" value="{$sys_config.prize_banner|default=''}" >
             </div>
         </div>
+        <div class="from-group">
+            <label class="from-label fl"><b>*</b><span>用户注册隐私协议：</span></label>
+            <div>
+                <script id="remark" name="treaty" style="height:500px;width:100%" type="text/plain">{$sys_config.treaty|default=''}</script>
+                <script> var remark = UE.getEditor('remark');</script>
+            </div>
+        </div>
+
         <div class="from-group">
         <label class="from-label fl"><span></span></label>
         <div><input class="sub-btn" type="submit" value="　保　存　" /></div>
