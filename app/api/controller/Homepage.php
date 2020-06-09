@@ -718,7 +718,7 @@ class Homepage extends ApiBase {
         $sc = new SCModel();
         $sys_config = $sc->column("value","name");
         $content = '';
-        if (isset($sys_config['treaty'])) {
+        if (isset($sys_config['treaty']) && !empty($sys_config['treaty'])) {
             $content = $sys_config['treaty'];
         }
         $this->success('', ['treaty' => $content]);
