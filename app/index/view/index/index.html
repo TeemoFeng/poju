@@ -465,7 +465,7 @@
                 </div>
                 <div class="y-register-content">
                     <div class="y-register-bx y-register-bx1">
-                        <form method="post" action="{:url('index/index/feedback')}" ajax="true" data-valid="true"
+                        <form method="post" action="{:url('index/Account/mobileLogin')}" ajax="true" data-valid="true"
                               novalidate="novalidate" success="msg.tips">
                             <ul class="y-register-ul">
                                 <li><i class="y-register-name">手机号：</i><select class="y-register-select"
@@ -486,8 +486,7 @@
                                                                               required type="text" placeholder="请输入验证码">
                                     <div class="y-register-send2" style="float: right"><img
                                             src="{:url('index/Account/verify')}" alt="captcha"
-                                            onclick="this.src='{:url("
-                                            index/Account/verify")}?'+'id='+Math.random()"/> </div> </li> </ul> <div
+                                            onclick="this.src='{:url("index/Account/verify")}?'+'id='+Math.random()"/> </div> </li> </ul> <div
                                 class="stip"></div>
                             <div class="stxt">
                                 <div class="sbtns"><a href="javascript:;" class="cancelLogin">取消</a><a
@@ -496,7 +495,7 @@
                         </form>
                     </div>
                     <div class="y-register-bx y-register-bx2" style="display:none">
-                        <form method="post" action="{:url('index/index/feedback')}" ajax="true" data-valid="true"
+                        <form method="post" action="{:url('index/Account/mobileLogin`')}" ajax="true" data-valid="true"
                               novalidate="novalidate" success="msg.tips">
                             <ul class="y-register-ul">
                                 <li><i class="y-register-name">用户名：</i><input name="account" class="y-register-inp"

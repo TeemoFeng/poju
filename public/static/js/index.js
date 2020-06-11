@@ -198,4 +198,67 @@ $(document).ready(function (e) {
 		});
 	})
 
+	//倒计时
+	function settime(val,color,url) {
+		var element = $(val).closest('form').find("input[name='mobile']"),timer = {};
+		var mobile_prefix = $(val).closest('form').find("select[name='mobile_prefix'] option:selected");
+		if (mobile_prefix.val() === "") {
+			layer.msg("请选择国家区号",{icon:2, time:1200});
+			return false;
+		}
+		if (element.val() === "") {
+			layer.msg("手机号不能为空！",{icon:2,time:1200});
+			element.focus();
+			return false;
+		}
+		// if (!element.val().match(/^1[3-9]\d{9}$/)) {
+		//     layer.msg("请输入正确的手机号",{icon:2,time:1200});
+		//     element.focus();
+		//     return false;
+		// }
+		$btn = true;
+
+		if(val.getAttribute("class")=='y-verCode'){
+			$btn = false;
+		}
+		$btn && (val.style.backgroundColor=color);
+		val.setAttribute("disabled", true);
+		val.innerText="发送中...";
+		$.ajax({
+			url:url,
+			type: 'POST',
+			data: {mobile_prefix: mobile_prefix.val(),mobile: element.val()},
+			success: function (res) {
+				if (res.code == 2) {
+					layer.msg(res.msg);
+					val.removeAttribute("disabled");
+					val.innerText="发送短信验证码";
+					$btn && (val.style.backgroundColor="#f75959");
+					return false;
+				}
+				clearInterval(timer['mobile']);
+				var seconds = 60;
+				timer['mobile'] = setInterval(function () {
+					seconds--;
+					if (seconds <= 0) {
+						clearInterval(timer['mobile']);
+						val.removeAttribute("disabled");
+						val.innerText="发送短信验证码";
+						$btn && (val.style.backgroundColor="#f75959");
+					} else {
+						val.setAttribute("disabled", true);
+						val.innerText=seconds + "s再次获取验证码";
+						$btn && (val.style.backgroundColor=color);
+					}
+				}, 1000);
+			},
+			error: function() {
+				val.removeAttribute("disabled");
+				val.innerText="发送短信验证码";
+				$btn && (val.style.backgroundColor="#f75959");
+			}
+		})
+		return false;
+	}
+
 });

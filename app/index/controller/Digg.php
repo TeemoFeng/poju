@@ -6,6 +6,8 @@
  * Time: 16:53
  */
 namespace app\index\controller;
+use app\backstage\model\User;
+use think\Db;
 use Tools\Alisms;
 use Tools\WxShare;
 class Digg extends WebBase
@@ -36,4 +38,21 @@ class Digg extends WebBase
         $res = $alisms->send();
         return $res? json(['code'=>1,'msg'=>'验证码已发送','error'=>$alisms->getError()]):json(['code'=>2,'msg'=>'验证码发送失败！','error'=>$alisms->getError()]);
     }
+
+    //登录发送验证码
+    public function login_sms()
+    {
+        $mobile_prefix = $this->request->post('mobile_prefix');
+        $mobile_prefix = $mobile_prefix ?: '86';
+        $mobile = $this->request->post('mobile');
+        $this->db_app = Db::connect('database_morketing');
+        $user = $this->db_app->name('user')->where(['mobile' => $mobile])->find();
+        if(!$user)
+        {
+            return json(['code'=>2,'msg'=>'该手机号尚未注册,请先注册在登录！','model'=>'msg']);
+        }
+
+        return $this->sendSms($mobile, $mobile_prefix);
+    }
+
 }
