@@ -142,7 +142,7 @@ class Homepage extends ApiBase {
             $where['hid'] = $hid;
         }
         if (!empty($gid)) {
-            $where['hid'] = $gid;
+            $where['gid'] = $gid;
         }
         if (!empty($city)) {
             $where['city'] = $city;

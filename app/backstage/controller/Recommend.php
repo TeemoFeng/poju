@@ -30,10 +30,7 @@ class Recommend extends Base
             exit();
         }
         $recommendR = new \app\backstage\model\RecommendRule();
-        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20)->each(function ($item) use($recommendR){
-            $tag = $recommendR->where(['id' => $item->tag])->find();
-            $item->tag_name = $tag['name'];
-        });
+        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20);
 //        $tag_list = RecommendModel::$list;
         $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
         $this->assign("tag_list", $tag_list);
