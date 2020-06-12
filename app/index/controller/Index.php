@@ -29,7 +29,7 @@ class Index extends WebBase
         }
 
         if(empty($sid)){
-            $infoModel = $this->category->getLastOne();
+            $infoModel = $this->category->where(['state' =>1])->order('id desc')->find();
         }else{
             $infoModel = $this->category->where(['realm_name' => $sid])->find();
         }
@@ -61,7 +61,10 @@ class Index extends WebBase
             }
             array_push($list[$item['g_time']],$item->toArray());
         }
-
+        //区号列表
+        $this->db_app = Db::connect('database_morketing');
+        $country_mobile_prefix = $this->db_app->name('country_mobile_prefix')->order('id ASC')->column('mobile_prefix','id');
+        $this->assign('country_mobile_prefix', $country_mobile_prefix);
         $this->assign(['model'=>$infoModel,
             'guest'=>$guestList,
             'builder'=>$builder,
