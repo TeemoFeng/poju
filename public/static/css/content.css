@@ -1617,6 +1617,7 @@
 }
 
 .y-register .y-register-bx .y-register-inp {
+    color         : #444444;
     width             : 460px;
     height            : 45px;
     border            : 1px solid #ddd;

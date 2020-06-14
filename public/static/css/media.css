@@ -18,6 +18,9 @@
   .contact .contaList ul li:nth-child(3n) {
     margin-right: 165px;
   }
+  .contact .contop .fl{
+    width: 800px;
+  }
 }
 
 @media screen and (max-width: 1200px) {
