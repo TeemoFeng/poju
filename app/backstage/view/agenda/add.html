@@ -31,7 +31,7 @@
     </div>
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>日期：</span></label>
-        <div><input type="text" name="startdate" class="from-text" data-rander-model="date" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.startdate)}{/if}"></div>
+        <div><input type="text" name="startdate" class="from-text" data-rander-model="datetime" value="{if empty($model)}{:date('Y-m-d H:i:s',time())}{else/}{:date('Y-m-d H:i:s',$model.startdate)}{/if}"></div>
     </div>
     <div class="from-group">
         <label class="from-label fl"><b>*</b><span>场次：</span></label>
