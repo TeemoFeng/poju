@@ -25,14 +25,33 @@
     </style>
 </head>
 <body style="background: #f3f3f4;padding-left:5px;">
-<div class="frame-title">
-    <h5>近期推荐</h5>
+<div class="view-full">
+    <div class="viewframework-navbar">
+        <a href="{:url('backstage/Recommend/items',['id'=> 22])}"><div class="navbar-title">{$Root.name}</div></a>
+        <div class="navbar-list">
+            <ul>
+                {foreach $tag_list as $item}
+                <li {$key==$item.id?'class="active"':''}><a href="{:url('backstage/Recommend/items',['id'=> $item.id])}"><i></i><div>{$item.name}</div></a></li>
+                {/foreach}
+<!--                <li class="add-categoty"><a href="{:url('backstage/Category/add',['pid'=> $Root.id])}" ajax="true" model-area="750px,450px" success="msg.model"><i class="iconfont icon-tianjia"></i></a></li>-->
+            </ul>
+        </div>
+    </div>
+    <div class="collapse-inner">
+        <div class="collapse-bg"></div>
+        <div class="collapse-btn"><i class="iconfont icon-collapse-left"></i><i class="iconfont icon-collapse-right"></i></div>
+    </div>
 </div>
+
+<div class="viewframework" style="overflow-x:hidden;overflow-y:auto;height:100%;background: #f3f3f4;padding-left:5px;">
+    <div class="frame-title">
+        <h5>{$Root.name}</h5>
+    </div>
 <div class="action-bar">
     {foreach name='tag_list' item='item'}
     <a href="{:url('backstage/Recommend/add',['tid'=>$item.id])}" ajax="true" model-area="800px,450px" success="msg.model"><i class="iconfont icon-add"></i>添加<b style="color: #fff">{$item.name}</b></a>
     {/foreach}
-    <a href="javascript:location.reload()"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
+    <a href="{:url('backstage/Recommend/items',['id'=> $id])}"><i class="iconfont icon-refresh icon-spin"></i>刷新</a>
     <div class="dropdown">
         <a href="javascript:;" data-dropdown="click" >更多操作<span class="iconfont icon-triangle-down"></span></a>
         <ul class="down-left">
@@ -44,6 +63,7 @@
     <div class="search layui-layer-content" >
         <form method="get" action="{:url('backstage/Recommend/items')}" id="search-form">
             <input type="text" name="title" placeholder="标题" class="from-text k" value="{$title|default=''}">
+            <input type="hidden" name="id" value="{$id|default=''}">
             <input type="hidden" name="export" value="">
 
             <input type="button" class="search-btn checkForm" value="搜索" />
@@ -106,6 +126,7 @@
         </tfoot>
     </table>
 </form>
+</div>
 </body>
 </html>
 

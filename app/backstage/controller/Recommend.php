@@ -18,9 +18,19 @@ class Recommend extends Base
     //近期推荐列表
     public function items()
     {
+        $category = new \app\backstage\model\RecommendRule();
+        $id = $this->request->param('id',$category->getFirstChildId(22));
+        $root = $category->find(22);
+
+//        dump($id);die;
+
         $title = $this->request->param('title', '');
         $export = $this->request->param('export', '');
         $where = [];
+        $where['tag'] = $id;
+        if ($id == 22) {
+            unset($where['tag']);
+        }
         if (!empty($title)) {
             $where['title'] = ['like', '%'.$title.'%'];
         }
@@ -29,12 +39,12 @@ class Recommend extends Base
             $this->export($data);
             exit();
         }
-        $recommendR = new \app\backstage\model\RecommendRule();
         $list = RecommendModel::where($where)->order('sort ASC')->paginate(20);
-//        $tag_list = RecommendModel::$list;
         $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
+
         $this->assign("tag_list", $tag_list);
         $this->assign("title", $title);
+        $this->assign(['key'=>$id, 'id' => $id, 'Root'=>$root]);
 
         $this->assign("items", $list);
         $this->assign("type", RecommendModel::$types);
