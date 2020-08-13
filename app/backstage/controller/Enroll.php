@@ -129,10 +129,23 @@ class Enroll extends Base
             }
         }
 
-        $data = SummitEnroll::where($where2)->order('id ASC')->select();
+        $data = Db::name('summit_enroll')->where($where2)->order('id ASC')->select();
+        if (empty($data)) {
+            $this->error('没有可导出的数据');
+        }
+
 
         $this->db_app = Db::connect('database_morketing');
         $th = $this->db_app->table('diy_form')->select();
+
+        //获取表字段
+        $field = $data[0];
+        foreach ($th as $k => $v) {
+            if (!in_array($v['label'], $field)) {
+                unset($th[$k]);
+            }
+        }
+
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
