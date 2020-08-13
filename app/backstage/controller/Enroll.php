@@ -137,16 +137,7 @@ class Enroll extends Base
 
         $this->db_app = Db::connect('database_morketing');
         $th = $this->db_app->table('diy_form')->select();
-
-        //获取表字段
-        $field = $data[0];
-        foreach ($th as $k => $v) {
-            if (!in_array($v['label'], $field)) {
-                unset($th[$k]);
-            }
-        }
-
-
+        
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle("会议报名");
