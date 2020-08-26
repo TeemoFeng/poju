@@ -29,7 +29,7 @@ class Index extends WebBase
         }
 
         if(empty($sid)){
-            $infoModel = $this->category->where(['state' =>1])->order('id desc')->find();
+            $infoModel = $this->category->where(['state' =>1])->order('sort asc')->find();
         }else{
             $infoModel = $this->category->where(['realm_name' => $sid])->find();
         }
