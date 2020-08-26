@@ -6,6 +6,7 @@
  * Time: 16:00
  */
 namespace app\backstage\controller;
+use app\backstage\model\Category;
 use app\common\controller\Base;
 use app\backstage\model\SummitEnroll;
 use think\Config;
@@ -21,6 +22,8 @@ class Enroll extends Base
 {
     public function items()
     {
+        $cid = $this->request->param('cid', 0);
+        $this->assign('cid', $cid);
         $summit_name = $this->request->param('summit_name', '');
         $sd = $this->request->param('sd');
         $ed = $this->request->param('ed');
@@ -41,17 +44,25 @@ class Enroll extends Base
         } else if (empty($start_date) && !empty($end_date)) {
             $where2['sub_time'] = ['<', $end_date];
         }
-        $categoryModel = new \app\backstage\model\Category();
-        if (!empty($summit_name)) {
-            $ids = $categoryModel->where('name',"like","%".$summit_name."%")->column('id');
-            if (!empty($ids)) {
-                $where2['cid'] = ['in', $ids];
-            }
+        if (!empty($cid)) {
+            $where2['cid'] = $cid;
         }
+
+        $categoryModel = new \app\backstage\model\Category();
+//        if (!empty($cid)) {
+//            $ids = $categoryModel->where('name',"like","%".$summit_name."%")->column('id');
+//            if (!empty($ids)) {
+//                $where2['cid'] = ['in', $ids];
+//            }
+//        }
         $list = SummitEnroll::where($where2)->order('id ASC')->paginate(20, false ,['query'=>request()->param()])->each(function ($v) use($categoryModel) {
             $v['summit_name'] = $categoryModel::where(['id' => $v['cid']])->value('name');
             $v['sub_time'] = date('Y-m-d H:i:s', $v['sub_time']);
         });
+        $category = new Category();
+        $nav = $category->column('id,name');
+        $this->assign("list",$nav);
+
         $this->assign("items", $list);
         return $this->fetch();
     }
@@ -104,8 +115,10 @@ class Enroll extends Base
         $summit_name = $this->request->param('summit_name', '');
         $sd = $this->request->param('sd', 0);
         $ed = $this->request->param('ed', 0);
+        $cid = $this->request->param('cid', 0);
         $this->assign('sd', $sd);
         $this->assign('ed', $ed);
+        $this->assign('cid', $cid);
         $start_date = !empty($sd) ? strtotime($sd) : 0;
         $end_date = !empty($ed) ? strtotime($ed) : 0;
         $this->assign('summit_name', $summit_name);
@@ -121,13 +134,17 @@ class Enroll extends Base
         } else if (empty($start_date) && !empty($end_date)) {
             $where2['sub_time'] = ['<', $end_date];
         }
-        $categoryModel = new \app\backstage\model\Category();
-        if (!empty($summit_name)) {
-            $ids = $categoryModel->where('name',"like","%".$summit_name."%")->column('id');
-            if (!empty($ids)) {
-                $where2['cid'] = ['in', $ids];
-            }
+        if (!empty($cid)) {
+            $where2['cid'] = $cid;
         }
+
+        $categoryModel = new \app\backstage\model\Category();
+//        if (!empty($summit_name)) {
+//            $ids = $categoryModel->where('name',"like","%".$summit_name."%")->column('id');
+//            if (!empty($ids)) {
+//                $where2['cid'] = ['in', $ids];
+//            }
+//        }
 
         $data = Db::name('summit_enroll')->where($where2)->order('id ASC')->select();
         if (empty($data)) {

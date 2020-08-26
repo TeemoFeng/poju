@@ -24,7 +24,17 @@
 <div class="action-bar">
     <div class="search">
         <form method="get" action="{:url('backstage/enroll/items')}">
-            会议名称 <input type="text" name="summit_name" placeholder="填写要搜索的会议名" class="from-text k" value="{$summit_name|default=''}">
+            会议列表：
+            <select name="cid">
+                <option value="">请选择</option>
+                {foreach name="list" item="vo" key="k"}
+                {if !empty($cid) && $k==$cid}
+                <option value="{$k}" selected>{$vo}</option> 
+                {else /}
+                <option value="{$k}">{$vo}</option>
+                {/if}
+                                {/foreach}
+            </select>
             <input type="text" name="sd" class="from-text date" id="start_time" data-rander-model="date" value="{$sd|default=''}" placeholder="报名开始时间"> 至
             <input type="text" name="ed" class="from-text date" id="end_time" data-rander-model="date" value="{$ed|default=''}" placeholder="报名结束时间">
 
