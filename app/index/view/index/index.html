@@ -142,7 +142,7 @@
                                     <div class="textList">
                                         <div class="l_topic">{$vo.title}</div>
                                         <div class="l_topic">场次：{$vo.cc}</div>
-                                        <div class="l_time">时间：{$vo.sj}</div>
+                                        <div class="l_time">时间：{$vo.sj|default=''}</div>
                                     </div>
                                     {/foreach}
                                     <div class="textList">
@@ -184,7 +184,7 @@
                                         <div class="textList">
                                             <div class="l_topic">{$vo.title}</div>
                                             <div class="l_topic">场次：{$vo.cc}</div>
-                                            <div class="l_time">时间：{$vo.sj}</div>
+                                            <div class="l_time">时间：{$vo.sj|default=''}</div>
                                         </div>
                                         {/foreach}
                                         <div class="textList">
@@ -239,7 +239,7 @@
                                             {/php}
 
                                             <td class="cc_td">
-                                                <div class="time_det">{$sj}</div>
+                                                <div class="time_det">{$sj|default=''}</div>
                                             </td>
                                             <td>
                                                 <div class="info">
