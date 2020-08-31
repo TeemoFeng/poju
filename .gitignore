@@ -1,3 +1,5 @@
 .idea/
 runtime/
 .env
+public/nginx.htaccess
+public/upload/
