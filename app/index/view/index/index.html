@@ -25,6 +25,7 @@
             border: 1px solid #ed1333 !important;
             box-shadow: 0px 0px 1px #ed1333;
         }
+
     </style>
     <script>
         var _hmt = _hmt || [];
@@ -105,10 +106,11 @@
         <div class="wid"> <a id="introduction" class="target-fix"></a>
             <div class="intro">
                 <div class="subtit">
-                    <div class="red_num wow animated fadeInLeft">01</div>
+                    <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">01</div>
                     <h2 class="tit wow animated fadeInRight"> 峰会简介 <span>Summit Introduction</span> </h2>
                 </div>
-                <div class="inText wow animated fadeIn">
+                <div class="inText wow animated fadeIn" style="border-top: 2px solid {$model.color};
+    border-bottom: 2px solid {$model.color};">
                     {$model.remark}
                 </div>
                 <!--<a href="{$model.ticket}" target="_blank" class="buyBtn wow animated fadeInUp">立即购票</a> </div>-->
@@ -118,7 +120,7 @@
                 <a id="builder" class="target-fix"></a>
                 <div class="guest">
                     <div class="subtit">
-                        <div class="red_num wow animated fadeInLeft">02</div>
+                        <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">02</div>
                         <h2 class="tit wow animated fadeInRight"> 共创人 <span>Co-builder</span> </h2>
                     </div>
                     <div class="gList">
@@ -153,13 +155,13 @@
                             {/foreach}
                         </ul>
                         <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="1"
-                           cid="{$sid}" page="1" total="{$builder->lastPage()}">更多共创人</a>
+                           cid="{$sid}" page="1" total="{$builder->lastPage()}" style="background: {$model.color};">更多共创人</a>
                     </div>
                     {/if}
                     <a id="guest" class="target-fix"></a>
                     <div class="guest">
                         <div class="subtit">
-                            <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}03 {else/}02{/if}
+                            <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">{if $model.show_guess==1}03 {else/}02{/if}
                             </div>
                             <h2 class="tit wow animated fadeInRight"> 演讲嘉宾 <span>Guest Speaker</span> </h2>
                         </div>
@@ -195,14 +197,14 @@
                                 {/foreach}
                             </ul>
                             <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="0"
-                               cid="{$sid}" page="1" total="{$guest->lastPage()}">更多嘉宾</a>
+                               cid="{$sid}" page="1" total="{$guest->lastPage()}"  style="background: {$model.color};">更多嘉宾</a>
                         </div>
 
                         <a id="agenda" class="target-fix"></a> <a class="target-fix"></a>
                     </div>
                     <div class="agenda">
                         <div class="subtit">
-                            <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}04 {else/}03{/if}
+                            <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">{if $model.show_guess==1}04 {else/}03{/if}
                             </div>
                             <h2 class="tit wow animated fadeInRight"> 峰会议程 <span>Summit Agenda</span> </h2>
                         </div>
@@ -272,7 +274,7 @@
                     <a id="partner" class="target-fix"></a>
                     <div class="partner">
                         <div class="subtit">
-                            <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}05 {else/}04{/if}
+                            <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">{if $model.show_guess==1}05 {else/}04{/if}
                             </div>
                             <h2 class="tit wow animated fadeInRight"> 合作伙伴 <span>Cooperative Partner</span> </h2>
                         </div>
@@ -280,7 +282,7 @@
                             {foreach name='cooper' item='item'}
                             <div class="pList">
                                 <div class="par_tit wow animated fadeInUp" data-wow-delay="0.3s"><span
-                                        class="con">{$item.name}</span><span class="line"></span></div>
+                                        class="con">{$item.name}</span><span class="line" style="border-bottom: 1px solid {$model.color};"></span></div>
                                 <ol class="logos clearfix">
                                     {php}$logo = explode(',',$item['imglist']); {/php}
                                     {foreach name='logo' item='vo'}
@@ -296,11 +298,11 @@
                     <a id="review" class="target-fix"></a>
                     <div class="review">
                         <div class="subtit">
-                            <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}06{else/}05{/if}
+                            <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">{if $model.show_guess==1}06{else/}05{/if}
                             </div>
                             <h2 class="tit wow animated fadeInRight"> 往届回顾 <span>Past Review</span> </h2>
                         </div>
-                        <div class="reviewList wow animated fadeInUp flexslider">
+                        <div class="reviewList wow animated fadeInUp flexslider" style="border: 4px solid {$model.color};">
                             <ul class="clearfix slides">
                                 {foreach name='ads' item='item'}
                                 <li><a href="{$item.url}" target="_blank"> <img src="{$item.img}"
@@ -314,7 +316,7 @@
                     <a id="contact" class="target-fix"></a>
                     <div class="contact">
                         <div class="subtit">
-                            <div class="red_num wow animated fadeInLeft">{if $model.show_guess==1}07 {else/}06{/if}
+                            <div class="red_num wow animated fadeInLeft" style="color:{$model.color}">{if $model.show_guess==1}07 {else/}06{/if}
                             </div>
                             <h2 class="tit wow animated fadeInRight"> 联系我们 <span>Contact Us</span> </h2>
                         </div>
@@ -333,7 +335,7 @@
                             <ul class="clearfix">
                                 {foreach name='contact' item='item'}
                                 <li class="wow animated fadeInUp" data-wow-delay="0.3s">
-                                    <h2><span>{$item.title}</span></h2>
+                                    <h2 style="border-bottom: 1px solid {$model.color};"><span>{$item.title}</span></h2>
                                     <h4>{$item.name}</h4>
                                     <p><span>电话：{$item.tel}</span></p>
                                     <p><span>邮箱：{$item.email}</span></p>

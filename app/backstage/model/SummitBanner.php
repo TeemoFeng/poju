@@ -44,7 +44,7 @@ class SummitBanner extends BaseModel
         return str_replace('-', '.', $end);
     }
 
-    public function homepageBannerList()
+       public function homepageBannerList()
     {
         return $this->where(['status' => self::STATUS2])->field($this->show_fields)->order('sort ASC')->limit(5)->select()->toArray();
     }
