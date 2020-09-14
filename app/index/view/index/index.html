@@ -155,7 +155,7 @@
                             {/foreach}
                         </ul>
                         <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="1"
-                           cid="{$sid}" page="1" total="{$builder->lastPage()}" style="background: {$model.color};">更多共创人</a>
+                           cid="{$sid}" page="1" total="{$builder->lastPage()}" style="background: {$model.color};color:{$model.button_color}">更多共创人</a>
                     </div>
                     {/if}
                     <a id="guest" class="target-fix"></a>
@@ -197,7 +197,7 @@
                                 {/foreach}
                             </ul>
                             <a href="javascript:;" class="buyBtn wow animated fadeInUp getMoreGuest" sid="0"
-                               cid="{$sid}" page="1" total="{$guest->lastPage()}"  style="background: {$model.color};">更多嘉宾</a>
+                               cid="{$sid}" page="1" total="{$guest->lastPage()}"  style="background: {$model.color};color:{$model.button_color}">更多嘉宾</a>
                         </div>
 
                         <a id="agenda" class="target-fix"></a> <a class="target-fix"></a>
