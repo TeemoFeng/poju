@@ -130,7 +130,7 @@
                             <li class="wow animated fadeInLeft" data-wow-delay="{$s}s">
                                 {if $item.is_new_power==1}<div class="gtip">共创人</div>{/if}
                                 <div class="circular">
-                                    <div class="cbg"></div>
+                                    <div class="cbg" style="background: url({$model.guest_img}) no-repeat center/contain;"></div>
                                     <div class="img"><img src="{$item.avatar}" /></div>
                                 </div>
                                 <div class="summ">
@@ -172,7 +172,7 @@
                                 <li class="wow animated fadeInLeft" data-wow-delay="{$s}s">
                                     {if $item.is_new_power==1}<div class="gtip">新势力</div>{/if}
                                     <div class="circular">
-                                        <div class="cbg"></div>
+                                        <div class="cbg" style="background: url({$model.guest_img}) no-repeat center/contain;"></div>
                                         <div class="img"><img src="{$item.avatar}" /></div>
                                     </div>
                                     <div class="summ">
@@ -549,7 +549,7 @@
                     {{if item.is_new_power==1}}<div class="gtip">{{if item.sid==1}}共创人{{else}}新势力{{/if}}</div>
                     {{/if}}
                     <div class="circular">
-                        <div class="cbg"></div>
+                        <div class="cbg" style="background: url({{item.category.guest_img}}) no-repeat center/contain;"></div>
                         <div class="img"><img src="{{item.avatar}}" /></div>
                     </div>
                     <div class="summ">

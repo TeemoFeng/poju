@@ -85,7 +85,7 @@ class Index extends WebBase
         $guest = new Guest();
         $where['sid'] = $sid;
         $where['cid'] = $cid;
-        $guestList = $guest->where($where)->order('sort','asc')->paginate(12,false,['page'=>$page]);
+        $guestList = $guest->where($where)->with('category')->order('sort','asc')->paginate(12,false,['page'=>$page]);
         return json($guestList);
     }
 
