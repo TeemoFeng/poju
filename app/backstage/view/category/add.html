@@ -50,9 +50,24 @@
                     <label class="from-label fl"><b>*</b><span>名称：</span></label>
                     <div>
                         <input type="text" name="name" value="{$model.name|default=''}" class="from-text" style="color:{$model.color|default='#000'}">
-                        <input type="text" value="{$model.color|default='#000'}" name="color" class="color-select" >
+<!--                        <input type="text" value="{$model.color|default='#000'}" name="color" class="color-select" >-->
                     </div>
                 </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>风格颜色：</span></label>
+                    <div>
+                        <input type="text" value="{$model.color|default='#000'}" name="color" class="from-text">
+                    </div>
+                </div>
+
+                <div class="from-group">
+                    <label class="from-label fl"><b>*</b><span>按钮字体颜色：</span></label>
+                    <div>
+                        <input type="text" value="{$model.button_color|default='#000'}" name="button_color" class="from-text">
+                    </div>
+                </div>
+
                 <div class="from-group">
                     <label class="from-label fl"><b>*</b><span>Title：</span></label>
                     <div><input type="text" name="meta_title" value="{$model.meta_title|default=''}" class="from-text"></div>
