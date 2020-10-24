@@ -10,6 +10,12 @@ namespace app\api\controller;
 
 use app\api\library\ApiBase;
 use app\backstage\controller\Recommend;
+use app\backstage\model\Ads;
+use app\backstage\model\Agenda;
+use app\backstage\model\Category;
+use app\backstage\model\Cooperative;
+use app\backstage\model\Fragment;
+use app\backstage\model\Guest;
 use app\backstage\model\RecommendRule;
 use app\backstage\model\Report;
 use app\backstage\model\Review;
@@ -17,6 +23,7 @@ use app\backstage\model\Special;
 use app\backstage\model\SummitBanner;
 use app\backstage\model\Recommend as RecommendModel;
 use app\backstage\model\SysAdmin;
+use app\backstage\model\Video;
 use think\Config;
 use think\Db;
 use app\backstage\model\SysConfig as SCModel;
@@ -31,7 +38,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews','userTreaty'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews','userTreaty', 'summitInfo'];
 
     /***
      * Action 前台首页
@@ -224,6 +231,78 @@ class Homepage extends ApiBase {
         });
         $this->success('', ['count' => $count, 'list' => $list]);
     }
+
+    /***
+     * Action  会议详情
+     * @author ywf
+     * @license /api/homepage/summitInfo POST
+     * @para string summit_id  会议id|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    成功
+     * @field string model    会议信息
+     * @field string guest    演讲嘉宾
+     * @field string builder    共建人
+     * @field string agenda    峰会议程
+     * @field string contact    联系方式
+     * @field string ads    往期回顾
+     * @field string cooper    合作伙伴
+     * @field string videos    视频详情
+     * @field string summit_id    会议id
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function summitInfo()
+    {
+        $categoryModel = new Category();
+        $sid = $this->request->post('summit_id', 0, 'intval');
+        if(empty($sid)){
+            $infoModel = $categoryModel->where(['state' =>1])->order('sort asc')->find();
+        }else{
+            $infoModel = $categoryModel->where(['id' => $sid])->find();
+        }
+
+        //共创人/演讲嘉宾
+        $guest = new Guest();
+        $guestList = $guest->where(['sid'=>0, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //演讲嘉宾
+        $builder = $guest->where(['sid'=>1, 'cid' => $infoModel['id']])->order('sort','asc')->paginate(12); //共建人
+
+        //峰会议程
+        $agenda = new Agenda();
+        $agendaItems = $agenda->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
+        //联系方式
+        $fragment =  new Fragment();
+        $lx = $fragment->where(['sid' => $infoModel['id']])->select();
+        //往期回顾
+        $ads = new Ads();
+        $adsList = $ads->where('tid','=',$infoModel['id'])->order('displayorder','asc')->select();
+        //合作伙伴
+        $cooperative = new Cooperative();
+        $cooperList = $cooperative->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
+        //视频
+        $videos = Video::where('sid','=',$infoModel['id'])->order('sort','asc')->select();
+        // 调整结构
+        $list = [];
+        foreach ($videos as $item) {
+            if (!isset($list[$item['g_time']])) {
+                $list[$item['g_time']] = [];
+            }
+            array_push($list[$item['g_time']],$item->toArray());
+        }
+        $info = [
+            'model'=>$infoModel,
+            'guest'=>$guestList,
+            'builder'=>$builder,
+            'agenda'=>$agendaItems,
+            'contact'=>$lx,
+            'ads'=>$adsList,
+            'cooper'=>$cooperList,
+            'videos'=>$list,
+            'summit_id' => $infoModel['id'],//会议id
+        ];
+
+        $this->success('', ['info' => $info]);
+    }
+
 
 
     /***

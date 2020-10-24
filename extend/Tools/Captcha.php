@@ -17,8 +17,8 @@ class Captcha
        //imagettftext($image,25,0,mt_rand(10, 120), mt_rand(5, 35),$white_a,__DIR__."/../../public/static/backend/fonts/zoo.ttf",$z);
        for($i=0;$i<4;$i++)
        {
-           $fs = 24;
-           $x = $i * 32+ 10;
+           $fs = 18;
+           $x = $i * 25+ 10;
            $y = 30;
            $c = $codeSet[mt_rand(0, strlen($codeSet) - 1)];
            $code .= $c;
