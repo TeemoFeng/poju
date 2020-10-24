@@ -38,7 +38,7 @@ class Homepage extends ApiBase {
     /**
      * 无需登录的方法
      */
-    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews','userTreaty', 'summitInfo'];
+    protected $noNeedLogin = ['index', 'summit', 'video','videoDetail','latelyVideoList', 'comment', 'addComment', 'collection', 'giveLike', 'recommend', 'copyright', 'recommendViews', 'webLogo', 'bannerAdvert', 'recommendTag', 'bannerViews','userTreaty', 'summitInfo', 'getMoreGuest'];
 
     /***
      * Action 前台首页
@@ -303,7 +303,29 @@ class Homepage extends ApiBase {
         $this->success('', ['info' => $info]);
     }
 
-
+    /***
+     * Action  获取更多共创人/演讲嘉宾
+     * @author ywf
+     * @license /api/homepage/getMoreGuest POST
+     * @para string summit_id  会议id|Y
+     * @para string type  0演讲嘉宾，1共创人|Y
+     * @para string page  页数|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    成功
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function getMoreGuest()
+    {
+        $page = $this->request->param('page');
+        $sid = $this->request->param('type');
+        $cid = $this->request->param('summit_id');
+        $guest = new Guest();
+        $where['sid'] = $sid;
+        $where['cid'] = $cid;
+        $guestList = $guest->where($where)->with('category')->order('sort','asc')->paginate(12,false,['page'=>$page]);
+        $this->success('', ['list' => $guestList]);
+    }
 
     /***
      * Action 视频列表页[首页后续报道/视频报道点击更多请求此接口]
