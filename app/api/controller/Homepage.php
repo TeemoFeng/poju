@@ -278,6 +278,14 @@ class Homepage extends ApiBase {
         //合作伙伴
         $cooperative = new Cooperative();
         $cooperList = $cooperative->where('sid','=',$infoModel['id'])->order('sort','asc')->select();
+        $host = request()->root(true);
+        foreach ($cooperList as &$v) {
+            if (!empty($v['imglist'])) {
+                $img
+            }
+            $v[''] $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+        }
         //视频
         $videos = Video::where('sid','=',$infoModel['id'])->order('sort','asc')->select();
         // 调整结构

@@ -14,4 +14,12 @@ class Ads extends BaseModel
     {
         return $this->belongsTo("Category",'tid');
     }
+
+    //logo地址
+    public function getImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
 }

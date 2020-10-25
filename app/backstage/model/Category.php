@@ -90,4 +90,94 @@ class Category extends BaseModel
         return  $this->where('state','=',1)->order('sort','asc')->order('id','desc')->limit(1)->find();
     }
 
+    //图片地址
+    public function getImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getHcImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getBgTopLeftAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getBgBottomLeftAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getBgTopRightAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getBgBottomRightAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+    //logo地址
+    public function getBgImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+
+    //logo地址
+    public function getGuestImgAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

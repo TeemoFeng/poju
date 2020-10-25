@@ -12,4 +12,12 @@ class Guest extends BaseModel
     {
         return $this->belongsTo("Category",'cid');
     }
+
+    //logo地址
+    public function getAvatarAttr($url)
+    {
+        $host = request()->root(true);
+        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+
+    }
 }
