@@ -93,56 +93,84 @@ class Category extends BaseModel
     //图片地址
     public function getImgAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getHcImgAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getBgTopLeftAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getBgBottomLeftAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getBgTopRightAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getBgBottomRightAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
     //logo地址
     public function getBgImgAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
@@ -150,12 +178,60 @@ class Category extends BaseModel
     //logo地址
     public function getGuestImgAttr($url)
     {
-        $host = request()->root(true);
-        return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
 
     }
 
 
+    //logo地址
+    public function getCooperativeAttr($url)
+    {
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
+    }
+
+    //logo地址
+    public function getJxlogoAttr($url)
+    {
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
+    }
+
+    //logo地址
+    public function getLogoAttr($url)
+    {
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
+    }
+
+
+    //logo地址
+    public function getQrcodePathAttr($url)
+    {
+        if (!empty($url)) {
+            $host = request()->root(true);
+            return $url && strpos($url, 'http') !== false ? $url : $host . $url;
+        } else {
+            return '';
+        }
+    }
 
 
 
