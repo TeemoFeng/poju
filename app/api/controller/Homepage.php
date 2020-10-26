@@ -281,9 +281,16 @@ class Homepage extends ApiBase {
         $host = request()->root(true);
         foreach ($cooperList as &$v) {
             if (!empty($v['imglist'])) {
-                $img
+                $imgs = explode(',', $v['imglist']);
+                $new_img_url = [];
+                foreach ($imgs as $vv) {
+                    $new_img_url[] = $vv && strpos($vv, 'http') !== false ? $vv : $host . $vv;
+
+                }
+
+                $v['imglist'] = implode(',', $new_img_url);
+
             }
-            $v[''] $url && strpos($url, 'http') !== false ? $url : $host . $url;
 
         }
         //视频
