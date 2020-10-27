@@ -200,15 +200,19 @@ class Homepage extends ApiBase {
         if ($page > $num) {
             $list = [];
         } else {
-            $list = Db::name('category')->where($where)->whereNull('delete_time')->field('id summit_id,name,img,start_time,end_time,address,number,profile,realm_name theme')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $list = Db::name('category')->where($where)->whereNull('delete_time')->field('id summit_id,name,img,start_time,end_time,address,number,profile,banner,realm_name theme')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
         }
         $host = request()->root(true);
         array_walk($list, function (&$v) use($host) {
             $v['name'] = htmlspecialchars_decode($v['name']);
             $v['profile'] = htmlspecialchars_decode($v['profile']);
-            if ($v['img'] && strpos($v['img'], 'http') === false)
-            {
-                $v['img'] =  $host . $v['img'];
+            if ($v['banner'] && strpos($v['img'], 'http') === false) {
+                $v['img'] =  $host . $v['banner'];
+            } else {
+                if ($v['img'] && strpos($v['img'], 'http') === false)
+                {
+                    $v['img'] =  $host . $v['img'];
+                }
             }
 
             if (strtotime($v['end_time']) < time()) {

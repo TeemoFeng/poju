@@ -68,6 +68,10 @@ class Summit extends Base
             if (empty($postData['realm_name'])) {
                 return json(['code' => 0, 'msg' => '请填写域名标题']);
             }
+            if (empty($postData['banner'])) {
+                return json(['code' => 0, 'msg' => '请上传封面图']);
+            }
+
             if (empty($postData['profile'])) {
                 return json(['code' => 0, 'msg' => '请填写简介']);
             }

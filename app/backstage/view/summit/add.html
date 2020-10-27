@@ -15,6 +15,16 @@
     </div>
 
     <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>封面图：</span></label>
+        <div>
+            <input type="file" multiple="multiple" class="upload-file" url="{:url('backstage/Ajax/upload')}" success="msg.upload" send-begin="msg.waiting" complete="msg.complete" />
+            <a class="file-bg"><i class="iconfont icon-upload"></i>选择图片</a>
+            <div class="imglist"></div>
+            <input type="hidden" name="banner" data-rander-model="unload" value="{$model.banner|default=''}">
+        </div>
+    </div>
+
+    <div class="from-group">
         <label class="from-label fl "><b>*</b><span>简介：</span></label>
         <div>
             <input class="from-text" id="profile" name="profile" type="text" value="{$model.profile|default=''}" />
