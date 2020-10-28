@@ -14,6 +14,7 @@ use app\backstage\model\Ads;
 use app\backstage\model\Agenda;
 use app\backstage\model\Category;
 use app\backstage\model\Cooperative;
+use app\backstage\model\Feedback;
 use app\backstage\model\Fragment;
 use app\backstage\model\Guest;
 use app\backstage\model\RecommendRule;
@@ -307,6 +308,8 @@ class Homepage extends ApiBase {
             }
             array_push($list[$item['g_time']],$item->toArray());
         }
+        $sc = new SCModel();
+        $SysConfig = $sc->column('value','name');
         $info = [
             'model'=>$infoModel,
             'guest'=>$guestList,
@@ -317,10 +320,181 @@ class Homepage extends ApiBase {
             'cooper'=>$cooperList,
             'videos'=>$list,
             'summit_id' => $infoModel['id'],//会议id
+            'sys_config' => $SysConfig,
         ];
 
         $this->success('', ['info' => $info]);
     }
+
+    /***
+     * Action  订阅会议动态
+     * @author ywf
+     * @license /api/homepage/feedback POST
+     * @field string code   1:成功;0:失败
+     * @field string msg    成功
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function feedback()
+    {
+        $data = $this->request->post();
+        $data['subdate'] = time();
+        $data['id'] = 0;
+        $fb = new Feedback();
+        $res = $fb->allowField(true)->isUpdate(false)->save($data);
+        if($res!==false){
+            $this->success('提交成功');
+        }else{
+            $this->error('服务器繁忙，请稍后重试！');
+        }
+    }
+
+    /***  获取动态表单信息
+     * Action
+     * @author ywf
+     * @license /api/homepage/getForm POST
+     * @para string summit_id  会议id|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    成功
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function getForm()
+    {
+        $category = new Category();
+        $id = $this->request->param('summit_id');
+        $model = $category->where(['id' => $id])->find();
+        if(empty($model)){
+            $this->error('请求出错了');
+        }
+        $this->db_app = Db::connect('database_morketing');
+        $elemItem = [];
+        if (!empty($model['diy_form'])) {
+            $idList = explode(',',$model['diy_form']);
+            $elemItem = $this->db_app->table('diy_form')->where('id', 'in', $idList)->select();
+
+            foreach ($elemItem as &$v) {
+                if (isset($this->user[$v['name']]) && !empty($this->user[$v['name']])) {
+                    $v['value'] = $this->user[$v['name']];
+                }
+            }
+        }
+
+        $this->success('', [
+            'diy_form_list' => $elemItem,
+        ]);
+
+    }
+
+    /***  报名提交
+     * Action
+     * @author ywf
+     * @license /api/homepage/subInfo POST
+     * @para string summit_id  会议id|Y
+     * @para string user_id  用户id|Y
+     * @field string code   1:成功;0:失败
+     * @field string msg    成功
+     * @jsondata {"mobile_prefix":"86","mobile":"18339817892","code":"123456","new_password":"123456"}
+     * @jsondatainfo {"code":1,"msg":"密码已修改","time":"1581157326","data":null}
+     */
+    public function subInfo()
+    {
+        $postData = $this->request->post();
+        //查看该用户是否已经报名
+        $is_post = Db::name('summit_enroll')->where(['user_id' => $postData['user_id'], 'cid' => $postData['summit_id']])->find();
+        if (!empty($is_post)) {
+            $this->error('该会议您已报名');
+        }
+        $this->db_app = Db::connect('database_morketing');
+        //获取会议id
+        $cid = $postData['summit_id'];
+        if (empty($cid)) {
+            $this->error('出现未知错误');
+        }
+        $category = new Category();
+        $diy_form = $category->where(['id' => $cid])->value('diy_form');
+        $idList = explode(',',$diy_form);
+        $this->db_app = Db::connect('database_morketing');
+        $user_info = $this->db_app->table('user')->where(['id' => $postData['user_id']])->find();
+        $user_update = []; //完善用户信息
+        foreach ($idList as $item){
+            $elemItem = $this->db_app->table('diy_form')->where(['id' => $item])->find();
+            $validate = explode(',',$elemItem['validate']);
+            if (isset($user_info[$elemItem['name']]) && empty($user_info[$elemItem['name']])) {
+                $user_update[$elemItem['name']] = $postData[$elemItem['name']];
+            }
+            if (!empty($elemItem)) {
+                foreach ($validate as $vItem){
+                    $error = 0;
+                    switch ($vItem){
+                        case 'required':
+                            if (empty($postData[$elemItem['name']])) {
+                                $error = 1;
+                                $msg = $elemItem['label'] . '不能为空';
+                            }
+                            break;
+                        case 'email':
+                            $result  = filter_var($postData[$elemItem['name']], FILTER_VALIDATE_EMAIL);
+                            if ($result === false) {
+                                $error = 1;
+                                $msg = '请填写正确的' . $elemItem['label'];
+                            }
+                            break;
+                        case 'mobile':
+                            if(!preg_match("/^1[345678]{1}\d{9}$/",$postData['mobile'])) {
+                                $error = 1;
+                                $msg = '请填写正确的' . $elemItem['label'];
+                            }
+                            break;
+                    }
+                    if ($error == 1) {
+                        $this->error($msg);
+                    }
+                }
+
+
+            }
+
+        }
+
+        if (!empty($postData['name'])) {
+            $res = preg_match('/\d+/', $postData['name']);
+            if ($res) {
+                return json(['code'=> 0,'msg'=>'姓名格式不正确']);
+            }
+        }
+
+        if (!empty($postData['company'])) {
+            $res = preg_match('/\d+/', $postData['company']);
+            if ($res) {
+                return json(['code'=> 0,'msg'=>'公司名称格式不正确']);
+            }
+        }
+        if (!empty($postData['department'])) {
+            $res = preg_match('/\d+/', $postData['department']);
+            if ($res) {
+                return json(['code'=> 0,'msg'=>'部门格式不正确']);
+            }
+        }
+        if (!empty($postData['position'])) {
+            $res = preg_match('/\d+/', $postData['position']);
+            if ($res) {
+                return json(['code'=> 0,'msg'=>'职位格式不正确']);
+            }
+        }
+
+        $postData['sub_time'] = time();
+        $res = Db::name('summit_enroll')->insert($postData);
+        if (!empty($user_update)) {
+            $this->db_app->table('user')->where(['id' => $postData['user_id']])->update($user_update);
+        }
+
+        if ($res === false) {
+            $this->error('报名失败请重试');
+        }
+        $this->success('报名成功');
+    }
+
 
     /***
      * Action  获取更多共创人/演讲嘉宾
