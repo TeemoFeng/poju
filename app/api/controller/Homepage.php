@@ -310,6 +310,17 @@ class Homepage extends ApiBase {
         }
         $sc = new SCModel();
         $SysConfig = $sc->column('value','name');
+        $host = request()->root(true);
+        if (!empty($SysConfig['gzh'])) {
+            $SysConfig['gzh'] =  $SysConfig['gzh'] && strpos($SysConfig['gzh'], 'http') !== false ? $SysConfig['gzh'] : $host . $SysConfig['gzh'];
+        }
+        if (!empty($SysConfig['prize_banner'])) {
+            $SysConfig['prize_banner'] =  $SysConfig['prize_banner'] && strpos($SysConfig['prize_banner'], 'http') !== false ? $SysConfig['prize_banner'] : $host . $SysConfig['prize_banner'];
+        }
+        if (!empty($SysConfig['wx_img'])) {
+            $SysConfig['wx_img'] =  $SysConfig['wx_img'] && strpos($SysConfig['wx_img'], 'http') !== false ? $SysConfig['wx_img'] : $host . $SysConfig['wx_img'];
+        }
+
         $info = [
             'model'=>$infoModel,
             'guest'=>$guestList,
