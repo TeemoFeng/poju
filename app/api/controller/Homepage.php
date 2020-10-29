@@ -207,13 +207,11 @@ class Homepage extends ApiBase {
         array_walk($list, function (&$v) use($host) {
             $v['name'] = htmlspecialchars_decode($v['name']);
             $v['profile'] = htmlspecialchars_decode($v['profile']);
-            if ($v['banner'] && strpos($v['img'], 'http') === false) {
-                $v['img'] =  $host . $v['banner'];
+            if ($v['banner']) {
+
+                $v['img'] =  $v['banner'] && strpos($v['banner'], 'http') !== false ? $v['banner'] : $host . $v['banner'];
             } else {
-                if ($v['img'] && strpos($v['img'], 'http') === false)
-                {
-                    $v['img'] =  $host . $v['img'];
-                }
+                $v['img'] =  $v['img'] && strpos($v['img'], 'http') !== false ? $v['img'] : $host . $v['img'];
             }
 
             if (strtotime($v['end_time']) < time()) {
