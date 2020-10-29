@@ -25,7 +25,7 @@ class Fragment extends Base
             $list = $f->with('category')->paginate(20);
 
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("list",$nav);
         $this->assign("key",$sid);
         $this->assign("page",$list);

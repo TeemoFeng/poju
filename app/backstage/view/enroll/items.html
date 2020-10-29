@@ -39,7 +39,7 @@
                 {else /}
                 <option value="{$k}">{$vo}</option>
                 {/if}
-                                {/foreach}
+                {/foreach}
             </select>
             <input type="text" name="sd" class="from-text date" id="start_time" data-rander-model="date" value="{$sd|default=''}" placeholder="报名开始时间"> 至
             <input type="text" name="ed" class="from-text date" id="end_time" data-rander-model="date" value="{$ed|default=''}" placeholder="报名结束时间">
@@ -55,7 +55,7 @@
             <li batch='true' success="msg.tips" data-url="{:url('/backstage/enroll/deleteInBatch')}" data-confirm="确定要删除这些记录吗？">删除所选记录</li>
         </ul>
     </div>
-    <a href="{:url('backstage/enroll/getExcel',['summit_name'=>$summit_name,'sd'=>$sd, 'ed' => $ed])}" target="_blank"><i class="iconfont icon-daochu"></i>数据导出</a>
+    <a href="{:url('backstage/enroll/getExcel',['cid'=>$cid,'sd'=>$sd, 'ed' => $ed])}" target="_blank"><i class="iconfont icon-daochu"></i>数据导出</a>
 </div>
 <form action="{:url('backstage/enroll/sort')}" ajax="true" success="msg.tips" method="post">
     <table class="ord_table" theme="no-rl-border">

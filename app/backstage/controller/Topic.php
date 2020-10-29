@@ -40,7 +40,7 @@ class Topic extends Base
                 $this->assign('model',$data);
             }
 
-            $nav = $category->select();
+            $nav = $category->order('id desc')->select();
             $this->assign("list",$nav);
             $this->assign("key",$sid);
             return $this->fetch();
@@ -101,7 +101,7 @@ class Topic extends Base
                 $this->assign('model',$data);
             }
 
-            $nav = $category->select();
+            $nav = $category->order('id desc')->select();
             $this->assign("list",$nav);
             $this->assign("key",$sid);
             return $this->fetch();

@@ -23,7 +23,7 @@ class Agenda extends Base
         }else{
             $list = $agenda->with('category')->order('sort','asc')->paginate(20);
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("list",$nav);
         $this->assign("page",$list);
         $this->assign("key",$sid);

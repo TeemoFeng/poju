@@ -25,7 +25,7 @@ class Cooperative extends Base
 
 
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("list",$nav);
         $this->assign("key",$sid);
         $this->assign('page',$list);

@@ -23,7 +23,7 @@ class Ads extends  Base
         }else{
             $list = $ads->with('category')->order('displayorder','asc')->paginate(20);
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("list",$nav);
         $this->assign("page",$list);
         $this->assign("key",$sid);

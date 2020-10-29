@@ -23,7 +23,7 @@ class Feedback extends Base
         }else{
             $list = $fl->with('category')->order('id','asc')->paginate(20);
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("list",$nav);
         $this->assign("page",$list);
         $this->assign("key",$sid);

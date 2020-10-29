@@ -23,7 +23,7 @@ class Shipin extends Base
         }else{
             $list = $video->with('category')->order('sort','asc')->paginate(20);
         }
-        $nav = $category->select();
+        $nav = $category->order('id desc')->select();
         $this->assign("key",$sid);
         $this->assign("list",$nav);
         $this->assign("page",$list);

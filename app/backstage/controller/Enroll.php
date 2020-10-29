@@ -55,12 +55,12 @@ class Enroll extends Base
 //                $where2['cid'] = ['in', $ids];
 //            }
 //        }
-        $list = SummitEnroll::where($where2)->order('id ASC')->paginate(20, false ,['query'=>request()->param()])->each(function ($v) use($categoryModel) {
+        $list = SummitEnroll::where($where2)->order('id desc')->paginate(20, false ,['query'=>request()->param()])->each(function ($v) use($categoryModel) {
             $v['summit_name'] = $categoryModel::where(['id' => $v['cid']])->value('name');
             $v['sub_time'] = date('Y-m-d H:i:s', $v['sub_time']);
         });
         $category = new Category();
-        $nav = $category->column('id,name');
+        $nav = $category->order('id desc')->column('id,name');
         $this->assign("list",$nav);
 
         $this->assign("items", $list);
@@ -112,16 +112,14 @@ class Enroll extends Base
     public function getExcel()
     {
         $chat = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
-        $summit_name = $this->request->param('summit_name', '');
         $sd = $this->request->param('sd', 0);
         $ed = $this->request->param('ed', 0);
         $cid = $this->request->param('cid', 0);
         $this->assign('sd', $sd);
         $this->assign('ed', $ed);
-        $this->assign('cid', $cid);
         $start_date = !empty($sd) ? strtotime($sd) : 0;
         $end_date = !empty($ed) ? strtotime($ed) : 0;
-        $this->assign('summit_name', $summit_name);
+        $this->assign('cid', $cid);
         $where2 = [];
 
         if (!empty($start_date) && !empty($end_date)) {
