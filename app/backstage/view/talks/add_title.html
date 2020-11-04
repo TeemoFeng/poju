@@ -27,7 +27,7 @@
         <input type="hidden" name="id" value="{$item.id}">
 
         <input type="submit" class="btn search-btn" value="修改" />
-        <a class="btn"  href="{:url('backstage/Talks/deleteTime',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a>
+        <a class="btn"  href="{:url('backstage/Talks/deleteTitle',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a>
 
     </form>
 
