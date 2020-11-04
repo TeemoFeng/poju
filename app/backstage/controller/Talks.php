@@ -53,7 +53,7 @@ class Talks extends Base
             $originator_title_list = [];
             if (!empty($title_list)) {
                 foreach ($title_list as $k => $v) {
-                    $originator_title_list[] = $v;
+                    $originator_title_list[] = $v['title'];
                 }
             }
 
