@@ -1,6 +1,6 @@
 <style>
-    .check{display: inline-block; padding: 30px 0 15px 50px;}
-    .check .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+    .check{display: inline-block; padding: 30px 0 15px 160px;}
+    .check {display: inline-block;width: 400px;height: 28px;vertical-align: top;}
     .check .search-btn{background: #f75959;color: #fff;border: none}
 
 
@@ -22,9 +22,8 @@
 
 {foreach name='list' key='key' item='item'}
 <div class="check">
-    议题{$key+1} :
     <form name="form{$item.id}" action="{:url('backstage/Talks/editTitle')}" method="post" ajax="true" success="msg.tips">
-        议题：<input type="text" name="title{$item.id}" class="from-text" value="{$item.title}">
+        议题{$key+1}<input type="text" name="title{$item.id}" class="from-text" value="{$item.title}">
         <input type="hidden" name="id" value="{$item.id}">
 
         <input type="submit" class="btn search-btn" value="保存" />
