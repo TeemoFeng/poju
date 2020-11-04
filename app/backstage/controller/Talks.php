@@ -78,6 +78,7 @@ class Talks extends Base
             }
             $item->originator_time_list = $originator_time_list;
             $item->do_originator_list = $do_originator_list;
+            $item->originator_title_list = $originator_title_list;
 
         });
 
