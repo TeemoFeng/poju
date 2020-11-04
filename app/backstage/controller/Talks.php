@@ -7,6 +7,7 @@
  */
 
 namespace app\backstage\controller;
+use app\backstage\model\OriginatorTitle;
 use app\common\controller\Base;
 use app\backstage\model\OriginatorUser;
 use app\backstage\model\Originator;
@@ -46,6 +47,15 @@ class Talks extends Base
                 }
             }
 
+            //自己设置的应约标题
+            $title_list = originatorTitle::where(['user_id' => $item->user_id])->select()->toArray();
+            $originator_title_list = [];
+            if (!empty($title_list)) {
+                foreach ($title_list as $k => $v) {
+                    $originator_title_list[] = $v;
+                }
+            }
+
             $originator_list = $originator->where(['form_user' => $item->user_id])->select()->toArray();
             //用户已发出预约时间
             $do_originator_list = [];
@@ -56,6 +66,8 @@ class Talks extends Base
                     $do_originator_list[] = substr($start_time, 0, 16) . ' - ' . substr($end_time, 11, 5);
                 }
             }
+
+
             $status = Db::name('booking_room')->where(['guest_id' => $item->user_id])->value('status');
             if ($status == 1) {
                 $item->status = 1;
@@ -230,6 +242,80 @@ class Talks extends Base
             return $this->fetch();
         }
     }
+
+    //设置应约议题
+    public function addTitle()
+    {
+        $this->request->filter('');
+        if ($this->request->isPost()){
+            $postData = $this->request->post();
+            if (empty($postData['user_id'])) {
+                return json(['code' => 0, 'msg' => '请选择要添加的嘉宾']);
+            }
+            if (empty($postData['title'])) {
+                return json(['code' => 0, 'msg' => '请填写应约议题']);
+            }
+
+            //新增
+            $res = OriginatorTitle::create($postData,true);
+            if ($res !== false) {
+                return json(['code'=>1,'msg'=>'保存成功！']);
+            } else {
+                return json(['code' => 0, 'msg' => '操作失败，请重试']);
+            }
+        } else {
+            $id = $this->request->param("id"); //获取洽谈人员id
+            if ($id != null) {
+                $model = OriginatorTitle::where(['user_id' => $id])->order('id', 'asc')->select()->toArray(); //获取洽谈人员时间设置列表
+                $this->assign("list",$model);
+            }
+            $this->assign('user_id', $id);
+            return $this->fetch();
+        }
+    }
+
+    //删除用户设置的议题
+    public function deleteTitle()
+    {
+
+        $id = $this->request->param("id");
+        $is_have = Originator::where(['title_id' => $id, 'status' => ['in', [0,1]]])->select()->toArray();
+        if (!empty($is_have)) {
+            return json(["code" => 0,"msg" => "议题已被预约，暂时不可删除"]);
+        }
+        $n = OriginatorTitle::where("id","=", $id)->delete();
+        if ($n === false) {
+            return json(["code" => 0,"msg" => "删除失败"]);
+        }
+        return json(["code" => 1,"msg" => "该条记录已删除"]);
+    }
+
+    //修改时间段
+    public function editTitle()
+    {
+        if ($this->request->isPost()) {
+            $postData = $this->request->post();
+            $id = $postData['id'];
+            $is_have = Originator::where(['title_id' => $id, 'status' => ['in', [0,1]]])->select()->toArray();
+            if (!empty($is_have)) {
+                return json(["code" => 0,"msg" => "时间段已被预约，暂时不可修改"]);
+            }
+
+            $save['title'] = $postData['title' . $id];
+
+            $res = OriginatorTitle::update($save,['id'=>$id],true);
+            if ($res !== false) {
+                return json(['code'=>1,'msg'=>'保存成功！']);
+            } else {
+                return json(['code' => 0, 'msg' => '操作失败，请重试']);
+            }
+
+        } else {
+            return json(["code" => 0,"msg" => "请求出错"]);
+        }
+
+    }
+
 
     //删除一个洽谈用户
     public function delete()

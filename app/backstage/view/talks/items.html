@@ -51,6 +51,7 @@
             <th>手机号</th>
             <th>预约时间段</th>
             <th>应约时间段</th>
+            <th>应约议题</th>
             <th>预约室状态</th>
             <th width="300px">操作</th>
         </tr>
@@ -75,6 +76,12 @@
                 {/foreach}
                 </div>
             </td>
+            <td>
+                <div style="overflow-y:scroll;max-height:60px;">{foreach name='item.$originator_title_list' item='vv'}
+                    <p>{$vv}</p>
+                    {/foreach}
+                </div>
+            </td>
             <td>{if $item.status==1}<span style="color: #00B83F">进入</span>{else/}<span style="color: red">退出</span>{/if}</td>
             <td>
                 <a class="act_btn" href="{:url('backstage/Talks/addTime',['id'=>$item.user_id])}"  ajax="true" model-area="885px,550px" success="msg.model">添加应约时间</a>
@@ -83,6 +90,7 @@
             <a class="act_btn" href="{:url('backstage/Talks/quit',['id'=>$item.user_id])}"  ajax="true" success="msg.tips" data-method="post">退出预约室</a>
                 <a class="act_btn" href="{:url('backstage/Talks/add',['id'=>$item.id])}"  ajax="true" model-area="850px,550px" success="msg.model">编辑</a>
                 <a class="act_btn" href="{:url('backstage/Talks/delete',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a></td>
+            <a class="act_btn" href="{:url('backstage/Talks/addTitle',['id'=>$item.user_id])}"  ajax="true" model-area="885px,550px" success="msg.model">设置应约议题</a>
             </td>
 
         </tr>

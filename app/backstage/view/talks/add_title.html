@@ -1,0 +1,36 @@
+<style>
+    .check{display: inline-block; padding: 30px 0 15px 50px;}
+    .check .date{display: inline-block;width: 200px;height: 28px;vertical-align: top;}
+    .check .search-btn{background: #f75959;color: #fff;border: none}
+
+
+</style>
+
+<form action="{:url('backstage/talks/addTitle')}" method="post" ajax="true" success="msg.tips">
+    <input type="hidden" name="user_id" value="{$user_id|default=''}" />
+    <div class="from-group">
+        <label class="from-label fl"><b>*</b><span>议题：</span></label>
+        <div><input type="text" name="title" class="from-text" value=""></div>
+    </div>
+
+    <div class="from-group">
+        <label class="from-label fl"><span></span></label>
+        <div><input class="sub-btn" type="submit" value="　添 加　"></div>
+    </div>
+</form>
+
+
+{foreach name='list' key='key' item='item'}
+<div class="check">
+    议题{$key+1} :
+    <form name="form{$item.id}" action="{:url('backstage/Talks/editTitle')}" method="post" ajax="true" success="msg.tips">
+        议题：<input type="text" name="title{$item.id}" class="from-text" value="{$item.title}">
+        <input type="hidden" name="id" value="{$item.id}">
+
+        <input type="submit" class="btn search-btn" value="保存" />
+        <a class="btn"  href="{:url('backstage/Talks/deleteTime',['id'=>$item.id])}" ajax="true" success="msg.tips" data-method="post">删除</a>
+
+    </form>
+
+</div>
+{/foreach}
