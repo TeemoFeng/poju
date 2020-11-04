@@ -28,6 +28,7 @@ class Talks extends Base
         $originatorUser = new OriginatorUser();
         $originator = new Originator();
         $originatorTimeModel = new OriginatorTime();
+        $originatorTitleModel = new OriginatorTitle();
         $condition = [];
         $name = $this->request->param('name');
         if (!empty($name)) {
@@ -35,7 +36,7 @@ class Talks extends Base
             $this->assign('name', $name);
         }
 
-        $list = $originatorUser->where($condition)->order('id', 'asc')->paginate(20)->each(function ($item) use($originatorTimeModel, $originator) {
+        $list = $originatorUser->where($condition)->order('id', 'asc')->paginate(20)->each(function ($item) use($originatorTimeModel, $originator, $originatorTitleModel) {
             $time_list = $originatorTimeModel->where(['user_id' => $item->user_id])->select()->toArray();
             //自己设置的应约时间
             $originator_time_list = [];
@@ -48,7 +49,7 @@ class Talks extends Base
             }
 
             //自己设置的应约标题
-            $title_list = originatorTitle::where(['user_id' => $item->user_id])->select()->toArray();
+            $title_list = $originatorTitleModel->where(['user_id' => $item->user_id])->select()->toArray();
             $originator_title_list = [];
             if (!empty($title_list)) {
                 foreach ($title_list as $k => $v) {
