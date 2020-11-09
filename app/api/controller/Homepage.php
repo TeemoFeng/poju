@@ -417,6 +417,8 @@ class Homepage extends ApiBase {
         $this->db_app = Db::connect('database_morketing');
         //获取会议id
         $cid = $postData['summit_id'];
+        $postData['cid'] = $postData['summit_id'];
+        unset($postData['summit_id']);
         if (empty($cid)) {
             $this->error('出现未知错误');
         }
