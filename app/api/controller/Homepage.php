@@ -239,7 +239,7 @@ class Homepage extends ApiBase {
      * Action  会议详情
      * @author ywf
      * @license /api/homepage/summitInfo POST
-     * @para string summit_id  会议id|Y
+     * @para string theme  会议名称|Y
      * @field string code   1:成功;0:失败
      * @field string msg    成功
      * @field string model    会议信息
@@ -257,11 +257,11 @@ class Homepage extends ApiBase {
     public function summitInfo()
     {
         $categoryModel = new Category();
-        $sid = $this->request->post('summit_id', 0, 'intval');
+        $sid = $this->request->post('theme', '');
         if(empty($sid)){
             $infoModel = $categoryModel->where(['state' =>1])->order('sort asc')->find();
         }else{
-            $infoModel = $categoryModel->where(['id' => $sid])->find();
+            $infoModel = $categoryModel->where(['realm_name' => $sid])->find();
         }
 
         //共创人/演讲嘉宾
