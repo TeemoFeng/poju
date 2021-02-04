@@ -565,7 +565,7 @@ class Homepage extends ApiBase {
         if ($page > $num) {
             $list = [];
         } else {
-            $list = Db::name('report')->where($where)->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select();
+            $list = Db::name('report')->where($where)->field('id video_id,title,tag,profile,img,views,likes,release_user,create_time')->order('sort', 'asc')->order('create_time', 'desc')->limit(($page - 1)*$page_size, $page_size)->select();
             $admin = new SysAdmin();
             $host = request()->root(true);
             array_walk($list, function(&$v) use ($admin, $host) {
