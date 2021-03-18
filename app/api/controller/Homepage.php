@@ -161,7 +161,7 @@ class Homepage extends ApiBase {
         if ($page > $num) {
             $list = [];
         } else {
-            $list = $recommendModel->where($where)->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
+            $list = $recommendModel->where($where)->field('id recommend_id,title,tag,start_time,end_time,address,img,jump_url,views')->order('sort', 'asc')->order('id', 'desc')->limit(($page - 1)*$page_size, $page_size)->select()->toArray();
 
         }
         $this->success('', ['count' => $count, 'list' => $list]);

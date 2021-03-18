@@ -79,7 +79,7 @@ class Recommend extends BaseModel
     //活动推荐固定广告位
     public function recommendFixed()
     {
-        $list =  $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->limit(3)->select()->toArray();
+        $list =  $this->where(['status' => self::STATUS2, 'type' => self::TYPE2])->field($this->show_fields)->order('sort ASC')->order('id', 'desc')->limit(3)->select()->toArray();
         return $list;
 
     }
@@ -88,7 +88,7 @@ class Recommend extends BaseModel
     //活动推荐普通广告位
     public function recommendOrdinary ()
     {
-        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->limit(12)->select()->toArray();
+        return $this->where(['status' => self::STATUS2, 'type' => self::TYPE1])->field($this->show_fields)->order('sort ASC')->order('id', 'desc')->limit(12)->select()->toArray();
     }
 
 }

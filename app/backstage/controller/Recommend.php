@@ -39,7 +39,7 @@ class Recommend extends Base
             $this->export($data);
             exit();
         }
-        $list = RecommendModel::where($where)->order('sort ASC')->paginate(20);
+        $list = RecommendModel::where($where)->order('sort ASC')->order('id desc')->paginate(20);
         $tag_list = \app\backstage\model\RecommendRule::where(['pid' => 22])->select();
 
         $this->assign("tag_list", $tag_list);
